@@ -632,13 +632,21 @@ try {
   if (error instanceof FMPValidationError) {
     console.error('Validation error:', error.message);
   } else if (error instanceof FMPAPIError) {
-    // Check status code to determine error type
-    if (error.status === 401 || error.status === 403) {
-      console.error('Authentication error:', error.message);
-    } else if (error.status === 429) {
-      console.error('Rate limit exceeded:', error.message);
-    } else {
-      console.error(`API error (${error.status}):`, error.message);
+    // Error message contains raw API response
+    // Status code available for HTTP errors
+    switch (error.status) {
+      case 401:
+      case 403:
+        console.error('Authentication error:', error.message);
+        break;
+      case 429:
+        console.error('Rate limit exceeded:', error.message);
+        break;
+      default:
+        console.error('API error:', error.message);
+        if (error.status) {
+          console.error('Status:', error.status, error.statusText);
+        }
     }
   }
 }
@@ -646,9 +654,12 @@ try {
 
 ### Error Types
 
-- `FMPError` - Base error class
-- `FMPAPIError` - API request failures (includes `status` and `statusText` properties with raw API response)
-- `FMPValidationError` - Input validation errors (thrown before API request for invalid inputs)
+- `FMPError` - Base error class for all SDK errors
+- `FMPAPIError` - API request failures
+  - `message`: Raw API response text
+  - `status`: HTTP status code (optional, undefined for network errors)
+  - `statusText`: HTTP status text (optional, undefined for network errors)
+- `FMPValidationError` - Input validation errors (thrown before making API requests)
 
 ### Best Practices
 
