@@ -1,19 +1,29 @@
 {
-  "name": "ts-package",
+  "name": "fmp-node-sdk",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for Financial Modeling Prep API",
+  "keywords": [
+    "fmp",
+    "financial",
+    "stocks",
+    "forex",
+    "crypto",
+    "api",
+    "sdk"
+  ],
   "author": {
     "name": "Diogo Cardoso",
     "email": "hi@diogocardoso.dev"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nip10/ts-package.git"
+    "url": "https://github.com/nip10/fmp-node-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/nip10/ts-package/issues"
+    "url": "https://github.com/nip10/fmp-node-sdk/issues"
   },
-  "homepage": "https://github.com/nip10/ts-package#readme",
+  "homepage": "https://github.com/nip10/fmp-node-sdk#readme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -34,6 +44,7 @@
     "coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "check-exports": "attw --pack .",
+    "typecheck": "tsc --noEmit",
     "release": "pnpm run build && changeset publish"
   },
   "devDependencies": {
@@ -42,8 +53,10 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
     "@total-typescript/ts-reset": "^0.6.1",
+    "@types/node": "^25.0.3",
     "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.46.3",
+    "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.8",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
@@ -55,5 +68,8 @@
     "typescript-eslint": "^8.46.3",
     "vitest": "^4.0.8",
     "vitest-github-actions-reporter": "^0.11.1"
+  },
+  "dependencies": {
+    "ky": "^1.14.1"
   }
 }
