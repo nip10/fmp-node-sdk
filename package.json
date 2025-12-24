@@ -1,7 +1,7 @@
 {
   "name": "fmp-node-sdk",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "TypeScript SDK for Financial Modeling Prep API",
   "keywords": [
     "fmp",
