@@ -6,7 +6,7 @@ import { FMPAPIError } from './errors/index.js';
  * Default configuration values
  */
 const DEFAULT_CONFIG = {
-  baseUrl: 'https://financialmodelingprep.com/api',
+  baseUrl: 'https://financialmodelingprep.com/stable',
   timeout: 30000,
   retries: 3,
 } as const;

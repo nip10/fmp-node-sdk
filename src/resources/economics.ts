@@ -50,7 +50,7 @@ export class EconomicsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<TreasuryRate[]>('v4/treasury', { searchParams: params });
+    return this.client.get<TreasuryRate[]>('treasury-rates', { searchParams: params });
   }
 
   /**
@@ -68,7 +68,7 @@ export class EconomicsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<EconomicIndicator[]>('v4/economic', { searchParams: params });
+    return this.client.get<EconomicIndicator[]>('economic-indicators', { searchParams: params });
   }
 
   /**
@@ -120,6 +120,6 @@ export class EconomicsResource {
    * Get market risk premium
    */
   async getMarketRiskPremium(): Promise<MarketRiskPremium[]> {
-    return this.client.get<MarketRiskPremium[]>('v4/market_risk_premium');
+    return this.client.get<MarketRiskPremium[]>('market-risk-premium');
   }
 }

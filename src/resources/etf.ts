@@ -6,6 +6,7 @@ import type {
   ETFCountryWeighting,
   ETFStockExposure,
   MutualFundHolder,
+  FundListItem,
 } from '../types/index.js';
 
 /**
@@ -20,7 +21,9 @@ export class ETFResource {
    * @param symbol - ETF symbol
    */
   async getHoldings(symbol: string): Promise<ETFHolding[]> {
-    return this.client.get<ETFHolding[]>(`v3/etf-holder/${symbol.toUpperCase()}`);
+    return this.client.get<ETFHolding[]>('etf/holdings', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -28,10 +31,8 @@ export class ETFResource {
    * @param symbol - ETF symbol
    */
   async getInfo(symbol: string): Promise<ETFInfo[]> {
-    return this.client.get<ETFInfo[]>(`v4/etf-info`, {
-      searchParams: {
-        symbol: symbol.toUpperCase(),
-      },
+    return this.client.get<ETFInfo[]>('etf/info', {
+      searchParams: { symbol: symbol.toUpperCase() },
     });
   }
 
@@ -40,9 +41,9 @@ export class ETFResource {
    * @param symbol - ETF symbol
    */
   async getSectorWeightings(symbol: string): Promise<ETFSectorWeighting[]> {
-    return this.client.get<ETFSectorWeighting[]>(
-      `v3/etf-sector-weightings/${symbol.toUpperCase()}`
-    );
+    return this.client.get<ETFSectorWeighting[]>('etf/sector-weightings', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -50,9 +51,9 @@ export class ETFResource {
    * @param symbol - ETF symbol
    */
   async getCountryWeightings(symbol: string): Promise<ETFCountryWeighting[]> {
-    return this.client.get<ETFCountryWeighting[]>(
-      `v3/etf-country-weightings/${symbol.toUpperCase()}`
-    );
+    return this.client.get<ETFCountryWeighting[]>('etf/country-weightings', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -60,9 +61,9 @@ export class ETFResource {
    * @param symbol - Stock symbol
    */
   async getStockExposure(symbol: string): Promise<ETFStockExposure[]> {
-    return this.client.get<ETFStockExposure[]>(
-      `v3/etf-stock-exposure/${symbol.toUpperCase()}`
-    );
+    return this.client.get<ETFStockExposure[]>('etf/asset-exposure', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -70,23 +71,23 @@ export class ETFResource {
    * @param symbol - Stock symbol
    */
   async getMutualFundHolders(symbol: string): Promise<MutualFundHolder[]> {
-    return this.client.get<MutualFundHolder[]>(
-      `v3/mutual-fund-holder/${symbol.toUpperCase()}`
-    );
+    return this.client.get<MutualFundHolder[]>('funds/disclosure-holders-latest', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get ETF list
    */
-  async getETFList(): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>('v3/etf/list');
+  async getETFList(): Promise<FundListItem[]> {
+    return this.client.get<FundListItem[]>('etf-list');
   }
 
   /**
    * Get available mutual funds
    */
-  async getAvailableMutualFunds(): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>('v3/symbol/available-mutual-funds');
+  async getAvailableMutualFunds(): Promise<FundListItem[]> {
+    return this.client.get<FundListItem[]>('mutual-fund-list');
   }
 
   /**
@@ -94,6 +95,6 @@ export class ETFResource {
    * Returns the most recent portfolio dates for all ETFs
    */
   async getLatestDisclosures(): Promise<Array<{ symbol: string; date: string }>> {
-    return this.client.get<Array<{ symbol: string; date: string }>>('v4/etf-holdings/portfolio-date');
+    return this.client.get<Array<{ symbol: string; date: string }>>('funds/disclosure-dates');
   }
 }

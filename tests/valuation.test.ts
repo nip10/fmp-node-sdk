@@ -32,7 +32,7 @@ describe('ValuationResource', () => {
 
       const result = await valuationResource.getDCF('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/discounted-cash-flow/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('discounted-cash-flow', { searchParams: { symbol: 'AAPL' } });
       expect(result).toEqual(mockDCFResponse);
     });
 
@@ -41,7 +41,7 @@ describe('ValuationResource', () => {
 
       await valuationResource.getDCF('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/discounted-cash-flow/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('discounted-cash-flow', { searchParams: { symbol: 'AAPL' } });
     });
 
     it('should handle mixed case symbols', async () => {
@@ -49,7 +49,7 @@ describe('ValuationResource', () => {
 
       await valuationResource.getDCF('AaPl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/discounted-cash-flow/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('discounted-cash-flow', { searchParams: { symbol: 'AAPL' } });
     });
 
     it('should handle symbols with special characters', async () => {
@@ -65,7 +65,7 @@ describe('ValuationResource', () => {
 
       await valuationResource.getDCF('brk.b');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/discounted-cash-flow/BRK.B');
+      expect(mockClient.get).toHaveBeenCalledWith('discounted-cash-flow', { searchParams: { symbol: 'BRK.B' } });
     });
 
     it('should return empty array for invalid symbol', async () => {
@@ -112,7 +112,7 @@ describe('ValuationResource', () => {
 
       const result = await valuationResource.getDCF('');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/discounted-cash-flow/');
+      expect(mockClient.get).toHaveBeenCalledWith('discounted-cash-flow', { searchParams: { symbol: '' } });
       expect(result).toEqual([]);
     });
   });
@@ -133,9 +133,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getLeveredDCF('MSFT');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/advanced_levered_discounted_cash_flow',
-        { searchParams: {   symbol: 'MSFT' }, }
-
+        'levered-discounted-cash-flow',
+        { searchParams: { symbol: 'MSFT' } }
       );
       expect(result).toEqual(mockLeveredDCFResponse);
     });
@@ -146,9 +145,8 @@ describe('ValuationResource', () => {
       await valuationResource.getLeveredDCF('msft');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/advanced_levered_discounted_cash_flow',
-        { searchParams: {   symbol: 'MSFT' }, }
-
+        'levered-discounted-cash-flow',
+        { searchParams: { symbol: 'MSFT' } }
       );
     });
 
@@ -158,9 +156,8 @@ describe('ValuationResource', () => {
       await valuationResource.getLeveredDCF('MsFt');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/advanced_levered_discounted_cash_flow',
-        { searchParams: {   symbol: 'MSFT' }, }
-
+        'levered-discounted-cash-flow',
+        { searchParams: { symbol: 'MSFT' } }
       );
     });
 
@@ -178,9 +175,8 @@ describe('ValuationResource', () => {
       await valuationResource.getLeveredDCF('spy-l');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/advanced_levered_discounted_cash_flow',
-        { searchParams: {   symbol: 'SPY-L' }, }
-
+        'levered-discounted-cash-flow',
+        { searchParams: { symbol: 'SPY-L' } }
       );
     });
 
@@ -222,9 +218,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getLeveredDCF('');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/advanced_levered_discounted_cash_flow',
-        { searchParams: {   symbol: '' }, }
-
+        'levered-discounted-cash-flow',
+        { searchParams: { symbol: '' } }
       );
       expect(result).toEqual([]);
     });
@@ -235,9 +230,8 @@ describe('ValuationResource', () => {
       await valuationResource.getLeveredDCF('  msft  ');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/advanced_levered_discounted_cash_flow',
-        { searchParams: {   symbol: '  MSFT  ' }, }
-
+        'levered-discounted-cash-flow',
+        { searchParams: { symbol: '  MSFT  ' } }
       );
     });
   });
@@ -274,12 +268,9 @@ describe('ValuationResource', () => {
 
       const result = await valuationResource.getAdvancedDCF('GOOGL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/advanced_discounted_cash_flow', {
-        searchParams: {
-          symbol: 'GOOGL',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('custom-discounted-cash-flow', {
+        searchParams: { symbol: 'GOOGL' }
+      });
       expect(result).toEqual(mockAdvancedDCFResponse);
     });
 
@@ -288,12 +279,9 @@ describe('ValuationResource', () => {
 
       await valuationResource.getAdvancedDCF('googl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/advanced_discounted_cash_flow', {
-        searchParams: {
-          symbol: 'GOOGL',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('custom-discounted-cash-flow', {
+        searchParams: { symbol: 'GOOGL' }
+      });
     });
 
     it('should handle mixed case symbols', async () => {
@@ -301,12 +289,9 @@ describe('ValuationResource', () => {
 
       await valuationResource.getAdvancedDCF('GoOgL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/advanced_discounted_cash_flow', {
-        searchParams: {
-          symbol: 'GOOGL',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('custom-discounted-cash-flow', {
+        searchParams: { symbol: 'GOOGL' }
+      });
     });
 
     it('should handle international symbols', async () => {
@@ -339,12 +324,9 @@ describe('ValuationResource', () => {
 
       await valuationResource.getAdvancedDCF('0700.hk');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/advanced_discounted_cash_flow', {
-        searchParams: {
-          symbol: '0700.HK',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('custom-discounted-cash-flow', {
+        searchParams: { symbol: '0700.HK' }
+      });
     });
 
     it('should return empty array for invalid symbol', async () => {
@@ -396,12 +378,9 @@ describe('ValuationResource', () => {
 
       const result = await valuationResource.getAdvancedDCF('');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/advanced_discounted_cash_flow', {
-        searchParams: {
-          symbol: '',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('custom-discounted-cash-flow', {
+        searchParams: { symbol: '' }
+      });
       expect(result).toEqual([]);
     });
 
@@ -445,8 +424,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getHistoricalDailyDCF('TSLA');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-daily-discounted-cash-flow/TSLA',
-        { searchParams: {} }
+        'historical-daily-discounted-cash-flow',
+        { searchParams: { symbol: 'TSLA' } }
       );
       expect(result).toEqual(mockHistoricalDailyDCFResponse);
     });
@@ -457,9 +436,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getHistoricalDailyDCF('TSLA', 10);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-daily-discounted-cash-flow/TSLA',
-        { searchParams: {   limit: 10 }, }
-
+        'historical-daily-discounted-cash-flow',
+        { searchParams: { symbol: 'TSLA', limit: 10 } }
       );
       expect(result).toEqual(mockHistoricalDailyDCFResponse);
     });
@@ -470,9 +448,8 @@ describe('ValuationResource', () => {
       await valuationResource.getHistoricalDailyDCF('tsla', 5);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-daily-discounted-cash-flow/TSLA',
-        { searchParams: {   limit: 5 }, }
-
+        'historical-daily-discounted-cash-flow',
+        { searchParams: { symbol: 'TSLA', limit: 5 } }
       );
     });
 
@@ -482,9 +459,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getHistoricalDailyDCF('TSLA', 1);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-daily-discounted-cash-flow/TSLA',
-        { searchParams: {   limit: 1 }, }
-
+        'historical-daily-discounted-cash-flow',
+        { searchParams: { symbol: 'TSLA', limit: 1 } }
       );
       expect(result).toHaveLength(1);
     });
@@ -495,9 +471,8 @@ describe('ValuationResource', () => {
       await valuationResource.getHistoricalDailyDCF('TSLA', 1000);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-daily-discounted-cash-flow/TSLA',
-        { searchParams: {   limit: 1000 }, }
-
+        'historical-daily-discounted-cash-flow',
+        { searchParams: { symbol: 'TSLA', limit: 1000 } }
       );
     });
 
@@ -507,8 +482,8 @@ describe('ValuationResource', () => {
       await valuationResource.getHistoricalDailyDCF('TSLA', undefined);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-daily-discounted-cash-flow/TSLA',
-        { searchParams: {} }
+        'historical-daily-discounted-cash-flow',
+        { searchParams: { symbol: 'TSLA' } }
       );
     });
 
@@ -542,9 +517,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getHistoricalDCF('NVDA');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-discounted-cash-flow-statement/NVDA',
-        { searchParams: {   period: 'annual' }, }
-
+        'historical-discounted-cash-flow-statement',
+        { searchParams: { symbol: 'NVDA', period: 'annual' } }
       );
       expect(result).toEqual(mockHistoricalDCFResponse);
     });
@@ -555,9 +529,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getHistoricalDCF('NVDA', 'quarter');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-discounted-cash-flow-statement/NVDA',
-        { searchParams: {   period: 'quarter' }, }
-
+        'historical-discounted-cash-flow-statement',
+        { searchParams: { symbol: 'NVDA', period: 'quarter' } }
       );
       expect(result).toEqual(mockHistoricalDCFResponse);
     });
@@ -568,9 +541,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getHistoricalDCF('NVDA', 'annual', 5);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-discounted-cash-flow-statement/NVDA',
-        { searchParams: {   period: 'annual', limit: 5 }, }
-
+        'historical-discounted-cash-flow-statement',
+        { searchParams: { symbol: 'NVDA', period: 'annual', limit: 5 } }
       );
       expect(result).toEqual(mockHistoricalDCFResponse);
     });
@@ -581,9 +553,8 @@ describe('ValuationResource', () => {
       const result = await valuationResource.getHistoricalDCF('NVDA', 'quarter', 10);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-discounted-cash-flow-statement/NVDA',
-        { searchParams: {   period: 'quarter', limit: 10 }, }
-
+        'historical-discounted-cash-flow-statement',
+        { searchParams: { symbol: 'NVDA', period: 'quarter', limit: 10 } }
       );
       expect(result).toEqual(mockHistoricalDCFResponse);
     });
@@ -594,9 +565,8 @@ describe('ValuationResource', () => {
       await valuationResource.getHistoricalDCF('nvda', 'quarter', 3);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-discounted-cash-flow-statement/NVDA',
-        { searchParams: {   period: 'quarter', limit: 3 }, }
-
+        'historical-discounted-cash-flow-statement',
+        { searchParams: { symbol: 'NVDA', period: 'quarter', limit: 3 } }
       );
     });
 
@@ -606,9 +576,8 @@ describe('ValuationResource', () => {
       await valuationResource.getHistoricalDCF('NVDA', 'annual', undefined);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-discounted-cash-flow-statement/NVDA',
-        { searchParams: {   period: 'annual' }, }
-
+        'historical-discounted-cash-flow-statement',
+        { searchParams: { symbol: 'NVDA', period: 'annual' } }
       );
     });
 
@@ -653,7 +622,7 @@ describe('ValuationResource', () => {
 
       await valuationResource.getDCF('AAPL  ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/discounted-cash-flow/AAPL  ');
+      expect(mockClient.get).toHaveBeenCalledWith('discounted-cash-flow', { searchParams: { symbol: 'AAPL  ' } });
     });
 
     it('should handle symbols with leading spaces in getLeveredDCF', async () => {
@@ -661,12 +630,9 @@ describe('ValuationResource', () => {
 
       await valuationResource.getLeveredDCF('  MSFT');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/advanced_levered_discounted_cash_flow', {
-        searchParams: {
-          symbol: '  MSFT',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('levered-discounted-cash-flow', {
+        searchParams: { symbol: '  MSFT' }
+      });
     });
 
     it('should handle numeric symbols', async () => {
@@ -674,12 +640,9 @@ describe('ValuationResource', () => {
 
       await valuationResource.getAdvancedDCF('0700');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/advanced_discounted_cash_flow', {
-        searchParams: {
-          symbol: '0700',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('custom-discounted-cash-flow', {
+        searchParams: { symbol: '0700' }
+      });
     });
 
     it('should handle very long symbols', async () => {
@@ -689,7 +652,8 @@ describe('ValuationResource', () => {
       await valuationResource.getDCF(longSymbol.toLowerCase());
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        `v3/discounted-cash-flow/${longSymbol.toUpperCase()}`
+        'discounted-cash-flow',
+        { searchParams: { symbol: longSymbol.toUpperCase() } }
       );
     });
   });

@@ -18,7 +18,7 @@ export class CommoditiesResource {
    * Get commodities list
    */
   async getList(): Promise<CommodityList[]> {
-    return this.client.get<CommodityList[]>('v3/symbol/available-commodities');
+    return this.client.get<CommodityList[]>('commodities-list');
   }
 
   /**
@@ -26,7 +26,9 @@ export class CommoditiesResource {
    * @param symbol - Commodity symbol (e.g., "GCUSD" for Gold)
    */
   async getQuote(symbol: string): Promise<CommodityQuote[]> {
-    return this.client.get<CommodityQuote[]>(`v3/quote/${symbol.toUpperCase()}`);
+    return this.client.get<CommodityQuote[]>('quote', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -34,14 +36,16 @@ export class CommoditiesResource {
    * @param symbol - Commodity symbol
    */
   async getQuoteShort(symbol: string): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>(`v3/quote-short/${symbol.toUpperCase()}`);
+    return this.client.get<Record<string, unknown>[]>('quote-short', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get all commodity quotes
    */
   async getAllQuotes(): Promise<CommodityQuote[]> {
-    return this.client.get<CommodityQuote[]>('v3/quotes/commodity');
+    return this.client.get<CommodityQuote[]>('batch-commodity-quotes');
   }
 
   /**
@@ -54,15 +58,14 @@ export class CommoditiesResource {
     symbol: string,
     from?: string,
     to?: string
-  ): Promise<{ historical: HistoricalPrice[] }> {
-    const params: Record<string, string> = {};
+  ): Promise<HistoricalPrice[]> {
+    const params: Record<string, string> = { symbol: symbol.toUpperCase() };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<{ historical: HistoricalPrice[] }>(
-      `v3/historical-price-full/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<HistoricalPrice[]>('historical-price-eod/full', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -76,14 +79,13 @@ export class CommoditiesResource {
     from?: string,
     to?: string
   ): Promise<{ date: string; close: number }[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = { symbol: symbol.toUpperCase() };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<{ date: string; close: number }[]>(
-      `v3/historical-chart/line/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<{ date: string; close: number }[]>('historical-price-eod/light', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -99,13 +101,12 @@ export class CommoditiesResource {
     from?: string,
     to?: string
   ): Promise<IntradayChart[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = { symbol: symbol.toUpperCase() };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/${interval}/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<IntradayChart[]>(`historical-chart/${interval}`, {
+      searchParams: params,
+    });
   }
 }

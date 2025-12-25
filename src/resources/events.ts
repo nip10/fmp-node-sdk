@@ -24,10 +24,12 @@ export class EventsResource {
    * @param limit - Number of results
    */
   async getEarnings(symbol: string, limit?: number): Promise<Earnings[]> {
-    const params: Record<string, string | number> = {};
+    const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (limit) params.limit = limit;
 
-    return this.client.get<Earnings[]>(`v3/historical/earning_calendar/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<Earnings[]>('earnings', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -40,7 +42,9 @@ export class EventsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<EarningsCalendar[]>('v3/earning_calendar', { searchParams: params });
+    return this.client.get<EarningsCalendar[]>('earnings-calendar', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -53,7 +57,9 @@ export class EventsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<EarningsCalendar[]>('v4/earning-calendar-confirmed', { searchParams: params });
+    return this.client.get<EarningsCalendar[]>('earnings-calendar-confirmed', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -61,7 +67,9 @@ export class EventsResource {
    * @param symbol - Stock symbol
    */
   async getDividends(symbol: string): Promise<Dividend[]> {
-    return this.client.get<Dividend[]>(`v3/historical-price-full/stock_dividend/${symbol.toUpperCase()}`);
+    return this.client.get<Dividend[]>('dividends', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -74,7 +82,9 @@ export class EventsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<DividendCalendar[]>('v3/stock_dividend_calendar', { searchParams: params });
+    return this.client.get<DividendCalendar[]>('dividends-calendar', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -82,7 +92,9 @@ export class EventsResource {
    * @param symbol - Stock symbol
    */
   async getSplits(symbol: string): Promise<StockSplit[]> {
-    return this.client.get<StockSplit[]>(`v3/historical-price-full/stock_split/${symbol.toUpperCase()}`);
+    return this.client.get<StockSplit[]>('splits', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -95,7 +107,9 @@ export class EventsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<StockSplit[]>('v3/stock_split_calendar', { searchParams: params });
+    return this.client.get<StockSplit[]>('splits-calendar', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -108,7 +122,9 @@ export class EventsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<IPOCalendar[]>('v3/ipo_calendar', { searchParams: params });
+    return this.client.get<IPOCalendar[]>('ipos-calendar', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -121,7 +137,9 @@ export class EventsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<IPOProspectus[]>('v4/ipo-calendar-prospectus', { searchParams: params });
+    return this.client.get<IPOProspectus[]>('ipos-prospectus', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -134,7 +152,9 @@ export class EventsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<IPOConfirmed[]>('v4/ipo-calendar-confirmed', { searchParams: params });
+    return this.client.get<IPOConfirmed[]>('ipos-confirmed', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -147,6 +167,8 @@ export class EventsResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<EconomicCalendar[]>('v3/economic_calendar', { searchParams: params });
+    return this.client.get<EconomicCalendar[]>('economic-calendar', {
+      searchParams: params,
+    });
   }
 }

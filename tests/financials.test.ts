@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FinancialsResource } from '../src/resources/financials.js';
+import { Period } from '../src/types/index.js';
 import type { FMPClient } from '../src/client.js';
 import type {
   IncomeStatement,
@@ -67,7 +68,8 @@ describe('FinancialsResource', () => {
           weightedAverageShsOut: 15744231000,
           weightedAverageShsOutDil: 15812547000,
           link: 'https://www.sec.gov/cgi-bin/viewer?action=view&cik=320193&accession_number=0000320193-24-000081&xbrl_type=v',
-          finalLink: 'https://www.sec.gov/cgi-bin/viewer?action=view&cik=320193&accession_number=0000320193-24-000081&xbrl_type=v',
+          finalLink:
+            'https://www.sec.gov/cgi-bin/viewer?action=view&cik=320193&accession_number=0000320193-24-000081&xbrl_type=v',
         },
       ];
 
@@ -75,8 +77,9 @@ describe('FinancialsResource', () => {
 
       const result = await financials.getIncomeStatement('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/AAPL', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement', {
+        searchParams: { symbol: 'AAPL', period: 'annual' },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -84,25 +87,22 @@ describe('FinancialsResource', () => {
       const mockData: IncomeStatement[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getIncomeStatement('AAPL', 'quarter');
+      await financials.getIncomeStatement('AAPL', Period.Quarter);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/AAPL', { searchParams: {   period: 'quarter' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement', {
+        searchParams: { symbol: 'AAPL', period: 'quarter' },
+      });
     });
 
     it('should fetch income statement with limit', async () => {
       const mockData: IncomeStatement[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getIncomeStatement('AAPL', 'annual', 5);
+      await financials.getIncomeStatement('AAPL', Period.Annual, 5);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/AAPL', {
-        searchParams: {
-          period: 'annual',
-        limit: 5,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement', {
+        searchParams: { symbol: 'AAPL', period: 'annual', limit: 5 },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -111,8 +111,9 @@ describe('FinancialsResource', () => {
 
       await financials.getIncomeStatement('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/AAPL', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement', {
+        searchParams: { symbol: 'AAPL', period: 'annual' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -130,41 +131,31 @@ describe('FinancialsResource', () => {
 
       await financials.getBalanceSheet('MSFT');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement/MSFT', {
-        searchParams: {
-          period: 'annual',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement', {
+        searchParams: { symbol: 'MSFT', period: 'annual' },
+      });
     });
 
     it('should fetch balance sheet with quarterly period', async () => {
       const mockData: BalanceSheet[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getBalanceSheet('MSFT', 'quarter');
+      await financials.getBalanceSheet('MSFT', Period.Quarter);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement/MSFT', {
-        searchParams: {
-          period: 'quarter',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement', {
+        searchParams: { symbol: 'MSFT', period: 'quarter' },
+      });
     });
 
     it('should fetch balance sheet with limit', async () => {
       const mockData: BalanceSheet[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getBalanceSheet('MSFT', 'annual', 10);
+      await financials.getBalanceSheet('MSFT', Period.Annual, 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement/MSFT', {
-        searchParams: {
-          period: 'annual',
-        limit: 10,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement', {
+        searchParams: { symbol: 'MSFT', period: 'annual', limit: 10 },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -173,12 +164,9 @@ describe('FinancialsResource', () => {
 
       await financials.getBalanceSheet('msft');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement/MSFT', {
-        searchParams: {
-          period: 'annual',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement', {
+        searchParams: { symbol: 'MSFT', period: 'annual' },
+      });
     });
   });
 
@@ -189,41 +177,31 @@ describe('FinancialsResource', () => {
 
       await financials.getCashFlowStatement('GOOGL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement/GOOGL', {
-        searchParams: {
-          period: 'annual',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement', {
+        searchParams: { symbol: 'GOOGL', period: 'annual' },
+      });
     });
 
     it('should fetch cash flow statement with quarterly period', async () => {
       const mockData: CashFlowStatement[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getCashFlowStatement('GOOGL', 'quarter');
+      await financials.getCashFlowStatement('GOOGL', Period.Quarter);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement/GOOGL', {
-        searchParams: {
-          period: 'quarter',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement', {
+        searchParams: { symbol: 'GOOGL', period: 'quarter' },
+      });
     });
 
     it('should fetch cash flow statement with limit', async () => {
       const mockData: CashFlowStatement[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getCashFlowStatement('GOOGL', 'annual', 3);
+      await financials.getCashFlowStatement('GOOGL', Period.Annual, 3);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement/GOOGL', {
-        searchParams: {
-          period: 'annual',
-        limit: 3,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement', {
+        searchParams: { symbol: 'GOOGL', period: 'annual', limit: 3 },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -232,12 +210,9 @@ describe('FinancialsResource', () => {
 
       await financials.getCashFlowStatement('googl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement/GOOGL', {
-        searchParams: {
-          period: 'annual',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement', {
+        searchParams: { symbol: 'GOOGL', period: 'annual' },
+      });
     });
   });
 
@@ -249,8 +224,9 @@ describe('FinancialsResource', () => {
 
         await financials.getIncomeStatementTTM('AAPL');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/AAPL', { searchParams: {   period: 'ttm' }, }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('income-statement-ttm', {
+          searchParams: { symbol: 'AAPL' },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -259,8 +235,9 @@ describe('FinancialsResource', () => {
 
         await financials.getIncomeStatementTTM('aapl');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/AAPL', { searchParams: {   period: 'ttm' }, }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('income-statement-ttm', {
+          searchParams: { symbol: 'AAPL' },
+        });
       });
     });
 
@@ -271,12 +248,9 @@ describe('FinancialsResource', () => {
 
         await financials.getBalanceSheetTTM('MSFT');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement/MSFT', {
-          searchParams: {
-            period: 'ttm',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-ttm', {
+          searchParams: { symbol: 'MSFT' },
+        });
       });
     });
 
@@ -287,12 +261,9 @@ describe('FinancialsResource', () => {
 
         await financials.getCashFlowStatementTTM('GOOGL');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement/GOOGL', {
-          searchParams: {
-            period: 'ttm',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-ttm', {
+          searchParams: { symbol: 'GOOGL' },
+        });
       });
     });
   });
@@ -304,28 +275,31 @@ describe('FinancialsResource', () => {
 
       await financials.getRatios('TSLA');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ratios/TSLA', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('ratios', {
+        searchParams: { symbol: 'TSLA', period: 'annual' },
+      });
     });
 
     it('should fetch financial ratios with quarterly period', async () => {
       const mockData: FinancialRatios[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getRatios('TSLA', 'quarter');
+      await financials.getRatios('TSLA', Period.Quarter);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ratios/TSLA', { searchParams: {   period: 'quarter' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('ratios', {
+        searchParams: { symbol: 'TSLA', period: 'quarter' },
+      });
     });
 
     it('should fetch financial ratios with limit', async () => {
       const mockData: FinancialRatios[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getRatios('TSLA', 'annual', 7);
+      await financials.getRatios('TSLA', Period.Annual, 7);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ratios/TSLA', { searchParams: {   period: 'annual', limit: 7 }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('ratios', {
+        searchParams: { symbol: 'TSLA', period: 'annual', limit: 7 },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -334,8 +308,9 @@ describe('FinancialsResource', () => {
 
       await financials.getRatios('tsla');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ratios/TSLA', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('ratios', {
+        searchParams: { symbol: 'TSLA', period: 'annual' },
+      });
     });
   });
 
@@ -346,7 +321,9 @@ describe('FinancialsResource', () => {
 
       await financials.getRatiosTTM('NVDA');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ratios-ttm/NVDA');
+      expect(mockClient.get).toHaveBeenCalledWith('ratios-ttm', {
+        searchParams: { symbol: 'NVDA' },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -355,7 +332,9 @@ describe('FinancialsResource', () => {
 
       await financials.getRatiosTTM('nvda');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ratios-ttm/NVDA');
+      expect(mockClient.get).toHaveBeenCalledWith('ratios-ttm', {
+        searchParams: { symbol: 'NVDA' },
+      });
     });
   });
 
@@ -366,33 +345,31 @@ describe('FinancialsResource', () => {
 
       await financials.getKeyMetrics('AMZN');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-metrics/AMZN', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('key-metrics', {
+        searchParams: { symbol: 'AMZN', period: 'annual' },
+      });
     });
 
     it('should fetch key metrics with quarterly period', async () => {
       const mockData: KeyMetrics[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getKeyMetrics('AMZN', 'quarter');
+      await financials.getKeyMetrics('AMZN', Period.Quarter);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-metrics/AMZN', { searchParams: {   period: 'quarter' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('key-metrics', {
+        searchParams: { symbol: 'AMZN', period: 'quarter' },
+      });
     });
 
     it('should fetch key metrics with limit', async () => {
       const mockData: KeyMetrics[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getKeyMetrics('AMZN', 'annual', 4);
+      await financials.getKeyMetrics('AMZN', Period.Annual, 4);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-metrics/AMZN', {
-        searchParams: {
-          period: 'annual',
-        limit: 4,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('key-metrics', {
+        searchParams: { symbol: 'AMZN', period: 'annual', limit: 4 },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -401,8 +378,9 @@ describe('FinancialsResource', () => {
 
       await financials.getKeyMetrics('amzn');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-metrics/AMZN', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('key-metrics', {
+        searchParams: { symbol: 'AMZN', period: 'annual' },
+      });
     });
   });
 
@@ -413,7 +391,9 @@ describe('FinancialsResource', () => {
 
       await financials.getKeyMetricsTTM('META');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-metrics-ttm/META');
+      expect(mockClient.get).toHaveBeenCalledWith('key-metrics-ttm', {
+        searchParams: { symbol: 'META' },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -422,7 +402,9 @@ describe('FinancialsResource', () => {
 
       await financials.getKeyMetricsTTM('meta');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-metrics-ttm/META');
+      expect(mockClient.get).toHaveBeenCalledWith('key-metrics-ttm', {
+        searchParams: { symbol: 'META' },
+      });
     });
   });
 
@@ -433,37 +415,31 @@ describe('FinancialsResource', () => {
 
       await financials.getEnterpriseValues('NFLX');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/enterprise-values/NFLX', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('enterprise-values', {
+        searchParams: { symbol: 'NFLX', period: 'annual' },
+      });
     });
 
     it('should fetch enterprise values with quarterly period', async () => {
       const mockData: Record<string, unknown>[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getEnterpriseValues('NFLX', 'quarter');
+      await financials.getEnterpriseValues('NFLX', Period.Quarter);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/enterprise-values/NFLX', {
-        searchParams: {
-          period: 'quarter',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('enterprise-values', {
+        searchParams: { symbol: 'NFLX', period: 'quarter' },
+      });
     });
 
     it('should fetch enterprise values with limit', async () => {
       const mockData: Record<string, unknown>[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getEnterpriseValues('NFLX', 'annual', 6);
+      await financials.getEnterpriseValues('NFLX', Period.Annual, 6);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/enterprise-values/NFLX', {
-        searchParams: {
-          period: 'annual',
-        limit: 6,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('enterprise-values', {
+        searchParams: { symbol: 'NFLX', period: 'annual', limit: 6 },
+      });
     });
   });
 
@@ -475,27 +451,20 @@ describe('FinancialsResource', () => {
 
         await financials.getIncomeStatementGrowth('AAPL');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement-growth/AAPL', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('income-statement-growth', {
+          searchParams: { symbol: 'AAPL', period: 'annual' },
+        });
       });
 
       it('should fetch income statement growth with quarterly period and limit', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getIncomeStatementGrowth('AAPL', 'quarter', 8);
+        await financials.getIncomeStatementGrowth('AAPL', Period.Quarter, 8);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement-growth/AAPL', {
-          searchParams: {
-            period: 'quarter',
-          limit: 8,
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('income-statement-growth', {
+          searchParams: { symbol: 'AAPL', period: 'quarter', limit: 8 },
+        });
       });
     });
 
@@ -506,27 +475,20 @@ describe('FinancialsResource', () => {
 
         await financials.getBalanceSheetGrowth('MSFT');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement-growth/MSFT', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-growth', {
+          searchParams: { symbol: 'MSFT', period: 'annual' },
+        });
       });
 
       it('should fetch balance sheet growth with quarterly period and limit', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getBalanceSheetGrowth('MSFT', 'quarter', 12);
+        await financials.getBalanceSheetGrowth('MSFT', Period.Quarter, 12);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement-growth/MSFT', {
-          searchParams: {
-            period: 'quarter',
-          limit: 12,
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-growth', {
+          searchParams: { symbol: 'MSFT', period: 'quarter', limit: 12 },
+        });
       });
     });
 
@@ -537,27 +499,20 @@ describe('FinancialsResource', () => {
 
         await financials.getCashFlowStatementGrowth('GOOGL');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement-growth/GOOGL', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-growth', {
+          searchParams: { symbol: 'GOOGL', period: 'annual' },
+        });
       });
 
       it('should fetch cash flow statement growth with quarterly period and limit', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getCashFlowStatementGrowth('GOOGL', 'quarter', 5);
+        await financials.getCashFlowStatementGrowth('GOOGL', Period.Quarter, 5);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement-growth/GOOGL', {
-          searchParams: {
-            period: 'quarter',
-          limit: 5,
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-growth', {
+          searchParams: { symbol: 'GOOGL', period: 'quarter', limit: 5 },
+        });
       });
     });
   });
@@ -570,30 +525,20 @@ describe('FinancialsResource', () => {
 
         await financials.getRevenueByProduct('AAPL');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/revenue-product-segmentation', {
-          searchParams: {
-            symbol: 'AAPL',
-          period: 'annual',
-          structure: 'flat',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('revenue-product-segmentation', {
+          searchParams: { symbol: 'AAPL', period: 'annual', structure: 'flat' },
+        });
       });
 
       it('should fetch revenue by product with quarterly period', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getRevenueByProduct('AAPL', 'quarter');
+        await financials.getRevenueByProduct('AAPL', Period.Quarter);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/revenue-product-segmentation', {
-          searchParams: {
-            symbol: 'AAPL',
-          period: 'quarter',
-          structure: 'flat',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('revenue-product-segmentation', {
+          searchParams: { symbol: 'AAPL', period: 'quarter', structure: 'flat' },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -602,14 +547,9 @@ describe('FinancialsResource', () => {
 
         await financials.getRevenueByProduct('aapl');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/revenue-product-segmentation', {
-          searchParams: {
-            symbol: 'AAPL',
-          period: 'annual',
-          structure: 'flat',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('revenue-product-segmentation', {
+          searchParams: { symbol: 'AAPL', period: 'annual', structure: 'flat' },
+        });
       });
     });
 
@@ -620,30 +560,20 @@ describe('FinancialsResource', () => {
 
         await financials.getRevenueByGeography('MSFT');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/revenue-geographic-segmentation', {
-          searchParams: {
-            symbol: 'MSFT',
-          period: 'annual',
-          structure: 'flat',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('revenue-geographic-segmentation', {
+          searchParams: { symbol: 'MSFT', period: 'annual', structure: 'flat' },
+        });
       });
 
       it('should fetch revenue by geography with quarterly period', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getRevenueByGeography('MSFT', 'quarter');
+        await financials.getRevenueByGeography('MSFT', Period.Quarter);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/revenue-geographic-segmentation', {
-          searchParams: {
-            symbol: 'MSFT',
-          period: 'quarter',
-          structure: 'flat',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('revenue-geographic-segmentation', {
+          searchParams: { symbol: 'MSFT', period: 'quarter', structure: 'flat' },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -652,14 +582,9 @@ describe('FinancialsResource', () => {
 
         await financials.getRevenueByGeography('msft');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/revenue-geographic-segmentation', {
-          searchParams: {
-            symbol: 'MSFT',
-          period: 'annual',
-          structure: 'flat',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('revenue-geographic-segmentation', {
+          searchParams: { symbol: 'MSFT', period: 'annual', structure: 'flat' },
+        });
       });
     });
   });
@@ -684,8 +609,9 @@ describe('FinancialsResource', () => {
 
       const result = await financials.getFinancialScores('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/score', { searchParams: {   symbol: 'AAPL' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-scores', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -695,8 +621,9 @@ describe('FinancialsResource', () => {
 
       await financials.getFinancialScores('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/score', { searchParams: {   symbol: 'AAPL' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-scores', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -724,8 +651,9 @@ describe('FinancialsResource', () => {
 
       const result = await financials.getOwnerEarnings('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/owner_earnings', { searchParams: {   symbol: 'AAPL' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('owner-earnings', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -735,13 +663,9 @@ describe('FinancialsResource', () => {
 
       await financials.getOwnerEarnings('AAPL', 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/owner_earnings', {
-        searchParams: {
-          symbol: 'AAPL',
-        limit: 10,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('owner-earnings', {
+        searchParams: { symbol: 'AAPL', limit: 10 },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -750,8 +674,9 @@ describe('FinancialsResource', () => {
 
       await financials.getOwnerEarnings('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/owner_earnings', { searchParams: {   symbol: 'AAPL' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('owner-earnings', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
   });
 
@@ -803,8 +728,9 @@ describe('FinancialsResource', () => {
 
       const result = await financials.getFinancialGrowth('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/financial-growth/AAPL', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-growth', {
+        searchParams: { symbol: 'AAPL', period: 'annual' },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -812,25 +738,22 @@ describe('FinancialsResource', () => {
       const mockData: FinancialGrowth[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getFinancialGrowth('AAPL', 'quarter');
+      await financials.getFinancialGrowth('AAPL', Period.Quarter);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/financial-growth/AAPL', { searchParams: {   period: 'quarter' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-growth', {
+        searchParams: { symbol: 'AAPL', period: 'quarter' },
+      });
     });
 
     it('should fetch financial growth with limit', async () => {
       const mockData: FinancialGrowth[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getFinancialGrowth('AAPL', 'annual', 5);
+      await financials.getFinancialGrowth('AAPL', Period.Annual, 5);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/financial-growth/AAPL', {
-        searchParams: {
-          period: 'annual',
-        limit: 5,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-growth', {
+        searchParams: { symbol: 'AAPL', period: 'annual', limit: 5 },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -839,8 +762,9 @@ describe('FinancialsResource', () => {
 
       await financials.getFinancialGrowth('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/financial-growth/AAPL', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-growth', {
+        searchParams: { symbol: 'AAPL', period: 'annual' },
+      });
     });
   });
 
@@ -851,23 +775,28 @@ describe('FinancialsResource', () => {
           symbol: 'AAPL',
           date: '2023-12-31',
           period: 'FY',
-          linkXlsx: 'https://financialmodelingprep.com/api/v4/financial-reports-xlsx?symbol=AAPL&year=2023&period=FY',
-          linkJson: 'https://financialmodelingprep.com/api/v4/financial-reports-json?symbol=AAPL&year=2023&period=FY',
+          linkXlsx:
+            'https://financialmodelingprep.com/api/v4/financial-reports-xlsx?symbol=AAPL&year=2023&period=FY',
+          linkJson:
+            'https://financialmodelingprep.com/api/v4/financial-reports-json?symbol=AAPL&year=2023&period=FY',
         },
         {
           symbol: 'AAPL',
           date: '2023-09-30',
           period: 'Q4',
-          linkXlsx: 'https://financialmodelingprep.com/api/v4/financial-reports-xlsx?symbol=AAPL&year=2023&period=Q4',
-          linkJson: 'https://financialmodelingprep.com/api/v4/financial-reports-json?symbol=AAPL&year=2023&period=Q4',
+          linkXlsx:
+            'https://financialmodelingprep.com/api/v4/financial-reports-xlsx?symbol=AAPL&year=2023&period=Q4',
+          linkJson:
+            'https://financialmodelingprep.com/api/v4/financial-reports-json?symbol=AAPL&year=2023&period=Q4',
         },
       ];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
       const result = await financials.getReportDates('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-dates', { searchParams: {   symbol: 'AAPL' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-reports-dates', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -877,8 +806,9 @@ describe('FinancialsResource', () => {
 
       await financials.getReportDates('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-dates', { searchParams: {   symbol: 'AAPL' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-reports-dates', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
   });
 
@@ -890,41 +820,31 @@ describe('FinancialsResource', () => {
 
         await financials.getAsReportedIncomeStatement('AAPL');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement-as-reported/AAPL', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('income-statement-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'annual' },
+        });
       });
 
       it('should fetch as-reported income statement with quarterly period', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getAsReportedIncomeStatement('AAPL', 'quarter');
+        await financials.getAsReportedIncomeStatement('AAPL', Period.Quarter);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement-as-reported/AAPL', {
-          searchParams: {
-            period: 'quarter',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('income-statement-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'quarter' },
+        });
       });
 
       it('should fetch as-reported income statement with limit', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getAsReportedIncomeStatement('AAPL', 'annual', 3);
+        await financials.getAsReportedIncomeStatement('AAPL', Period.Annual, 3);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement-as-reported/AAPL', {
-          searchParams: {
-            period: 'annual',
-          limit: 3,
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('income-statement-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'annual', limit: 3 },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -933,12 +853,9 @@ describe('FinancialsResource', () => {
 
         await financials.getAsReportedIncomeStatement('aapl');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement-as-reported/AAPL', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('income-statement-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'annual' },
+        });
       });
     });
 
@@ -949,27 +866,20 @@ describe('FinancialsResource', () => {
 
         await financials.getAsReportedBalanceSheet('MSFT');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement-as-reported/MSFT', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-as-reported', {
+          searchParams: { symbol: 'MSFT', period: 'annual' },
+        });
       });
 
       it('should fetch as-reported balance sheet with quarterly period and limit', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getAsReportedBalanceSheet('MSFT', 'quarter', 8);
+        await financials.getAsReportedBalanceSheet('MSFT', Period.Quarter, 8);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement-as-reported/MSFT', {
-          searchParams: {
-            period: 'quarter',
-          limit: 8,
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-as-reported', {
+          searchParams: { symbol: 'MSFT', period: 'quarter', limit: 8 },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -978,12 +888,9 @@ describe('FinancialsResource', () => {
 
         await financials.getAsReportedBalanceSheet('msft');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement-as-reported/MSFT', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-as-reported', {
+          searchParams: { symbol: 'MSFT', period: 'annual' },
+        });
       });
     });
 
@@ -994,27 +901,20 @@ describe('FinancialsResource', () => {
 
         await financials.getAsReportedCashFlow('GOOGL');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement-as-reported/GOOGL', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-as-reported', {
+          searchParams: { symbol: 'GOOGL', period: 'annual' },
+        });
       });
 
       it('should fetch as-reported cash flow with quarterly period and limit', async () => {
         const mockData: Record<string, unknown>[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getAsReportedCashFlow('GOOGL', 'quarter', 12);
+        await financials.getAsReportedCashFlow('GOOGL', Period.Quarter, 12);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement-as-reported/GOOGL', {
-          searchParams: {
-            period: 'quarter',
-          limit: 12,
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-as-reported', {
+          searchParams: { symbol: 'GOOGL', period: 'quarter', limit: 12 },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -1023,12 +923,9 @@ describe('FinancialsResource', () => {
 
         await financials.getAsReportedCashFlow('googl');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement-as-reported/GOOGL', {
-          searchParams: {
-            period: 'annual',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-as-reported', {
+          searchParams: { symbol: 'GOOGL', period: 'annual' },
+        });
       });
     });
 
@@ -1043,11 +940,9 @@ describe('FinancialsResource', () => {
 
         const result = await financials.getAsReportedFull('AAPL');
 
-        expect(mockClient.get).toHaveBeenCalledWith(
-          'v3/financial-statement-full-as-reported/AAPL',
-          { searchParams: {   period: 'annual' }, }
-
-        );
+        expect(mockClient.get).toHaveBeenCalledWith('financial-statement-full-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'annual' },
+        });
         expect(result).toEqual(mockData);
       });
 
@@ -1055,13 +950,11 @@ describe('FinancialsResource', () => {
         const mockData: Record<string, unknown> = {};
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getAsReportedFull('AAPL', 'quarter');
+        await financials.getAsReportedFull('AAPL', Period.Quarter);
 
-        expect(mockClient.get).toHaveBeenCalledWith(
-          'v3/financial-statement-full-as-reported/AAPL',
-          { searchParams: {   period: 'quarter' }, }
-
-        );
+        expect(mockClient.get).toHaveBeenCalledWith('financial-statement-full-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'quarter' },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -1070,11 +963,9 @@ describe('FinancialsResource', () => {
 
         await financials.getAsReportedFull('aapl');
 
-        expect(mockClient.get).toHaveBeenCalledWith(
-          'v3/financial-statement-full-as-reported/AAPL',
-          { searchParams: {   period: 'annual' }, }
-
-        );
+        expect(mockClient.get).toHaveBeenCalledWith('financial-statement-full-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'annual' },
+        });
       });
     });
 
@@ -1098,11 +989,9 @@ describe('FinancialsResource', () => {
 
         const result = await financials.getLatestFinancialStatement('AAPL');
 
-        expect(mockClient.get).toHaveBeenCalledWith(
-          'v4/financial-statement-full-as-reported/AAPL',
-          { searchParams: {   period: 'annual' }, }
-
-        );
+        expect(mockClient.get).toHaveBeenCalledWith('financial-statement-full-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'annual' },
+        });
         expect(result).toEqual(mockData);
       });
 
@@ -1110,13 +999,11 @@ describe('FinancialsResource', () => {
         const mockData: LatestFinancialStatement[] = [];
         vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-        await financials.getLatestFinancialStatement('AAPL', 'quarter');
+        await financials.getLatestFinancialStatement('AAPL', Period.Quarter);
 
-        expect(mockClient.get).toHaveBeenCalledWith(
-          'v4/financial-statement-full-as-reported/AAPL',
-          { searchParams: {   period: 'quarter' }, }
-
-        );
+        expect(mockClient.get).toHaveBeenCalledWith('financial-statement-full-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'quarter' },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -1125,11 +1012,9 @@ describe('FinancialsResource', () => {
 
         await financials.getLatestFinancialStatement('aapl');
 
-        expect(mockClient.get).toHaveBeenCalledWith(
-          'v4/financial-statement-full-as-reported/AAPL',
-          { searchParams: {   period: 'annual' }, }
-
-        );
+        expect(mockClient.get).toHaveBeenCalledWith('financial-statement-full-as-reported', {
+          searchParams: { symbol: 'AAPL', period: 'annual' },
+        });
       });
     });
   });
@@ -1147,14 +1032,9 @@ describe('FinancialsResource', () => {
 
         const result = await financials.getFinancialReportJSON('AAPL', 2023, 'FY');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-json', {
-          searchParams: {
-            symbol: 'AAPL',
-          year: 2023,
-          period: 'FY',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('financial-reports-json', {
+          searchParams: { symbol: 'AAPL', year: 2023, period: 'FY' },
+        });
         expect(result).toEqual(mockData);
       });
 
@@ -1164,14 +1044,9 @@ describe('FinancialsResource', () => {
 
         await financials.getFinancialReportJSON('MSFT', 2023, 'Q1');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-json', {
-          searchParams: {
-            symbol: 'MSFT',
-          year: 2023,
-          period: 'Q1',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('financial-reports-json', {
+          searchParams: { symbol: 'MSFT', year: 2023, period: 'Q1' },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -1180,14 +1055,9 @@ describe('FinancialsResource', () => {
 
         await financials.getFinancialReportJSON('aapl', 2023, 'FY');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-json', {
-          searchParams: {
-            symbol: 'AAPL',
-          year: 2023,
-          period: 'FY',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('financial-reports-json', {
+          searchParams: { symbol: 'AAPL', year: 2023, period: 'FY' },
+        });
       });
 
       it('should handle different quarterly periods', async () => {
@@ -1196,14 +1066,9 @@ describe('FinancialsResource', () => {
 
         await financials.getFinancialReportJSON('GOOGL', 2022, 'Q4');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-json', {
-          searchParams: {
-            symbol: 'GOOGL',
-          year: 2022,
-          period: 'Q4',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('financial-reports-json', {
+          searchParams: { symbol: 'GOOGL', year: 2022, period: 'Q4' },
+        });
       });
 
       it('should handle API errors', async () => {
@@ -1225,14 +1090,9 @@ describe('FinancialsResource', () => {
 
         const result = await financials.getFinancialReportXLSX('AAPL', 2023, 'FY');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-xlsx', {
-          searchParams: {
-            symbol: 'AAPL',
-          year: 2023,
-          period: 'FY',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('financial-reports-xlsx', {
+          searchParams: { symbol: 'AAPL', year: 2023, period: 'FY' },
+        });
         expect(result).toEqual(mockData);
         expect(result.url).toBeDefined();
       });
@@ -1245,14 +1105,9 @@ describe('FinancialsResource', () => {
 
         await financials.getFinancialReportXLSX('MSFT', 2023, 'Q2');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-xlsx', {
-          searchParams: {
-            symbol: 'MSFT',
-          year: 2023,
-          period: 'Q2',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('financial-reports-xlsx', {
+          searchParams: { symbol: 'MSFT', year: 2023, period: 'Q2' },
+        });
       });
 
       it('should normalize symbol to uppercase', async () => {
@@ -1263,14 +1118,9 @@ describe('FinancialsResource', () => {
 
         await financials.getFinancialReportXLSX('aapl', 2023, 'FY');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-xlsx', {
-          searchParams: {
-            symbol: 'AAPL',
-          year: 2023,
-          period: 'FY',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('financial-reports-xlsx', {
+          searchParams: { symbol: 'AAPL', year: 2023, period: 'FY' },
+        });
       });
 
       it('should handle different years', async () => {
@@ -1281,14 +1131,9 @@ describe('FinancialsResource', () => {
 
         await financials.getFinancialReportXLSX('TSLA', 2021, 'Q3');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-xlsx', {
-          searchParams: {
-            symbol: 'TSLA',
-          year: 2021,
-          period: 'Q3',
-        },
-        }
-);
+        expect(mockClient.get).toHaveBeenCalledWith('financial-reports-xlsx', {
+          searchParams: { symbol: 'TSLA', year: 2021, period: 'Q3' },
+        });
       });
 
       it('should handle API errors', async () => {
@@ -1321,7 +1166,9 @@ describe('FinancialsResource', () => {
       const error = new Error('Rate limit exceeded');
       vi.mocked(mockClient.get).mockRejectedValue(error);
 
-      await expect(financials.getCashFlowStatement('GOOGL')).rejects.toThrow('Rate limit exceeded');
+      await expect(financials.getCashFlowStatement('GOOGL')).rejects.toThrow(
+        'Rate limit exceeded'
+      );
     });
 
     it('should propagate errors from client on getKeyMetrics', async () => {
@@ -1346,8 +1193,9 @@ describe('FinancialsResource', () => {
 
       await financials.getIncomeStatement('AaPl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/AAPL', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement', {
+        searchParams: { symbol: 'AAPL', period: 'annual' },
+      });
     });
 
     it('should handle symbols with special characters', async () => {
@@ -1356,8 +1204,9 @@ describe('FinancialsResource', () => {
 
       await financials.getIncomeStatement('brk.b');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/BRK.B', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement', {
+        searchParams: { symbol: 'BRK.B', period: 'annual' },
+      });
     });
 
     it('should handle already uppercase symbols', async () => {
@@ -1366,12 +1215,9 @@ describe('FinancialsResource', () => {
 
       await financials.getBalanceSheet('MSFT');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement/MSFT', {
-        searchParams: {
-          period: 'annual',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement', {
+        searchParams: { symbol: 'MSFT', period: 'annual' },
+      });
     });
   });
 
@@ -1380,41 +1226,34 @@ describe('FinancialsResource', () => {
       const mockData: IncomeStatement[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getIncomeStatement('AAPL', 'annual', 0);
+      await financials.getIncomeStatement('AAPL', Period.Annual, 0);
 
       // When limit is 0 (falsy), it should not be included in params
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement/AAPL', { searchParams: {   period: 'annual' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement', {
+        searchParams: { symbol: 'AAPL', period: 'annual' },
+      });
     });
 
     it('should handle quarter period with large limit', async () => {
       const mockData: CashFlowStatement[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getCashFlowStatement('GOOGL', 'quarter', 100);
+      await financials.getCashFlowStatement('GOOGL', Period.Quarter, 100);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement/GOOGL', {
-        searchParams: {
-          period: 'quarter',
-        limit: 100,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement', {
+        searchParams: { symbol: 'GOOGL', period: 'quarter', limit: 100 },
+      });
     });
 
     it('should handle annual period with limit of 1', async () => {
       const mockData: KeyMetrics[] = [];
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await financials.getKeyMetrics('TSLA', 'annual', 1);
+      await financials.getKeyMetrics('TSLA', Period.Annual, 1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-metrics/TSLA', {
-        searchParams: {
-          period: 'annual',
-        limit: 1,
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('key-metrics', {
+        searchParams: { symbol: 'TSLA', period: 'annual', limit: 1 },
+      });
     });
   });
 
@@ -1425,14 +1264,9 @@ describe('FinancialsResource', () => {
 
       await financials.getFinancialReportJSON('AAPL', 2023, 'FY');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-json', {
-        searchParams: {
-          symbol: 'AAPL',
-        year: 2023,
-        period: 'FY',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-reports-json', {
+        searchParams: { symbol: 'AAPL', year: 2023, period: 'FY' },
+      });
     });
 
     it('should handle Q1 period', async () => {
@@ -1441,14 +1275,9 @@ describe('FinancialsResource', () => {
 
       await financials.getFinancialReportXLSX('MSFT', 2023, 'Q1');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-xlsx', {
-        searchParams: {
-          symbol: 'MSFT',
-        year: 2023,
-        period: 'Q1',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-reports-xlsx', {
+        searchParams: { symbol: 'MSFT', year: 2023, period: 'Q1' },
+      });
     });
 
     it('should handle Q2 period', async () => {
@@ -1457,14 +1286,9 @@ describe('FinancialsResource', () => {
 
       await financials.getFinancialReportJSON('GOOGL', 2022, 'Q2');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-json', {
-        searchParams: {
-          symbol: 'GOOGL',
-        year: 2022,
-        period: 'Q2',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-reports-json', {
+        searchParams: { symbol: 'GOOGL', year: 2022, period: 'Q2' },
+      });
     });
 
     it('should handle Q3 period', async () => {
@@ -1473,14 +1297,9 @@ describe('FinancialsResource', () => {
 
       await financials.getFinancialReportXLSX('TSLA', 2021, 'Q3');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-xlsx', {
-        searchParams: {
-          symbol: 'TSLA',
-        year: 2021,
-        period: 'Q3',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-reports-xlsx', {
+        searchParams: { symbol: 'TSLA', year: 2021, period: 'Q3' },
+      });
     });
 
     it('should handle Q4 period', async () => {
@@ -1489,14 +1308,9 @@ describe('FinancialsResource', () => {
 
       await financials.getFinancialReportJSON('AMZN', 2020, 'Q4');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-json', {
-        searchParams: {
-          symbol: 'AMZN',
-        year: 2020,
-        period: 'Q4',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-reports-json', {
+        searchParams: { symbol: 'AMZN', year: 2020, period: 'Q4' },
+      });
     });
 
     it('should handle historical years', async () => {
@@ -1505,14 +1319,9 @@ describe('FinancialsResource', () => {
 
       await financials.getFinancialReportJSON('IBM', 2015, 'FY');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/financial-reports-json', {
-        searchParams: {
-          symbol: 'IBM',
-        year: 2015,
-        period: 'FY',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('financial-reports-json', {
+        searchParams: { symbol: 'IBM', year: 2015, period: 'FY' },
+      });
     });
   });
 });

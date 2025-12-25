@@ -12,6 +12,7 @@ import type {
   IndustryPortfolioHoldingsSummary,
   SymbolOwnership,
   IndustryInstitutionalOwnership,
+  Form4Ownership,
 } from '../types/index.js';
 
 /**
@@ -29,7 +30,9 @@ export class InsiderResource {
     const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (limit) params.limit = limit;
 
-    return this.client.get<InsiderTrade[]>('v4/insider-trading', { searchParams: params });
+    return this.client.get<InsiderTrade[]>('insider-trading', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -37,7 +40,7 @@ export class InsiderResource {
    * @param symbol - Stock symbol
    */
   async getInsiderStatistics(symbol: string): Promise<InsiderTradingStatistics[]> {
-    return this.client.get<InsiderTradingStatistics[]>(`v4/insider-roaster-statistic`, {
+    return this.client.get<InsiderTradingStatistics[]>('insider-roaster-statistic', {
       searchParams: { symbol: symbol.toUpperCase() },
     });
   }
@@ -47,7 +50,7 @@ export class InsiderResource {
    * @param symbol - Stock symbol
    */
   async getInsiderRoster(symbol: string): Promise<InsiderRoster[]> {
-    return this.client.get<InsiderRoster[]>(`v4/insider-roaster`, {
+    return this.client.get<InsiderRoster[]>('insider-roaster', {
       searchParams: { symbol: symbol.toUpperCase() },
     });
   }
@@ -57,7 +60,9 @@ export class InsiderResource {
    * @param symbol - Stock symbol
    */
   async getInstitutionalHolders(symbol: string): Promise<InstitutionalHolder[]> {
-    return this.client.get<InstitutionalHolder[]>(`v3/institutional-holder/${symbol.toUpperCase()}`);
+    return this.client.get<InstitutionalHolder[]>('institutional-holder', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -66,10 +71,12 @@ export class InsiderResource {
    * @param date - Filing date (YYYY-MM-DD)
    */
   async get13F(cik: string, date?: string): Promise<Form13F[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = { cik };
     if (date) params.date = date;
 
-    return this.client.get<Form13F[]>(`v3/form-thirteen/${cik}`, { searchParams: params });
+    return this.client.get<Form13F[]>('form-thirteen', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -80,7 +87,9 @@ export class InsiderResource {
     const params: Record<string, string> = {};
     if (symbol) params.symbol = symbol.toUpperCase();
 
-    return this.client.get<CongressionalTrade[]>('v4/senate-trading', { searchParams: params });
+    return this.client.get<CongressionalTrade[]>('senate-trading', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -91,21 +100,23 @@ export class InsiderResource {
     const params: Record<string, string> = {};
     if (symbol) params.symbol = symbol.toUpperCase();
 
-    return this.client.get<CongressionalTrade[]>('v4/senate-disclosure', { searchParams: params });
+    return this.client.get<CongressionalTrade[]>('house-disclosure', {
+      searchParams: params,
+    });
   }
 
   /**
    * Get latest Senate trading disclosures from RSS feed
    */
   async getLatestSenateTrades(): Promise<CongressionalTrade[]> {
-    return this.client.get<CongressionalTrade[]>('v4/senate-trading-rss-feed');
+    return this.client.get<CongressionalTrade[]>('senate-trading-rss-feed');
   }
 
   /**
    * Get latest House of Representatives trading disclosures from RSS feed
    */
   async getLatestHouseTrades(): Promise<CongressionalTrade[]> {
-    return this.client.get<CongressionalTrade[]>('v4/senate-disclosure-rss-feed');
+    return this.client.get<CongressionalTrade[]>('house-disclosure-rss-feed');
   }
 
   /**
@@ -113,7 +124,7 @@ export class InsiderResource {
    * @param name - Senator name
    */
   async getSenateTradingByName(name: string): Promise<CongressionalTrade[]> {
-    return this.client.get<CongressionalTrade[]>('v4/senate-trading', {
+    return this.client.get<CongressionalTrade[]>('senate-trading', {
       searchParams: { name },
     });
   }
@@ -123,7 +134,7 @@ export class InsiderResource {
    * @param name - Representative name
    */
   async getHouseTradingByName(name: string): Promise<CongressionalTrade[]> {
-    return this.client.get<CongressionalTrade[]>('v4/senate-disclosure', {
+    return this.client.get<CongressionalTrade[]>('house-disclosure', {
       searchParams: { name },
     });
   }
@@ -135,7 +146,9 @@ export class InsiderResource {
   async getLatestInsiderTrades(limit?: number): Promise<InsiderTrade[]> {
     const params: Record<string, number> = {};
     if (limit) params.limit = limit;
-    return this.client.get<InsiderTrade[]>('v4/insider-trading', { searchParams: params });
+    return this.client.get<InsiderTrade[]>('insider-trading', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -146,14 +159,16 @@ export class InsiderResource {
   async getInsiderTradesByName(name: string, limit?: number): Promise<InsiderTrade[]> {
     const params: Record<string, string | number> = { reportingName: name };
     if (limit) params.limit = limit;
-    return this.client.get<InsiderTrade[]>('v4/insider-trading', { searchParams: params });
+    return this.client.get<InsiderTrade[]>('insider-trading', {
+      searchParams: params,
+    });
   }
 
   /**
    * Get insider transaction types
    */
   async getInsiderTransactionTypes(): Promise<{ transactionType: string }[]> {
-    return this.client.get<{ transactionType: string }[]>('v4/insider-trading-transaction-type');
+    return this.client.get<{ transactionType: string }[]>('insider-trading-transaction-type');
   }
 
   /**
@@ -161,10 +176,12 @@ export class InsiderResource {
    * @param symbol - Stock symbol
    * @param limit - Number of results
    */
-  async getForm4Ownership(symbol: string, limit?: number): Promise<Record<string, unknown>[]> {
+  async getForm4Ownership(symbol: string, limit?: number): Promise<Form4Ownership[]> {
     const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (limit) params.limit = limit;
-    return this.client.get<Record<string, unknown>[]>('v4/form-four', { searchParams: params });
+    return this.client.get<Form4Ownership[]>('form-four', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -177,7 +194,9 @@ export class InsiderResource {
     if (cik) params.cik = cik;
     if (page) params.page = page;
 
-    return this.client.get<Form13FPortfolioDate[]>('v4/institutional-ownership/portfolio-date', { searchParams: params });
+    return this.client.get<Form13FPortfolioDate[]>('institutional-ownership-portfolio-date', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -185,7 +204,7 @@ export class InsiderResource {
    * @param cik - CIK number
    */
   async get13FFilingDates(cik: string): Promise<Form13FPortfolioDate[]> {
-    return this.client.get<Form13FPortfolioDate[]>('v4/institutional-ownership/portfolio-date', {
+    return this.client.get<Form13FPortfolioDate[]>('institutional-ownership-portfolio-date', {
       searchParams: { cik },
     });
   }
@@ -197,11 +216,13 @@ export class InsiderResource {
    * @param page - Page number for pagination (optional)
    */
   async get13FWithAnalytics(cik: string, date?: string, page?: number): Promise<Form13FWithAnalytics[]> {
-    const params: Record<string, string | number> = {};
+    const params: Record<string, string | number> = { cik };
     if (date) params.date = date;
     if (page) params.page = page;
 
-    return this.client.get<Form13FWithAnalytics[]>(`v4/form-thirteen/${cik}`, { searchParams: params });
+    return this.client.get<Form13FWithAnalytics[]>('form-thirteen', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -215,7 +236,9 @@ export class InsiderResource {
     if (date) params.date = date;
     if (page) params.page = page;
 
-    return this.client.get<PortfolioHoldingsSummary[]>('v4/institutional-ownership/portfolio-holdings-summary', { searchParams: params });
+    return this.client.get<PortfolioHoldingsSummary[]>('institutional-ownership-portfolio-holdings-summary', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -229,7 +252,9 @@ export class InsiderResource {
     if (date) params.date = date;
     if (page) params.page = page;
 
-    return this.client.get<IndustryPortfolioHoldingsSummary[]>('v4/institutional-ownership/industry/portfolio-holdings-summary', { searchParams: params });
+    return this.client.get<IndustryPortfolioHoldingsSummary[]>('institutional-ownership-industry-portfolio-holdings-summary', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -243,7 +268,9 @@ export class InsiderResource {
     if (includeCurrentQuarter !== undefined) params.includeCurrentQuarter = includeCurrentQuarter;
     if (page) params.page = page;
 
-    return this.client.get<SymbolOwnership[]>('v4/institutional-ownership/symbol-ownership', { searchParams: params });
+    return this.client.get<SymbolOwnership[]>('institutional-ownership-symbol-ownership', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -255,6 +282,36 @@ export class InsiderResource {
     const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (page) params.page = page;
 
-    return this.client.get<IndustryInstitutionalOwnership[]>('v4/institutional-ownership/institutional-holders/symbol-ownership-percent', { searchParams: params });
+    return this.client.get<IndustryInstitutionalOwnership[]>('institutional-ownership-symbol-ownership-percent', {
+      searchParams: params,
+    });
+  }
+
+  /**
+   * Get holder performance summary for an institutional investor
+   * @param cik - CIK number
+   * @param date - Filing date (YYYY-MM-DD, optional)
+   */
+  async getHolderPerformanceSummary(cik: string, date?: string): Promise<PortfolioHoldingsSummary[]> {
+    const params: Record<string, string> = { cik };
+    if (date) params.date = date;
+
+    return this.client.get<PortfolioHoldingsSummary[]>('institutional-ownership-portfolio-holdings-summary', {
+      searchParams: params,
+    });
+  }
+
+  /**
+   * Get industry performance summary for an institutional investor
+   * @param cik - CIK number
+   * @param date - Filing date (YYYY-MM-DD, optional)
+   */
+  async getIndustryPerformanceSummary(cik: string, date?: string): Promise<IndustryPortfolioHoldingsSummary[]> {
+    const params: Record<string, string> = { cik };
+    if (date) params.date = date;
+
+    return this.client.get<IndustryPortfolioHoldingsSummary[]>('institutional-ownership-industry-portfolio-holdings-summary', {
+      searchParams: params,
+    });
   }
 }

@@ -45,9 +45,8 @@ describe('ESGResource', () => {
       const result = await esgResource.getESGData('AAPL');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data',
-        { searchParams: {   symbol: 'AAPL' }, }
-
+        'esg-disclosures',
+        { searchParams: { symbol: 'AAPL' } }
       );
       expect(result).toEqual(mockResponse);
     });
@@ -75,9 +74,8 @@ describe('ESGResource', () => {
       await esgResource.getESGData('tsla');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data',
-        { searchParams: {   symbol: 'TSLA' }, }
-
+        'esg-disclosures',
+        { searchParams: { symbol: 'TSLA' } }
       );
     });
 
@@ -87,9 +85,8 @@ describe('ESGResource', () => {
       await esgResource.getESGData('MsFt');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data',
-        { searchParams: {   symbol: 'MSFT' }, }
-
+        'esg-disclosures',
+        { searchParams: { symbol: 'MSFT' } }
       );
     });
 
@@ -190,9 +187,8 @@ describe('ESGResource', () => {
       const result = await esgResource.getESGRatings('AAPL');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data-ratings',
-        { searchParams: {   symbol: 'AAPL' }, }
-
+        'esg-ratings',
+        { searchParams: { symbol: 'AAPL' } }
       );
       expect(result).toEqual(mockResponse);
     });
@@ -218,9 +214,8 @@ describe('ESGResource', () => {
       await esgResource.getESGRatings('msft');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data-ratings',
-        { searchParams: {   symbol: 'MSFT' }, }
-
+        'esg-ratings',
+        { searchParams: { symbol: 'MSFT' } }
       );
     });
 
@@ -230,9 +225,8 @@ describe('ESGResource', () => {
       await esgResource.getESGRatings('GoOgL');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data-ratings',
-        { searchParams: {   symbol: 'GOOGL' }, }
-
+        'esg-ratings',
+        { searchParams: { symbol: 'GOOGL' } }
       );
     });
 
@@ -335,9 +329,8 @@ describe('ESGResource', () => {
       const result = await esgResource.getESGBenchmark(2024);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-sector-benchmark',
-        { searchParams: {   year: 2024 }, }
-
+        'esg-benchmark',
+        { searchParams: { year: 2024 } }
       );
       expect(result).toEqual(mockResponse);
     });
@@ -369,8 +362,8 @@ describe('ESGResource', () => {
 
       const result2023 = await esgResource.getESGBenchmark(2023);
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-sector-benchmark',
-        { searchParams: {   year: 2023 }, }
+        'esg-benchmark',
+        { searchParams: { year: 2023 } }
 
       );
       expect(result2023).toEqual(mockResponse2023);
@@ -379,8 +372,8 @@ describe('ESGResource', () => {
 
       const result2022 = await esgResource.getESGBenchmark(2022);
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-sector-benchmark',
-        { searchParams: {   year: 2022 }, }
+        'esg-benchmark',
+        { searchParams: { year: 2022 } }
 
       );
       expect(result2022).toEqual(mockResponse2022);
@@ -392,8 +385,8 @@ describe('ESGResource', () => {
       await esgResource.getESGBenchmark(2021);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-sector-benchmark',
-        { searchParams: {   year: 2021 }, }
+        'esg-benchmark',
+        { searchParams: { year: 2021 } }
 
       );
       expect(mockClient.get).toHaveBeenCalledTimes(1);
@@ -497,9 +490,8 @@ describe('ESGResource', () => {
       const result = await esgResource.getESGBenchmark(2030);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-sector-benchmark',
-        { searchParams: {   year: 2030 }, }
-
+        'esg-benchmark',
+        { searchParams: { year: 2030 } }
       );
       expect(result).toEqual(mockResponse);
     });
@@ -521,9 +513,8 @@ describe('ESGResource', () => {
       const result = await esgResource.getESGBenchmark(2015);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-sector-benchmark',
-        { searchParams: {   year: 2015 }, }
-
+        'esg-benchmark',
+        { searchParams: { year: 2015 } }
       );
       expect(result).toEqual(mockResponse);
     });
@@ -563,9 +554,8 @@ describe('ESGResource', () => {
       await esgResource.getESGData('BRK.B');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data',
-        { searchParams: {   symbol: 'BRK.B' }, }
-
+        'esg-disclosures',
+        { searchParams: { symbol: 'BRK.B' } }
       );
     });
 
@@ -575,9 +565,8 @@ describe('ESGResource', () => {
       await esgResource.getESGRatings('BRK-B');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data-ratings',
-        { searchParams: {   symbol: 'BRK-B' }, }
-
+        'esg-ratings',
+        { searchParams: { symbol: 'BRK-B' } }
       );
     });
 
@@ -587,9 +576,8 @@ describe('ESGResource', () => {
       await esgResource.getESGData('  aapl  ');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data',
-        { searchParams: {   symbol: '  AAPL  ' }, }
-
+        'esg-disclosures',
+        { searchParams: { symbol: '  AAPL  ' } }
       );
     });
 
@@ -599,9 +587,8 @@ describe('ESGResource', () => {
       await esgResource.getESGData('');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/esg-environmental-social-governance-data',
-        { searchParams: {   symbol: '' }, }
-
+        'esg-disclosures',
+        { searchParams: { symbol: '' } }
       );
     });
   });
@@ -636,17 +623,17 @@ describe('ESGResource', () => {
 
       await esgResource.getESGData('AAPL');
       expect(vi.mocked(mockClient.get).mock.calls[0][0]).toBe(
-        'v4/esg-environmental-social-governance-data'
+        'esg-disclosures'
       );
 
       await esgResource.getESGRatings('AAPL');
       expect(vi.mocked(mockClient.get).mock.calls[1][0]).toBe(
-        'v4/esg-environmental-social-governance-data-ratings'
+        'esg-ratings'
       );
 
       await esgResource.getESGBenchmark(2024);
       expect(vi.mocked(mockClient.get).mock.calls[2][0]).toBe(
-        'v4/esg-environmental-social-governance-sector-benchmark'
+        'esg-benchmark'
       );
     });
   });

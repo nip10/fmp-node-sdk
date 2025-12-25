@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MarketResource } from '../src/resources/market.js';
+import { MarketResource, IntradayInterval } from '../src/resources/market.js';
 import type { FMPClient } from '../src/client.js';
 import type {
   IntradayChart,
+  HistoricalPrice,
   ForexPrice,
   ForexCurrencyPair,
   ForexQuoteShort,
@@ -27,35 +28,32 @@ describe('MarketResource', () => {
   });
 
   describe('getHistoricalPrices', () => {
-    const mockHistoricalData = {
-      historical: [
-        {
-          date: '2024-01-01',
-          open: 150.5,
-          high: 152.3,
-          low: 149.8,
-          close: 151.2,
-          adjClose: 151.2,
-          volume: 1000000,
-          unadjustedVolume: 1000000,
-          change: 0.7,
-          changePercent: 0.46,
-          vwap: 151.0,
-          label: 'January 01, 24',
-          changeOverTime: 0.0046,
-        },
-      ],
-    };
+    const mockHistoricalData: HistoricalPrice[] = [
+      {
+        date: '2024-01-01',
+        open: 150.5,
+        high: 152.3,
+        low: 149.8,
+        close: 151.2,
+        adjClose: 151.2,
+        volume: 1000000,
+        unadjustedVolume: 1000000,
+        change: 0.7,
+        changePercent: 0.46,
+        vwap: 151.0,
+        label: 'January 01, 24',
+        changeOverTime: 0.0046,
+      },
+    ];
 
     it('should fetch historical prices without date range', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockHistoricalData);
 
       const result = await marketResource.getHistoricalPrices('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockHistoricalData);
     });
 
@@ -64,11 +62,9 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getHistoricalPrices('AAPL', '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        { searchParams: {   from: '2024-01-01' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'AAPL', from: '2024-01-01' },
+      });
       expect(result).toEqual(mockHistoricalData);
     });
 
@@ -81,11 +77,9 @@ describe('MarketResource', () => {
         '2024-12-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        { searchParams: {   from: '2024-01-01', to: '2024-12-31' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'AAPL', from: '2024-01-01', to: '2024-12-31' },
+      });
       expect(result).toEqual(mockHistoricalData);
     });
 
@@ -94,10 +88,44 @@ describe('MarketResource', () => {
 
       await marketResource.getHistoricalPrices('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        { searchParams: {} }
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'AAPL' },
+      });
+    });
+  });
+
+  describe('getHistoricalPricesLight', () => {
+    const mockLightData: LightChartData[] = [
+      {
+        date: '2024-01-01',
+        close: 151.2,
+      },
+    ];
+
+    it('should fetch light historical prices without date range', async () => {
+      vi.mocked(mockClient.get).mockResolvedValue(mockLightData);
+
+      const result = await marketResource.getHistoricalPricesLight('AAPL');
+
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
+        searchParams: { symbol: 'AAPL' },
+      });
+      expect(result).toEqual(mockLightData);
+    });
+
+    it('should fetch light historical prices with date range', async () => {
+      vi.mocked(mockClient.get).mockResolvedValue(mockLightData);
+
+      const result = await marketResource.getHistoricalPricesLight(
+        'AAPL',
+        '2024-01-01',
+        '2024-12-31'
       );
+
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
+        searchParams: { symbol: 'AAPL', from: '2024-01-01', to: '2024-12-31' },
+      });
+      expect(result).toEqual(mockLightData);
     });
   });
 
@@ -118,70 +146,64 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getIntradayChart('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
     it('should fetch intraday chart with 1min interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getIntradayChart('AAPL', '1min');
+      const result = await marketResource.getIntradayChart('AAPL', IntradayInterval.OneMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1min', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
     it('should fetch intraday chart with 5min interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getIntradayChart('AAPL', '5min');
+      const result = await marketResource.getIntradayChart('AAPL', IntradayInterval.FiveMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/5min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/5min', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
     it('should fetch intraday chart with 15min interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getIntradayChart('AAPL', '15min');
+      const result = await marketResource.getIntradayChart('AAPL', IntradayInterval.FifteenMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/15min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/15min', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
     it('should fetch intraday chart with 30min interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getIntradayChart('AAPL', '30min');
+      const result = await marketResource.getIntradayChart('AAPL', IntradayInterval.ThirtyMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/30min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/30min', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
     it('should fetch intraday chart with 4hour interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getIntradayChart('AAPL', '4hour');
+      const result = await marketResource.getIntradayChart('AAPL', IntradayInterval.FourHour);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/4hour/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/4hour', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
@@ -190,28 +212,25 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getIntradayChart(
         'AAPL',
-        '1hour',
+        IntradayInterval.OneHour,
         '2024-01-01',
         '2024-01-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/AAPL',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
+        searchParams: { symbol: 'AAPL', from: '2024-01-01', to: '2024-01-31' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
     it('should convert symbol to uppercase', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      await marketResource.getIntradayChart('tsla', '1min');
+      await marketResource.getIntradayChart('tsla', IntradayInterval.OneMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/TSLA',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1min', {
+        searchParams: { symbol: 'TSLA' },
+      });
     });
   });
 
@@ -234,16 +253,9 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getForexPrice('EURUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fx/EURUSD');
-      expect(result).toEqual(mockForexData);
-    });
-
-    it('should fetch all forex prices when no pair specified', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockForexData);
-
-      const result = await marketResource.getForexPrice();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fx');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', {
+        searchParams: { symbol: 'EURUSD' },
+      });
       expect(result).toEqual(mockForexData);
     });
 
@@ -252,7 +264,9 @@ describe('MarketResource', () => {
 
       await marketResource.getForexPrice('eurusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fx/EURUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', {
+        searchParams: { symbol: 'EURUSD' },
+      });
     });
   });
 
@@ -275,41 +289,38 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getAllForexPrices();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fx');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-forex-quotes');
       expect(result).toEqual(mockForexData);
     });
   });
 
   describe('getHistoricalForex', () => {
-    const mockHistoricalForex = {
-      historical: [
-        {
-          date: '2024-01-01',
-          open: 1.0850,
-          high: 1.0860,
-          low: 1.0840,
-          close: 1.0855,
-          adjClose: 1.0855,
-          volume: 0,
-          unadjustedVolume: 0,
-          change: 0.0005,
-          changePercent: 0.05,
-          vwap: 1.0851,
-          label: 'January 01, 24',
-          changeOverTime: 0.0005,
-        },
-      ],
-    };
+    const mockHistoricalForex: HistoricalPrice[] = [
+      {
+        date: '2024-01-01',
+        open: 1.0850,
+        high: 1.0860,
+        low: 1.0840,
+        close: 1.0855,
+        adjClose: 1.0855,
+        volume: 0,
+        unadjustedVolume: 0,
+        change: 0.0005,
+        changePercent: 0.05,
+        vwap: 1.0851,
+        label: 'January 01, 24',
+        changeOverTime: 0.0005,
+      },
+    ];
 
     it('should fetch historical forex without date range', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockHistoricalForex);
 
       const result = await marketResource.getHistoricalForex('EURUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/EURUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'EURUSD' },
+      });
       expect(result).toEqual(mockHistoricalForex);
     });
 
@@ -322,11 +333,9 @@ describe('MarketResource', () => {
         '2024-12-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/EURUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-12-31' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'EURUSD', from: '2024-01-01', to: '2024-12-31' },
+      });
       expect(result).toEqual(mockHistoricalForex);
     });
 
@@ -335,10 +344,9 @@ describe('MarketResource', () => {
 
       await marketResource.getHistoricalForex('gbpusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GBPUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'GBPUSD' },
+      });
     });
   });
 
@@ -371,16 +379,9 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getCryptoPrice('BTCUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/BTCUSD');
-      expect(result).toEqual(mockCryptoData);
-    });
-
-    it('should fetch all crypto prices when no symbol specified', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockCryptoData);
-
-      const result = await marketResource.getCryptoPrice();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/crypto');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', {
+        searchParams: { symbol: 'BTCUSD' },
+      });
       expect(result).toEqual(mockCryptoData);
     });
 
@@ -389,7 +390,9 @@ describe('MarketResource', () => {
 
       await marketResource.getCryptoPrice('ethusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/ETHUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', {
+        searchParams: { symbol: 'ETHUSD' },
+      });
     });
   });
 
@@ -422,45 +425,35 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getAllCryptoPrices();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/crypto');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-crypto-quotes');
       expect(result).toEqual(mockCryptoData);
     });
   });
 
   describe('getMarketHours', () => {
-    const mockMarketHours: MarketHours = {
-      stockExchangeName: 'New York Stock Exchange',
-      stockMarketHours: {
-        openingHour: '09:30:00',
-        closingHour: '16:00:00',
+    const mockMarketHours: MarketHours[] = [
+      {
+        stockExchangeName: 'New York Stock Exchange',
+        stockMarketHours: {
+          openingHour: '09:30:00',
+          closingHour: '16:00:00',
+        },
+        stockMarketHolidays: ['2024-01-01', '2024-07-04', '2024-12-25'],
+        isTheStockMarketOpen: true,
+        isTheEuronextMarketOpen: false,
+        isTheForexMarketOpen: true,
+        isTheCryptoMarketOpen: true,
       },
-      stockMarketHolidays: ['2024-01-01', '2024-07-04', '2024-12-25'],
-      isTheStockMarketOpen: true,
-      isTheEuronextMarketOpen: false,
-      isTheForexMarketOpen: true,
-      isTheCryptoMarketOpen: true,
-    };
-
-    it('should fetch market hours without exchange', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockMarketHours);
-
-      const result = await marketResource.getMarketHours();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/is-the-market-open', { searchParams: {} });
-      expect(result).toEqual(mockMarketHours);
-    });
+    ];
 
     it('should fetch market hours for specific exchange', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockMarketHours);
 
       const result = await marketResource.getMarketHours('NYSE');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/is-the-market-open', {
-        searchParams: {
-          exchange: 'NYSE',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-market-hours', {
+        searchParams: { exchange: 'NYSE' },
+      });
       expect(result).toEqual(mockMarketHours);
     });
   });
@@ -477,16 +470,18 @@ describe('MarketResource', () => {
         'Independence Day': '2024-07-04',
         'Labor Day': '2024-09-02',
         'Thanksgiving Day': '2024-11-28',
-        'Christmas': '2024-12-25',
+        Christmas: '2024-12-25',
       },
     ];
 
-    it('should fetch market holidays', async () => {
+    it('should fetch market holidays for specific exchange', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockHolidays);
 
-      const result = await marketResource.getMarketHolidays();
+      const result = await marketResource.getMarketHolidays('NYSE');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/market-holidays');
+      expect(mockClient.get).toHaveBeenCalledWith('holidays-by-exchange', {
+        searchParams: { exchange: 'NYSE' },
+      });
       expect(result).toEqual(mockHolidays);
     });
   });
@@ -524,7 +519,7 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getAllMarketHours();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/market-hours');
+      expect(mockClient.get).toHaveBeenCalledWith('all-exchange-market-hours');
       expect(result).toEqual(mockAllMarketHours);
     });
   });
@@ -545,9 +540,7 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getForexCurrencyPairs();
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/symbol/available-forex-currency-pairs'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('forex-list');
       expect(result).toEqual(mockPairs);
     });
   });
@@ -566,16 +559,9 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getForexQuoteShort('EURUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/forex/EURUSD');
-      expect(result).toEqual(mockQuotes);
-    });
-
-    it('should fetch all forex quotes when no pair specified', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockQuotes);
-
-      const result = await marketResource.getForexQuoteShort();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/forex');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', {
+        searchParams: { symbol: 'EURUSD' },
+      });
       expect(result).toEqual(mockQuotes);
     });
 
@@ -584,7 +570,9 @@ describe('MarketResource', () => {
 
       await marketResource.getForexQuoteShort('eurusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/forex/EURUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', {
+        searchParams: { symbol: 'EURUSD' },
+      });
     });
   });
 
@@ -601,10 +589,9 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getForexLightChart('EURUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/EURUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
+        searchParams: { symbol: 'EURUSD' },
+      });
       expect(result).toEqual(mockLightChart);
     });
 
@@ -617,11 +604,9 @@ describe('MarketResource', () => {
         '2024-12-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/EURUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-12-31' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
+        searchParams: { symbol: 'EURUSD', from: '2024-01-01', to: '2024-12-31' },
+      });
       expect(result).toEqual(mockLightChart);
     });
 
@@ -630,14 +615,13 @@ describe('MarketResource', () => {
 
       await marketResource.getForexLightChart('gbpjpy');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/GBPJPY',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
+        searchParams: { symbol: 'GBPJPY' },
+      });
     });
   });
 
-  describe('getForexIntraday1Min', () => {
+  describe('getForexIntraday', () => {
     const mockIntradayData: IntradayChart[] = [
       {
         date: '2024-01-01 09:30:00',
@@ -649,128 +633,52 @@ describe('MarketResource', () => {
       },
     ];
 
-    it('should fetch 1-minute forex intraday data', async () => {
+    it('should fetch forex intraday data with default interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getForexIntraday1Min('EURUSD');
+      const result = await marketResource.getForexIntraday('EURUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/EURUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
+        searchParams: { symbol: 'EURUSD' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
-    it('should fetch 1-minute forex intraday data with date range', async () => {
+    it('should fetch forex intraday data with custom interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getForexIntraday1Min(
+      const result = await marketResource.getForexIntraday('EURUSD', IntradayInterval.FiveMin);
+
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/5min', {
+        searchParams: { symbol: 'EURUSD' },
+      });
+      expect(result).toEqual(mockIntradayData);
+    });
+
+    it('should fetch forex intraday data with date range', async () => {
+      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
+
+      const result = await marketResource.getForexIntraday(
         'EURUSD',
+        IntradayInterval.OneMin,
         '2024-01-01',
         '2024-01-02'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/EURUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-02' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1min', {
+        searchParams: { symbol: 'EURUSD', from: '2024-01-01', to: '2024-01-02' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
     it('should convert pair to uppercase', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      await marketResource.getForexIntraday1Min('usdjpy');
+      await marketResource.getForexIntraday('usdjpy');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/USDJPY',
-        { searchParams: {} }
-      );
-    });
-  });
-
-  describe('getForexIntraday5Min', () => {
-    const mockIntradayData: IntradayChart[] = [
-      {
-        date: '2024-01-01 09:30:00',
-        open: 1.0850,
-        high: 1.0855,
-        low: 1.0845,
-        close: 1.0852,
-        volume: 50000,
-      },
-    ];
-
-    it('should fetch 5-minute forex intraday data', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
-
-      const result = await marketResource.getForexIntraday5Min('EURUSD');
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/5min/EURUSD',
-        { searchParams: {} }
-      );
-      expect(result).toEqual(mockIntradayData);
-    });
-
-    it('should fetch 5-minute forex intraday data with date range', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
-
-      const result = await marketResource.getForexIntraday5Min(
-        'EURUSD',
-        '2024-01-01',
-        '2024-01-02'
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/5min/EURUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-02' }, }
-
-      );
-      expect(result).toEqual(mockIntradayData);
-    });
-  });
-
-  describe('getForexIntraday1Hour', () => {
-    const mockIntradayData: IntradayChart[] = [
-      {
-        date: '2024-01-01 09:00:00',
-        open: 1.0850,
-        high: 1.0870,
-        low: 1.0840,
-        close: 1.0865,
-        volume: 500000,
-      },
-    ];
-
-    it('should fetch 1-hour forex intraday data', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
-
-      const result = await marketResource.getForexIntraday1Hour('EURUSD');
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/EURUSD',
-        { searchParams: {} }
-      );
-      expect(result).toEqual(mockIntradayData);
-    });
-
-    it('should fetch 1-hour forex intraday data with date range', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
-
-      const result = await marketResource.getForexIntraday1Hour(
-        'EURUSD',
-        '2024-01-01',
-        '2024-01-31'
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/EURUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
-      );
-      expect(result).toEqual(mockIntradayData);
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
+        searchParams: { symbol: 'USDJPY' },
+      });
     });
   });
 
@@ -790,52 +698,28 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getCryptoList();
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/symbol/available-cryptocurrencies'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('cryptocurrency-list');
       expect(result).toEqual(mockCryptoList);
     });
   });
 
   describe('getCryptoQuoteShort', () => {
-    const mockCryptoQuote: CryptoPrice[] = [
+    const mockCryptoQuote: ForexQuoteShort[] = [
       {
         symbol: 'BTCUSD',
-        name: 'Bitcoin USD',
         price: 45000,
-        changesPercentage: 2.5,
-        change: 1100,
-        dayLow: 44000,
-        dayHigh: 46000,
-        yearHigh: 69000,
-        yearLow: 15000,
-        marketCap: 880000000000,
-        priceAvg50: 43000,
-        priceAvg200: 35000,
         volume: 25000000000,
-        avgVolume: 22000000000,
-        exchange: 'CRYPTO',
-        open: 44500,
-        previousClose: 43900,
-        timestamp: 1704110400,
       },
     ];
 
-    it('should fetch specific crypto quote', async () => {
+    it('should fetch specific crypto quote short', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockCryptoQuote);
 
       const result = await marketResource.getCryptoQuoteShort('BTCUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/BTCUSD');
-      expect(result).toEqual(mockCryptoQuote);
-    });
-
-    it('should fetch all crypto quotes when no symbol specified', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockCryptoQuote);
-
-      const result = await marketResource.getCryptoQuoteShort();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/crypto');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', {
+        searchParams: { symbol: 'BTCUSD' },
+      });
       expect(result).toEqual(mockCryptoQuote);
     });
 
@@ -844,7 +728,9 @@ describe('MarketResource', () => {
 
       await marketResource.getCryptoQuoteShort('ethusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/ETHUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', {
+        searchParams: { symbol: 'ETHUSD' },
+      });
     });
   });
 
@@ -861,10 +747,9 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getCryptoLightChart('BTCUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/BTCUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
+        searchParams: { symbol: 'BTCUSD' },
+      });
       expect(result).toEqual(mockLightChart);
     });
 
@@ -877,11 +762,9 @@ describe('MarketResource', () => {
         '2024-12-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/BTCUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-12-31' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
+        searchParams: { symbol: 'BTCUSD', from: '2024-01-01', to: '2024-12-31' },
+      });
       expect(result).toEqual(mockLightChart);
     });
 
@@ -890,43 +773,39 @@ describe('MarketResource', () => {
 
       await marketResource.getCryptoLightChart('ethusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/ETHUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
+        searchParams: { symbol: 'ETHUSD' },
+      });
     });
   });
 
   describe('getCryptoFullChart', () => {
-    const mockFullChart = {
-      historical: [
-        {
-          date: '2024-01-01',
-          open: 45000,
-          high: 46000,
-          low: 44000,
-          close: 45500,
-          adjClose: 45500,
-          volume: 25000000000,
-          unadjustedVolume: 25000000000,
-          change: 500,
-          changePercent: 1.11,
-          vwap: 45300,
-          label: 'January 01, 24',
-          changeOverTime: 0.0111,
-        },
-      ],
-    };
+    const mockFullChart: HistoricalPrice[] = [
+      {
+        date: '2024-01-01',
+        open: 45000,
+        high: 46000,
+        low: 44000,
+        close: 45500,
+        adjClose: 45500,
+        volume: 25000000000,
+        unadjustedVolume: 25000000000,
+        change: 500,
+        changePercent: 1.11,
+        vwap: 45300,
+        label: 'January 01, 24',
+        changeOverTime: 0.0111,
+      },
+    ];
 
     it('should fetch crypto full chart without date range', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockFullChart);
 
       const result = await marketResource.getCryptoFullChart('BTCUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/BTCUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'BTCUSD' },
+      });
       expect(result).toEqual(mockFullChart);
     });
 
@@ -939,11 +818,9 @@ describe('MarketResource', () => {
         '2024-12-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/BTCUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-12-31' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'BTCUSD', from: '2024-01-01', to: '2024-12-31' },
+      });
       expect(result).toEqual(mockFullChart);
     });
 
@@ -952,14 +829,13 @@ describe('MarketResource', () => {
 
       await marketResource.getCryptoFullChart('btcusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/BTCUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'BTCUSD' },
+      });
     });
   });
 
-  describe('getCryptoIntraday1Min', () => {
+  describe('getCryptoIntraday', () => {
     const mockIntradayData: IntradayChart[] = [
       {
         date: '2024-01-01 09:30:00',
@@ -971,197 +847,71 @@ describe('MarketResource', () => {
       },
     ];
 
-    it('should fetch 1-minute crypto intraday data', async () => {
+    it('should fetch crypto intraday data with default interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getCryptoIntraday1Min('BTCUSD');
+      const result = await marketResource.getCryptoIntraday('BTCUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/BTCUSD',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
+        searchParams: { symbol: 'BTCUSD' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
-    it('should fetch 1-minute crypto intraday data with date range', async () => {
+    it('should fetch crypto intraday data with custom interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      const result = await marketResource.getCryptoIntraday1Min(
+      const result = await marketResource.getCryptoIntraday('BTCUSD', IntradayInterval.FiveMin);
+
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/5min', {
+        searchParams: { symbol: 'BTCUSD' },
+      });
+      expect(result).toEqual(mockIntradayData);
+    });
+
+    it('should fetch crypto intraday data with date range', async () => {
+      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
+
+      const result = await marketResource.getCryptoIntraday(
         'BTCUSD',
+        IntradayInterval.OneMin,
         '2024-01-01',
         '2024-01-02'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/BTCUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-02' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1min', {
+        searchParams: { symbol: 'BTCUSD', from: '2024-01-01', to: '2024-01-02' },
+      });
       expect(result).toEqual(mockIntradayData);
     });
 
     it('should convert symbol to uppercase', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
 
-      await marketResource.getCryptoIntraday1Min('ethusd');
+      await marketResource.getCryptoIntraday('ethusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/ETHUSD',
-        { searchParams: {} }
-      );
-    });
-  });
-
-  describe('getCryptoIntraday5Min', () => {
-    const mockIntradayData: IntradayChart[] = [
-      {
-        date: '2024-01-01 09:30:00',
-        open: 45000,
-        high: 45200,
-        low: 44800,
-        close: 45100,
-        volume: 5000000,
-      },
-    ];
-
-    it('should fetch 5-minute crypto intraday data', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
-
-      const result = await marketResource.getCryptoIntraday5Min('BTCUSD');
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/5min/BTCUSD',
-        { searchParams: {} }
-      );
-      expect(result).toEqual(mockIntradayData);
-    });
-
-    it('should fetch 5-minute crypto intraday data with date range', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
-
-      const result = await marketResource.getCryptoIntraday5Min(
-        'BTCUSD',
-        '2024-01-01',
-        '2024-01-02'
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/5min/BTCUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-02' }, }
-
-      );
-      expect(result).toEqual(mockIntradayData);
-    });
-  });
-
-  describe('getCryptoIntraday1Hour', () => {
-    const mockIntradayData: IntradayChart[] = [
-      {
-        date: '2024-01-01 09:00:00',
-        open: 45000,
-        high: 45500,
-        low: 44500,
-        close: 45300,
-        volume: 50000000,
-      },
-    ];
-
-    it('should fetch 1-hour crypto intraday data', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
-
-      const result = await marketResource.getCryptoIntraday1Hour('BTCUSD');
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/BTCUSD',
-        { searchParams: {} }
-      );
-      expect(result).toEqual(mockIntradayData);
-    });
-
-    it('should fetch 1-hour crypto intraday data with date range', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockIntradayData);
-
-      const result = await marketResource.getCryptoIntraday1Hour(
-        'BTCUSD',
-        '2024-01-01',
-        '2024-01-31'
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/BTCUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
-      );
-      expect(result).toEqual(mockIntradayData);
-    });
-  });
-
-  describe('getLightChart', () => {
-    const mockLightChart: LightChartData[] = [
-      {
-        date: '2024-01-01 09:30:00',
-        close: 150.5,
-      },
-    ];
-
-    it('should fetch light chart with interval', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockLightChart);
-
-      const result = await marketResource.getLightChart('1min', 'AAPL');
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/AAPL',
-        { searchParams: {} }
-      );
-      expect(result).toEqual(mockLightChart);
-    });
-
-    it('should fetch light chart with date range', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockLightChart);
-
-      const result = await marketResource.getLightChart(
-        '5min',
-        'AAPL',
-        '2024-01-01',
-        '2024-01-31'
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/5min/AAPL',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
-      );
-      expect(result).toEqual(mockLightChart);
-    });
-
-    it('should convert symbol to uppercase', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockLightChart);
-
-      await marketResource.getLightChart('1hour', 'tsla');
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/TSLA',
-        { searchParams: {} }
-      );
-    });
-
-    it('should work with custom intervals', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockLightChart);
-
-      await marketResource.getLightChart('15min', 'AAPL');
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/15min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
+        searchParams: { symbol: 'ETHUSD' },
+      });
     });
   });
 
   describe('getUnadjustedPrice', () => {
-    const mockUnadjustedData: LightChartData[] = [
+    const mockUnadjustedData: HistoricalPrice[] = [
       {
         date: '2024-01-01',
+        open: 150.0,
+        high: 152.0,
+        low: 149.0,
         close: 150.5,
+        adjClose: 150.5,
+        volume: 1000000,
+        unadjustedVolume: 1000000,
+        change: 0.5,
+        changePercent: 0.33,
+        vwap: 150.3,
+        label: 'January 01, 24',
+        changeOverTime: 0.0033,
       },
     ];
 
@@ -1170,10 +920,9 @@ describe('MarketResource', () => {
 
       const result = await marketResource.getUnadjustedPrice('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL/line',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/non-split-adjusted', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockUnadjustedData);
     });
 
@@ -1186,11 +935,9 @@ describe('MarketResource', () => {
         '2024-12-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL/line',
-        { searchParams: {   from: '2024-01-01', to: '2024-12-31' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/non-split-adjusted', {
+        searchParams: { symbol: 'AAPL', from: '2024-01-01', to: '2024-12-31' },
+      });
       expect(result).toEqual(mockUnadjustedData);
     });
 
@@ -1199,44 +946,39 @@ describe('MarketResource', () => {
 
       await marketResource.getUnadjustedPrice('msft');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/MSFT/line',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/non-split-adjusted', {
+        searchParams: { symbol: 'MSFT' },
+      });
     });
   });
 
   describe('getDividendAdjusted', () => {
-    const mockDividendAdjusted = {
-      historical: [
-        {
-          date: '2024-01-01',
-          open: 150.0,
-          high: 152.0,
-          low: 149.0,
-          close: 151.0,
-          adjClose: 149.5,
-          volume: 1000000,
-          unadjustedVolume: 1000000,
-          change: 1.0,
-          changePercent: 0.67,
-          vwap: 150.5,
-          label: 'January 01, 24',
-          changeOverTime: 0.0067,
-        },
-      ],
-    };
+    const mockDividendAdjusted: HistoricalPrice[] = [
+      {
+        date: '2024-01-01',
+        open: 150.0,
+        high: 152.0,
+        low: 149.0,
+        close: 151.0,
+        adjClose: 149.5,
+        volume: 1000000,
+        unadjustedVolume: 1000000,
+        change: 1.0,
+        changePercent: 0.67,
+        vwap: 150.5,
+        label: 'January 01, 24',
+        changeOverTime: 0.0067,
+      },
+    ];
 
     it('should fetch dividend-adjusted prices without date range', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockDividendAdjusted);
 
       const result = await marketResource.getDividendAdjusted('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        { searchParams: {   serietype: 'line' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/dividend-adjusted', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockDividendAdjusted);
     });
 
@@ -1249,17 +991,9 @@ describe('MarketResource', () => {
         '2024-12-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        {
-          searchParams: {
-            serietype: 'line',
-          from: '2024-01-01',
-          to: '2024-12-31',
-        },
-        }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/dividend-adjusted', {
+        searchParams: { symbol: 'AAPL', from: '2024-01-01', to: '2024-12-31' },
+      });
       expect(result).toEqual(mockDividendAdjusted);
     });
 
@@ -1268,20 +1002,9 @@ describe('MarketResource', () => {
 
       await marketResource.getDividendAdjusted('goog');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GOOG',
-        { searchParams: {   serietype: 'line' }, }
-
-      );
-    });
-
-    it('should always include serietype parameter', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue(mockDividendAdjusted);
-
-      await marketResource.getDividendAdjusted('AAPL', '2024-01-01');
-
-      const callArgs = vi.mocked(mockClient.get).mock.calls[0];
-      expect(callArgs[1].searchParams).toHaveProperty('serietype', 'line');
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/dividend-adjusted', {
+        searchParams: { symbol: 'GOOG' },
+      });
     });
   });
 
@@ -1324,17 +1047,16 @@ describe('MarketResource', () => {
   });
 
   describe('Symbol Case Handling', () => {
-    const mockData = { historical: [] };
+    const mockData: HistoricalPrice[] = [];
 
     it('should handle mixed case symbols', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
       await marketResource.getHistoricalPrices('AaPl');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle lowercase forex pairs', async () => {
@@ -1342,7 +1064,9 @@ describe('MarketResource', () => {
 
       await marketResource.getForexPrice('eurusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fx/EURUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', {
+        searchParams: { symbol: 'EURUSD' },
+      });
     });
 
     it('should handle lowercase crypto symbols', async () => {
@@ -1350,23 +1074,23 @@ describe('MarketResource', () => {
 
       await marketResource.getCryptoPrice('btcusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/BTCUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', {
+        searchParams: { symbol: 'BTCUSD' },
+      });
     });
   });
 
   describe('Date Parameter Handling', () => {
-    const mockData = { historical: [] };
+    const mockData: HistoricalPrice[] = [];
 
     it('should handle only from date', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
       await marketResource.getHistoricalPrices('AAPL', '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        { searchParams: {   from: '2024-01-01' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'AAPL', from: '2024-01-01' },
+      });
     });
 
     it('should handle both from and to dates', async () => {
@@ -1378,11 +1102,9 @@ describe('MarketResource', () => {
         '2024-12-31'
       );
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/AAPL',
-        { searchParams: {   from: '2024-01-01', to: '2024-12-31' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
+        searchParams: { symbol: 'AAPL', from: '2024-01-01', to: '2024-12-31' },
+      });
     });
 
     it('should not include undefined dates in params', async () => {
@@ -1391,9 +1113,9 @@ describe('MarketResource', () => {
       await marketResource.getHistoricalPrices('AAPL');
 
       const params = vi.mocked(mockClient.get).mock.calls[0][1];
-      expect(params).toEqual({ searchParams: {} });
-      expect(params.searchParams).not.toHaveProperty('from');
-      expect(params.searchParams).not.toHaveProperty('to');
+      expect(params).toEqual({ searchParams: { symbol: 'AAPL' } });
+      expect(params?.searchParams).not.toHaveProperty('from');
+      expect(params?.searchParams).not.toHaveProperty('to');
     });
   });
 
@@ -1403,109 +1125,61 @@ describe('MarketResource', () => {
     it('should accept 1min interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await marketResource.getIntradayChart('AAPL', '1min');
+      await marketResource.getIntradayChart('AAPL', IntradayInterval.OneMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1min', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should accept 5min interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await marketResource.getIntradayChart('AAPL', '5min');
+      await marketResource.getIntradayChart('AAPL', IntradayInterval.FiveMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/5min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/5min', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should accept 15min interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await marketResource.getIntradayChart('AAPL', '15min');
+      await marketResource.getIntradayChart('AAPL', IntradayInterval.FifteenMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/15min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/15min', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should accept 30min interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await marketResource.getIntradayChart('AAPL', '30min');
+      await marketResource.getIntradayChart('AAPL', IntradayInterval.ThirtyMin);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/30min/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/30min', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should accept 1hour interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await marketResource.getIntradayChart('AAPL', '1hour');
+      await marketResource.getIntradayChart('AAPL', IntradayInterval.OneHour);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should accept 4hour interval', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
-      await marketResource.getIntradayChart('AAPL', '4hour');
+      await marketResource.getIntradayChart('AAPL', IntradayInterval.FourHour);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/4hour/AAPL',
-        { searchParams: {} }
-      );
-    });
-  });
-
-  describe('Optional Parameters', () => {
-    it('should handle getForexPrice without pair parameter', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue([]);
-
-      await marketResource.getForexPrice();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fx');
-    });
-
-    it('should handle getCryptoPrice without symbol parameter', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue([]);
-
-      await marketResource.getCryptoPrice();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/crypto');
-    });
-
-    it('should handle getForexQuoteShort without pair parameter', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue([]);
-
-      await marketResource.getForexQuoteShort();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/forex');
-    });
-
-    it('should handle getCryptoQuoteShort without symbol parameter', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue([]);
-
-      await marketResource.getCryptoQuoteShort();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/crypto');
-    });
-
-    it('should handle getMarketHours without exchange parameter', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue({} as MarketHours);
-
-      await marketResource.getMarketHours();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v3/is-the-market-open', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/4hour', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
   });
 });

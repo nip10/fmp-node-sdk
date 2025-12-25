@@ -51,7 +51,7 @@ describe('CommoditiesResource', () => {
 
       const result = await commodities.getList();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/available-commodities');
+      expect(mockClient.get).toHaveBeenCalledWith('commodities-list');
       expect(result).toEqual(mockData);
       expect(result).toHaveLength(3);
     });
@@ -99,7 +99,7 @@ describe('CommoditiesResource', () => {
 
       const result = await commodities.getQuote('GCUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/GCUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: 'GCUSD' } });
       expect(result).toEqual(mockQuote);
     });
 
@@ -108,7 +108,7 @@ describe('CommoditiesResource', () => {
 
       const result = await commodities.getQuote('gcusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/GCUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: 'GCUSD' } });
       expect(result).toEqual(mockQuote);
     });
 
@@ -117,7 +117,7 @@ describe('CommoditiesResource', () => {
 
       const result = await commodities.getQuote('GcUsD');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/GCUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: 'GCUSD' } });
       expect(result).toEqual(mockQuote);
     });
 
@@ -153,7 +153,7 @@ describe('CommoditiesResource', () => {
 
       const result = await commodities.getQuote('SIUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/SIUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: 'SIUSD' } });
       expect(result).toEqual(silverQuote);
       expect(result[0].symbol).toBe('SIUSD');
     });
@@ -163,7 +163,7 @@ describe('CommoditiesResource', () => {
 
       const result = await commodities.getQuote('INVALID');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/INVALID');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: 'INVALID' } });
       expect(result).toEqual([]);
     });
   });
@@ -182,7 +182,7 @@ describe('CommoditiesResource', () => {
 
       const result = await commodities.getQuoteShort('GCUSD');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote-short/GCUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', { searchParams: { symbol: 'GCUSD' } });
       expect(result).toEqual(mockShortQuote);
     });
 
@@ -191,7 +191,7 @@ describe('CommoditiesResource', () => {
 
       await commodities.getQuoteShort('clusd');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote-short/CLUSD');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', { searchParams: { symbol: 'CLUSD' } });
     });
 
     it('should handle empty response', async () => {
@@ -260,7 +260,7 @@ describe('CommoditiesResource', () => {
 
       const result = await commodities.getAllQuotes();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/commodity');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-commodity-quotes');
       expect(result).toEqual(mockAllQuotes);
       expect(result).toHaveLength(2);
     });
@@ -316,8 +316,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getHistoricalPrices('GCUSD');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GCUSD',
-        { searchParams: {} }
+        'historical-price-eod/full',
+        { searchParams: { symbol: 'GCUSD' } }
       );
       expect(result).toEqual(mockHistoricalData);
       expect(result.historical).toHaveLength(2);
@@ -329,9 +329,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getHistoricalPrices('GCUSD', '2024-01-01');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GCUSD',
-        { searchParams: {   from: '2024-01-01' }, }
-
+        'historical-price-eod/full',
+        { searchParams: { symbol: 'GCUSD', from: '2024-01-01' } }
       );
       expect(result).toEqual(mockHistoricalData);
     });
@@ -342,9 +341,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getHistoricalPrices('GCUSD', undefined, '2024-01-31');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GCUSD',
-        { searchParams: {   to: '2024-01-31' }, }
-
+        'historical-price-eod/full',
+        { searchParams: { symbol: 'GCUSD', to: '2024-01-31' } }
       );
       expect(result).toEqual(mockHistoricalData);
     });
@@ -359,9 +357,8 @@ describe('CommoditiesResource', () => {
       );
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GCUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
+        'historical-price-eod/full',
+        { searchParams: { symbol: 'GCUSD', from: '2024-01-01', to: '2024-01-31' } }
       );
       expect(result).toEqual(mockHistoricalData);
     });
@@ -372,9 +369,8 @@ describe('CommoditiesResource', () => {
       await commodities.getHistoricalPrices('siusd', '2024-01-01', '2024-01-31');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/SIUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
+        'historical-price-eod/full',
+        { searchParams: { symbol: 'SIUSD', from: '2024-01-01', to: '2024-01-31' } }
       );
     });
 
@@ -384,9 +380,8 @@ describe('CommoditiesResource', () => {
       await commodities.getHistoricalPrices('GCUSD', '2024-12-01', '2024-12-31');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GCUSD',
-        { searchParams: {   from: '2024-12-01', to: '2024-12-31' }, }
-
+        'historical-price-eod/full',
+        { searchParams: { symbol: 'GCUSD', from: '2024-12-01', to: '2024-12-31' } }
       );
     });
 
@@ -428,8 +423,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getLightChart('GCUSD');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/GCUSD',
-        { searchParams: {} }
+        'historical-price-eod/light',
+        { searchParams: { symbol: 'GCUSD' } }
       );
       expect(result).toEqual(mockLightChartData);
       expect(result).toHaveLength(3);
@@ -443,9 +438,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getLightChart('GCUSD', '2024-01-01');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/GCUSD',
-        { searchParams: {   from: '2024-01-01' }, }
-
+        'historical-price-eod/light',
+        { searchParams: { symbol: 'GCUSD', from: '2024-01-01' } }
       );
       expect(result).toEqual(mockLightChartData);
     });
@@ -456,9 +450,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getLightChart('GCUSD', undefined, '2024-01-31');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/GCUSD',
-        { searchParams: {   to: '2024-01-31' }, }
-
+        'historical-price-eod/light',
+        { searchParams: { symbol: 'GCUSD', to: '2024-01-31' } }
       );
       expect(result).toEqual(mockLightChartData);
     });
@@ -473,9 +466,8 @@ describe('CommoditiesResource', () => {
       );
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/GCUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
+        'historical-price-eod/light',
+        { searchParams: { symbol: 'GCUSD', from: '2024-01-01', to: '2024-01-31' } }
       );
       expect(result).toEqual(mockLightChartData);
     });
@@ -486,9 +478,8 @@ describe('CommoditiesResource', () => {
       await commodities.getLightChart('clusd', '2024-01-01', '2024-01-31');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/CLUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
+        'historical-price-eod/light',
+        { searchParams: { symbol: 'CLUSD', from: '2024-01-01', to: '2024-01-31' } }
       );
     });
 
@@ -527,8 +518,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getIntradayChart('GCUSD');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/GCUSD',
-        { searchParams: {} }
+        'historical-chart/1hour',
+        { searchParams: { symbol: 'GCUSD' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -539,8 +530,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getIntradayChart('GCUSD', '1min');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1min/GCUSD',
-        { searchParams: {} }
+        'historical-chart/1min',
+        { searchParams: { symbol: 'GCUSD' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -551,8 +542,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getIntradayChart('GCUSD', '5min');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/5min/GCUSD',
-        { searchParams: {} }
+        'historical-chart/5min',
+        { searchParams: { symbol: 'GCUSD' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -563,8 +554,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getIntradayChart('GCUSD', '15min');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/15min/GCUSD',
-        { searchParams: {} }
+        'historical-chart/15min',
+        { searchParams: { symbol: 'GCUSD' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -575,8 +566,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getIntradayChart('GCUSD', '30min');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/30min/GCUSD',
-        { searchParams: {} }
+        'historical-chart/30min',
+        { searchParams: { symbol: 'GCUSD' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -587,8 +578,8 @@ describe('CommoditiesResource', () => {
       const result = await commodities.getIntradayChart('GCUSD', '4hour');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/4hour/GCUSD',
-        { searchParams: {} }
+        'historical-chart/4hour',
+        { searchParams: { symbol: 'GCUSD' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -603,9 +594,8 @@ describe('CommoditiesResource', () => {
       );
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/GCUSD',
-        { searchParams: {   from: '2024-01-01' }, }
-
+        'historical-chart/1hour',
+        { searchParams: { symbol: 'GCUSD', from: '2024-01-01' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -621,9 +611,8 @@ describe('CommoditiesResource', () => {
       );
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/GCUSD',
-        { searchParams: {   to: '2024-01-31' }, }
-
+        'historical-chart/1hour',
+        { searchParams: { symbol: 'GCUSD', to: '2024-01-31' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -639,9 +628,8 @@ describe('CommoditiesResource', () => {
       );
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/1hour/GCUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
+        'historical-chart/1hour',
+        { searchParams: { symbol: 'GCUSD', from: '2024-01-01', to: '2024-01-31' } }
       );
       expect(result).toEqual(mockIntradayData);
     });
@@ -652,9 +640,8 @@ describe('CommoditiesResource', () => {
       await commodities.getIntradayChart('siusd', '15min', '2024-01-01', '2024-01-31');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/15min/SIUSD',
-        { searchParams: {   from: '2024-01-01', to: '2024-01-31' }, }
-
+        'historical-chart/15min',
+        { searchParams: { symbol: 'SIUSD', from: '2024-01-01', to: '2024-01-31' } }
       );
     });
 
@@ -716,7 +703,7 @@ describe('CommoditiesResource', () => {
 
       await commodities.getQuote('GC=F');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/GC=F');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: 'GC=F' } });
     });
 
     it('should handle empty string symbol', async () => {
@@ -724,7 +711,7 @@ describe('CommoditiesResource', () => {
 
       await commodities.getQuote('');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '' } });
     });
 
     it('should handle symbols with whitespace', async () => {
@@ -732,7 +719,7 @@ describe('CommoditiesResource', () => {
 
       await commodities.getQuote(' GCUSD ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/ GCUSD ');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: ' GCUSD ' } });
     });
   });
 
@@ -744,9 +731,8 @@ describe('CommoditiesResource', () => {
       await commodities.getHistoricalPrices('GCUSD', '2024-12-31', '2024-01-01');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GCUSD',
-        { searchParams: {   from: '2024-12-31', to: '2024-01-01' }, }
-
+        'historical-price-eod/full',
+        { searchParams: { symbol: 'GCUSD', from: '2024-12-31', to: '2024-01-01' } }
       );
     });
 
@@ -756,9 +742,8 @@ describe('CommoditiesResource', () => {
       await commodities.getHistoricalPrices('GCUSD', '2024-01-15', '2024-01-15');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/GCUSD',
-        { searchParams: {   from: '2024-01-15', to: '2024-01-15' }, }
-
+        'historical-price-eod/full',
+        { searchParams: { symbol: 'GCUSD', from: '2024-01-15', to: '2024-01-15' } }
       );
     });
 
@@ -768,8 +753,8 @@ describe('CommoditiesResource', () => {
       await commodities.getLightChart('GCUSD', undefined, undefined);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-chart/line/GCUSD',
-        { searchParams: {} }
+        'historical-price-eod/light',
+        { searchParams: { symbol: 'GCUSD' } }
       );
     });
   });

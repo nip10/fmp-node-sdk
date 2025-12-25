@@ -31,8 +31,12 @@ export class TechnicalResource {
     period = 10,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<SMA[]> {
-    return this.client.get<SMA[]>(`v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`, {
-      searchParams: { type: 'sma', period },
+    return this.client.get<SMA[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'sma',
+        period,
+      },
     });
   }
 
@@ -47,8 +51,12 @@ export class TechnicalResource {
     period = 10,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<EMA[]> {
-    return this.client.get<EMA[]>(`v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`, {
-      searchParams: { type: 'ema', period },
+    return this.client.get<EMA[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'ema',
+        period,
+      },
     });
   }
 
@@ -63,8 +71,12 @@ export class TechnicalResource {
     period = 14,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<RSI[]> {
-    return this.client.get<RSI[]>(`v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`, {
-      searchParams: { type: 'rsi', period },
+    return this.client.get<RSI[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'rsi',
+        period,
+      },
     });
   }
 
@@ -79,8 +91,12 @@ export class TechnicalResource {
     period = 14,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<ADX[]> {
-    return this.client.get<ADX[]>(`v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`, {
-      searchParams: { type: 'adx', period },
+    return this.client.get<ADX[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'adx',
+        period,
+      },
     });
   }
 
@@ -95,8 +111,12 @@ export class TechnicalResource {
     period = 14,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<Williams[]> {
-    return this.client.get<Williams[]>(`v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`, {
-      searchParams: { type: 'williams', period },
+    return this.client.get<Williams[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'williams',
+        period,
+      },
     });
   }
 
@@ -111,12 +131,13 @@ export class TechnicalResource {
     period = 10,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<StandardDeviation[]> {
-    return this.client.get<StandardDeviation[]>(
-      `v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`,
-      {
-        searchParams: { type: 'standardDeviation', period },
-      }
-    );
+    return this.client.get<StandardDeviation[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'standardDeviation',
+        period,
+      },
+    });
   }
 
   /**
@@ -130,8 +151,12 @@ export class TechnicalResource {
     period = 10,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<WMA[]> {
-    return this.client.get<WMA[]>(`v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`, {
-      searchParams: { type: 'wma', period },
+    return this.client.get<WMA[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'wma',
+        period,
+      },
     });
   }
 
@@ -146,8 +171,12 @@ export class TechnicalResource {
     period = 10,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<DEMA[]> {
-    return this.client.get<DEMA[]>(`v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`, {
-      searchParams: { type: 'dema', period },
+    return this.client.get<DEMA[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'dema',
+        period,
+      },
     });
   }
 
@@ -162,8 +191,12 @@ export class TechnicalResource {
     period = 10,
     timeframe: TechnicalTimeframe = TechnicalTimeframe.Daily
   ): Promise<TEMA[]> {
-    return this.client.get<TEMA[]>(`v3/technical_indicator/${timeframe}/${symbol.toUpperCase()}`, {
-      searchParams: { type: 'tema', period },
+    return this.client.get<TEMA[]>(`technical-indicator/${timeframe}`, {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        type: 'tema',
+        period,
+      },
     });
   }
 }

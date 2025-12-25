@@ -12,6 +12,12 @@ import type {
   ReportDate,
   LatestFinancialStatement,
   FinancialReportDownload,
+  EnterpriseValue,
+  IncomeStatementGrowth,
+  BalanceSheetGrowth,
+  CashFlowStatementGrowth,
+  RevenueProductSegmentation,
+  RevenueGeographicSegmentation,
 } from '../types/index.js';
 
 /**
@@ -32,13 +38,15 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<IncomeStatement[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<IncomeStatement[]>(
-      `v3/income-statement/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<IncomeStatement[]>('income-statement', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -52,13 +60,15 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<BalanceSheet[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<BalanceSheet[]>(
-      `v3/balance-sheet-statement/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<BalanceSheet[]>('balance-sheet-statement', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -72,13 +82,15 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<CashFlowStatement[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<CashFlowStatement[]>(
-      `v3/cash-flow-statement/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<CashFlowStatement[]>('cash-flow-statement', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -86,8 +98,8 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    */
   async getIncomeStatementTTM(symbol: string): Promise<IncomeStatement[]> {
-    return this.client.get<IncomeStatement[]>(`v3/income-statement/${symbol.toUpperCase()}`, {
-      searchParams: { period: 'ttm' },
+    return this.client.get<IncomeStatement[]>('income-statement-ttm', {
+      searchParams: { symbol: symbol.toUpperCase() },
     });
   }
 
@@ -96,8 +108,8 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    */
   async getBalanceSheetTTM(symbol: string): Promise<BalanceSheet[]> {
-    return this.client.get<BalanceSheet[]>(`v3/balance-sheet-statement/${symbol.toUpperCase()}`, {
-      searchParams: { period: 'ttm' },
+    return this.client.get<BalanceSheet[]>('balance-sheet-statement-ttm', {
+      searchParams: { symbol: symbol.toUpperCase() },
     });
   }
 
@@ -106,10 +118,9 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    */
   async getCashFlowStatementTTM(symbol: string): Promise<CashFlowStatement[]> {
-    return this.client.get<CashFlowStatement[]>(
-      `v3/cash-flow-statement/${symbol.toUpperCase()}`,
-      { searchParams: { period: 'ttm' } }
-    );
+    return this.client.get<CashFlowStatement[]>('cash-flow-statement-ttm', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -123,10 +134,15 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<FinancialRatios[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<FinancialRatios[]>(`v3/ratios/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<FinancialRatios[]>('ratios', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -134,7 +150,9 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    */
   async getRatiosTTM(symbol: string): Promise<FinancialRatios[]> {
-    return this.client.get<FinancialRatios[]>(`v3/ratios-ttm/${symbol.toUpperCase()}`);
+    return this.client.get<FinancialRatios[]>('ratios-ttm', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -148,10 +166,15 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<KeyMetrics[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<KeyMetrics[]>(`v3/key-metrics/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<KeyMetrics[]>('key-metrics', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -159,7 +182,9 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    */
   async getKeyMetricsTTM(symbol: string): Promise<KeyMetrics[]> {
-    return this.client.get<KeyMetrics[]>(`v3/key-metrics-ttm/${symbol.toUpperCase()}`);
+    return this.client.get<KeyMetrics[]>('key-metrics-ttm', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -172,11 +197,16 @@ export class FinancialsResource {
     symbol: string,
     period: Period = Period.Annual,
     limit?: number
-  ): Promise<Record<string, unknown>[]> {
-    const params: Record<string, string | number> = { period };
+  ): Promise<EnterpriseValue[]> {
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<Record<string, unknown>[]>(`v3/enterprise-values/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<EnterpriseValue[]>('enterprise-values', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -189,14 +219,16 @@ export class FinancialsResource {
     symbol: string,
     period: Period = Period.Annual,
     limit?: number
-  ): Promise<Record<string, unknown>[]> {
-    const params: Record<string, string | number> = { period };
+  ): Promise<IncomeStatementGrowth[]> {
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<Record<string, unknown>[]>(
-      `v3/income-statement-growth/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<IncomeStatementGrowth[]>('income-statement-growth', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -209,14 +241,16 @@ export class FinancialsResource {
     symbol: string,
     period: Period = Period.Annual,
     limit?: number
-  ): Promise<Record<string, unknown>[]> {
-    const params: Record<string, string | number> = { period };
+  ): Promise<BalanceSheetGrowth[]> {
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<Record<string, unknown>[]>(
-      `v3/balance-sheet-statement-growth/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<BalanceSheetGrowth[]>('balance-sheet-statement-growth', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -229,14 +263,16 @@ export class FinancialsResource {
     symbol: string,
     period: Period = Period.Annual,
     limit?: number
-  ): Promise<Record<string, unknown>[]> {
-    const params: Record<string, string | number> = { period };
+  ): Promise<CashFlowStatementGrowth[]> {
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<Record<string, unknown>[]>(
-      `v3/cash-flow-statement-growth/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<CashFlowStatementGrowth[]>('cash-flow-statement-growth', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -244,8 +280,11 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    * @param period - Period type
    */
-  async getRevenueByProduct(symbol: string, period: Period = Period.Annual): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>(`v4/revenue-product-segmentation`, {
+  async getRevenueByProduct(
+    symbol: string,
+    period: Period = Period.Annual
+  ): Promise<RevenueProductSegmentation[]> {
+    return this.client.get<RevenueProductSegmentation[]>('revenue-product-segmentation', {
       searchParams: {
         symbol: symbol.toUpperCase(),
         period,
@@ -259,8 +298,11 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    * @param period - Period type
    */
-  async getRevenueByGeography(symbol: string, period: Period = Period.Annual): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>(`v4/revenue-geographic-segmentation`, {
+  async getRevenueByGeography(
+    symbol: string,
+    period: Period = Period.Annual
+  ): Promise<RevenueGeographicSegmentation[]> {
+    return this.client.get<RevenueGeographicSegmentation[]>('revenue-geographic-segmentation', {
       searchParams: {
         symbol: symbol.toUpperCase(),
         period,
@@ -274,7 +316,9 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    */
   async getFinancialScores(symbol: string): Promise<FinancialScores[]> {
-    return this.client.get<FinancialScores[]>(`v4/score`, { searchParams: { symbol: symbol.toUpperCase() } });
+    return this.client.get<FinancialScores[]>('financial-scores', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -285,7 +329,9 @@ export class FinancialsResource {
   async getOwnerEarnings(symbol: string, limit?: number): Promise<OwnerEarnings[]> {
     const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (limit) params.limit = limit;
-    return this.client.get<OwnerEarnings[]>('v4/owner_earnings', { searchParams: params });
+    return this.client.get<OwnerEarnings[]>('owner-earnings', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -299,12 +345,14 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<FinancialGrowth[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
-    return this.client.get<FinancialGrowth[]>(
-      `v3/financial-growth/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<FinancialGrowth[]>('financial-growth', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -312,7 +360,7 @@ export class FinancialsResource {
    * @param symbol - Stock symbol
    */
   async getReportDates(symbol: string): Promise<ReportDate[]> {
-    return this.client.get<ReportDate[]>('v4/financial-reports-dates', {
+    return this.client.get<ReportDate[]>('financial-reports-dates', {
       searchParams: { symbol: symbol.toUpperCase() },
     });
   }
@@ -328,9 +376,14 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<Record<string, unknown>[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
-    return this.client.get<Record<string, unknown>[]>(`v3/income-statement-as-reported/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<Record<string, unknown>[]>('income-statement-as-reported', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -344,9 +397,14 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<Record<string, unknown>[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
-    return this.client.get<Record<string, unknown>[]>(`v3/balance-sheet-statement-as-reported/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<Record<string, unknown>[]>('balance-sheet-statement-as-reported', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -360,24 +418,35 @@ export class FinancialsResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<Record<string, unknown>[]> {
-    const params: Record<string, string | number> = { period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
-    return this.client.get<Record<string, unknown>[]>(`v3/cash-flow-statement-as-reported/${symbol.toUpperCase()}`, { searchParams: params });
-  }
-
-  /**
-   * Get full as-reported financials (v3 endpoint)
-   * @param symbol - Stock symbol
-   * @param period - Period type
-   */
-  async getAsReportedFull(symbol: string, period: Period = Period.Annual): Promise<Record<string, unknown>> {
-    return this.client.get<Record<string, unknown>>(`v3/financial-statement-full-as-reported/${symbol.toUpperCase()}`, {
-      searchParams: { period },
+    return this.client.get<Record<string, unknown>[]>('cash-flow-statement-as-reported', {
+      searchParams: params,
     });
   }
 
   /**
-   * Get latest full as-reported financial statements (v4 endpoint)
+   * Get full as-reported financials
+   * @param symbol - Stock symbol
+   * @param period - Period type
+   */
+  async getAsReportedFull(
+    symbol: string,
+    period: Period = Period.Annual
+  ): Promise<Record<string, unknown>> {
+    return this.client.get<Record<string, unknown>>('financial-statement-full-as-reported', {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        period,
+      },
+    });
+  }
+
+  /**
+   * Get latest full as-reported financial statements
    * Returns the most recent complete financial statement as reported to the SEC
    * @param symbol - Stock symbol
    * @param period - Period type (FY for annual, Q1-Q4 for quarterly)
@@ -386,10 +455,12 @@ export class FinancialsResource {
     symbol: string,
     period: Period = Period.Annual
   ): Promise<LatestFinancialStatement[]> {
-    return this.client.get<LatestFinancialStatement[]>(
-      `v4/financial-statement-full-as-reported/${symbol.toUpperCase()}`,
-      { searchParams: { period } }
-    );
+    return this.client.get<LatestFinancialStatement[]>('financial-statement-full-as-reported', {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        period,
+      },
+    });
   }
 
   /**
@@ -403,7 +474,7 @@ export class FinancialsResource {
     year: number,
     period: string
   ): Promise<Record<string, unknown>> {
-    return this.client.get<Record<string, unknown>>('v4/financial-reports-json', {
+    return this.client.get<Record<string, unknown>>('financial-reports-json', {
       searchParams: {
         symbol: symbol.toUpperCase(),
         year,
@@ -424,7 +495,7 @@ export class FinancialsResource {
     year: number,
     period: string
   ): Promise<FinancialReportDownload> {
-    return this.client.get<FinancialReportDownload>('v4/financial-reports-xlsx', {
+    return this.client.get<FinancialReportDownload>('financial-reports-xlsx', {
       searchParams: {
         symbol: symbol.toUpperCase(),
         year,

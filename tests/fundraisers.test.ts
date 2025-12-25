@@ -47,7 +47,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.getLatestCrowdfunding();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding-rss-feed', { searchParams: {   page: 0 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-latest', { searchParams: {   page: 0 }, }
 );
       expect(result).toEqual(mockData);
       expect(result).toHaveLength(2);
@@ -68,7 +68,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.getLatestCrowdfunding(2);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding-rss-feed', { searchParams: {   page: 2 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-latest', { searchParams: {   page: 2 }, }
 );
       expect(result).toEqual(mockData);
     });
@@ -125,7 +125,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchCrowdfunding('Tech Startup');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding', {
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-search', {
         searchParams: {
           page: 0,
         name: 'Tech Startup',
@@ -155,7 +155,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchCrowdfunding(undefined, '0001234567');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding', {
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-search', {
         searchParams: {
           page: 0,
         cik: '0001234567',
@@ -184,7 +184,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchCrowdfunding('Tech Startup', '0001234567');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding', {
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-search', {
         searchParams: {
           page: 0,
         name: 'Tech Startup',
@@ -202,7 +202,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchCrowdfunding();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding', { searchParams: {   page: 0 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-search', { searchParams: {   page: 0 }, }
 );
       expect(result).toEqual([]);
     });
@@ -214,7 +214,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchCrowdfunding('Company', undefined, 3);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding', {
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-search', {
         searchParams: {
           page: 3,
         name: 'Company',
@@ -271,8 +271,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.getCrowdfundingByCIK('0001234567');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding/0001234567', { searchParams: {   page: 0 }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings', { searchParams: { cik: '0001234567', page: 0 } });
       expect(result).toEqual(mockData);
       expect(result).toHaveLength(2);
       expect(result[0].cik).toBe('0001234567');
@@ -285,8 +284,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.getCrowdfundingByCIK('0001234567', 1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding/0001234567', { searchParams: {   page: 1 }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings', { searchParams: { cik: '0001234567', page: 1 } });
       expect(result).toEqual([]);
     });
 
@@ -327,7 +325,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.getLatestEquity();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising-rss-feed', { searchParams: {   page: 0 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising-latest', { searchParams: {   page: 0 }, }
 );
       expect(result).toEqual(mockData);
       expect(result).toHaveLength(2);
@@ -348,7 +346,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.getLatestEquity(5);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising-rss-feed', { searchParams: {   page: 5 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising-latest', { searchParams: {   page: 5 }, }
 );
       expect(result).toEqual(mockData);
     });
@@ -405,7 +403,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchEquity('BigCorp');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising', {
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising-search', {
         searchParams: {
           page: 0,
         name: 'BigCorp',
@@ -436,7 +434,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchEquity(undefined, '0009876543');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising', {
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising-search', {
         searchParams: {
           page: 0,
         cik: '0009876543',
@@ -466,7 +464,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchEquity('BigCorp', '0001234567');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising', {
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising-search', {
         searchParams: {
           page: 0,
         name: 'BigCorp',
@@ -484,7 +482,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchEquity();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising', { searchParams: {   page: 0 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising-search', { searchParams: {   page: 0 }, }
 );
       expect(result).toEqual([]);
     });
@@ -496,7 +494,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.searchEquity('Test', undefined, 2);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising', {
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising-search', {
         searchParams: {
           page: 2,
         name: 'Test',
@@ -554,8 +552,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.getEquityByCIK('0001234567');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising/0001234567', { searchParams: {   page: 0 }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising', { searchParams: { cik: '0001234567', page: 0 } });
       expect(result).toEqual(mockData);
       expect(result).toHaveLength(2);
       expect(result[0].cik).toBe('0001234567');
@@ -569,8 +566,7 @@ describe('FundraisersResource', () => {
 
       const result = await fundraisers.getEquityByCIK('0001234567', 3);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/fundraising/0001234567', { searchParams: {   page: 3 }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('fundraising', { searchParams: { cik: '0001234567', page: 3 } });
       expect(result).toEqual([]);
     });
 
@@ -668,14 +664,14 @@ describe('FundraisersResource', () => {
 
       expect(results0).toEqual(page0Data);
       expect(results1).toEqual(page1Data);
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding', {
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-search', {
         searchParams: {
           page: 0,
         name: 'Company',
       },
       }
 );
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crowdfunding', {
+      expect(mockClient.get).toHaveBeenCalledWith('crowdfunding-offerings-search', {
         searchParams: {
           page: 1,
         name: 'Company',
@@ -708,7 +704,7 @@ describe('FundraisersResource', () => {
       vi.mocked(mockClient.get).mockResolvedValue([]);
 
       await fundraisers.searchCrowdfunding('Test Company', '0001234567', 2);
-      expect(mockClient.get).toHaveBeenLastCalledWith('v4/crowdfunding', {
+      expect(mockClient.get).toHaveBeenLastCalledWith('crowdfunding-offerings-search', {
         searchParams: {
           page: 2,
           name: 'Test Company',
@@ -717,7 +713,7 @@ describe('FundraisersResource', () => {
       });
 
       await fundraisers.searchEquity(undefined, '0009876543', 0);
-      expect(mockClient.get).toHaveBeenLastCalledWith('v4/fundraising', {
+      expect(mockClient.get).toHaveBeenLastCalledWith('fundraising-search', {
         searchParams: {
           page: 0,
           cik: '0009876543',
@@ -725,7 +721,7 @@ describe('FundraisersResource', () => {
       });
 
       await fundraisers.searchCrowdfunding('Only Name');
-      expect(mockClient.get).toHaveBeenLastCalledWith('v4/crowdfunding', {
+      expect(mockClient.get).toHaveBeenLastCalledWith('crowdfunding-offerings-search', {
         searchParams: {
           page: 0,
           name: 'Only Name',

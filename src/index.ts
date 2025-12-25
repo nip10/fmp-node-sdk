@@ -146,14 +146,15 @@ export type {
   StockScreenerParams,
   StockScreenerResult,
   ExchangeSymbol,
+  // Financial statement growth types
+  IncomeStatementGrowth,
+  BalanceSheetGrowth,
+  CashFlowStatementGrowth,
 } from './types/index.js';
 
 // Export bulk types
 export type {
   EarningsSurprise,
-  IncomeStatementGrowth,
-  BalanceSheetGrowth,
-  CashFlowStatementGrowth,
   EODPrice,
 } from './resources/bulk.js';
 

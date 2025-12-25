@@ -60,13 +60,12 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getEstimates('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/analyst-estimates', {
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-estimates', {
         searchParams: {
           symbol: 'AAPL',
-        period: 'annual',
-      },
-      }
-);
+          period: 'annual',
+        },
+      });
       expect(result).toEqual(mockEstimates);
     });
 
@@ -75,13 +74,12 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getEstimates('AAPL', 'quarter');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/analyst-estimates', {
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-estimates', {
         searchParams: {
           symbol: 'AAPL',
-        period: 'quarter',
-      },
-      }
-);
+          period: 'quarter',
+        },
+      });
       expect(result).toEqual(mockEstimates);
     });
 
@@ -90,14 +88,13 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getEstimates('AAPL', 'annual', 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/analyst-estimates', {
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-estimates', {
         searchParams: {
           symbol: 'AAPL',
-        period: 'annual',
-        limit: 10,
-      },
-      }
-);
+          period: 'annual',
+          limit: 10,
+        },
+      });
       expect(result).toEqual(mockEstimates);
     });
 
@@ -106,13 +103,12 @@ describe('AnalystResource', () => {
 
       await analyst.getEstimates('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/analyst-estimates', {
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-estimates', {
         searchParams: {
           symbol: 'AAPL',
-        period: 'annual',
-      },
-      }
-);
+          period: 'annual',
+        },
+      });
     });
 
     it('should not include limit parameter when not provided', async () => {
@@ -120,13 +116,12 @@ describe('AnalystResource', () => {
 
       await analyst.getEstimates('AAPL', 'annual');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/analyst-estimates', {
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-estimates', {
         searchParams: {
           symbol: 'AAPL',
-        period: 'annual',
-      },
-      }
-);
+          period: 'annual',
+        },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -159,12 +154,11 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getPriceTargets('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/price-target', {
+      expect(mockClient.get).toHaveBeenCalledWith('price-target', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPriceTargets);
     });
 
@@ -173,12 +167,11 @@ describe('AnalystResource', () => {
 
       await analyst.getPriceTargets('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/price-target', {
+      expect(mockClient.get).toHaveBeenCalledWith('price-target', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle authentication errors', async () => {
@@ -212,12 +205,11 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getPriceTargetSummary('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/price-target-summary', {
+      expect(mockClient.get).toHaveBeenCalledWith('price-target-summary', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockSummary[0]);
     });
 
@@ -235,12 +227,11 @@ describe('AnalystResource', () => {
 
       await analyst.getPriceTargetSummary('tsla');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/price-target-summary', {
+      expect(mockClient.get).toHaveBeenCalledWith('price-target-summary', {
         searchParams: {
           symbol: 'TSLA',
-      },
-      }
-);
+        },
+      });
     });
   });
 
@@ -260,12 +251,11 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getPriceTargetConsensus('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/price-target-consensus', {
+      expect(mockClient.get).toHaveBeenCalledWith('price-target-consensus', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockConsensus[0]);
     });
 
@@ -283,12 +273,11 @@ describe('AnalystResource', () => {
 
       await analyst.getPriceTargetConsensus('msft');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/price-target-consensus', {
+      expect(mockClient.get).toHaveBeenCalledWith('price-target-consensus', {
         searchParams: {
           symbol: 'MSFT',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle rate limit errors', async () => {
@@ -319,20 +308,20 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getRecommendations('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-stock-recommendations/AAPL'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-stock-recommendations', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockRecommendations);
     });
 
-    it('should normalize symbol to uppercase in URL', async () => {
+    it('should normalize symbol to uppercase', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockRecommendations);
 
       await analyst.getRecommendations('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-stock-recommendations/AAPL'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-stock-recommendations', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle mixed case symbols', async () => {
@@ -340,9 +329,9 @@ describe('AnalystResource', () => {
 
       await analyst.getRecommendations('AaPl');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-stock-recommendations/AAPL'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-stock-recommendations', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
   });
 
@@ -369,12 +358,11 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getGrades('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/grade', {
+      expect(mockClient.get).toHaveBeenCalledWith('grades', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockGrades);
     });
 
@@ -383,13 +371,12 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getGrades('AAPL', 5);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/grade', {
+      expect(mockClient.get).toHaveBeenCalledWith('grades', {
         searchParams: {
           symbol: 'AAPL',
-        limit: 5,
-      },
-      }
-);
+          limit: 5,
+        },
+      });
       expect(result).toEqual(mockGrades);
     });
 
@@ -398,13 +385,12 @@ describe('AnalystResource', () => {
 
       await analyst.getGrades('googl', 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/grade', {
+      expect(mockClient.get).toHaveBeenCalledWith('grades', {
         searchParams: {
           symbol: 'GOOGL',
-        limit: 10,
-      },
-      }
-);
+          limit: 10,
+        },
+      });
     });
 
     it('should not include limit parameter when not provided', async () => {
@@ -421,12 +407,11 @@ describe('AnalystResource', () => {
 
       await analyst.getGrades('AAPL', 0);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/grade', {
+      expect(mockClient.get).toHaveBeenCalledWith('grades', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
     });
   });
 
@@ -448,15 +433,11 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getUpgradesDowngradesConsensus('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/upgrades-downgrades-consensus',
-        {
-          searchParams: {
-            symbol: 'AAPL',
+      expect(mockClient.get).toHaveBeenCalledWith('grades-consensus', {
+        searchParams: {
+          symbol: 'AAPL',
         },
-        }
-
-      );
+      });
       expect(result).toEqual(mockConsensus[0]);
     });
 
@@ -474,15 +455,11 @@ describe('AnalystResource', () => {
 
       await analyst.getUpgradesDowngradesConsensus('nvda');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/upgrades-downgrades-consensus',
-        {
-          searchParams: {
-            symbol: 'NVDA',
+      expect(mockClient.get).toHaveBeenCalledWith('grades-consensus', {
+        searchParams: {
+          symbol: 'NVDA',
         },
-        }
-
-      );
+      });
     });
   });
 
@@ -504,7 +481,9 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getRatingsSnapshot('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/rating/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('rating', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockRatings[0]);
     });
 
@@ -517,12 +496,14 @@ describe('AnalystResource', () => {
       expect(Array.isArray(result)).toBe(false);
     });
 
-    it('should normalize symbol to uppercase in URL', async () => {
+    it('should normalize symbol to uppercase', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockRatings);
 
       await analyst.getRatingsSnapshot('meta');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/rating/META');
+      expect(mockClient.get).toHaveBeenCalledWith('rating', {
+        searchParams: { symbol: 'META' },
+      });
     });
   });
 
@@ -556,10 +537,9 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getHistoricalGrades('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-rating/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('grades-historical', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockHistoricalGrades);
     });
 
@@ -568,26 +548,26 @@ describe('AnalystResource', () => {
 
       const result = await analyst.getHistoricalGrades('AAPL', 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-rating/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('grades-historical', {
         searchParams: {
+          symbol: 'AAPL',
           limit: 10,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockHistoricalGrades);
     });
 
-    it('should normalize symbol to uppercase in URL', async () => {
+    it('should normalize symbol to uppercase', async () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockHistoricalGrades);
 
       await analyst.getHistoricalGrades('amzn', 20);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-rating/AMZN', {
+      expect(mockClient.get).toHaveBeenCalledWith('grades-historical', {
         searchParams: {
+          symbol: 'AMZN',
           limit: 20,
-      },
-      }
-);
+        },
+      });
     });
 
     it('should not include limit parameter when not provided', async () => {
@@ -595,8 +575,9 @@ describe('AnalystResource', () => {
 
       await analyst.getHistoricalGrades('AAPL');
 
-      const call = vi.mocked(mockClient.get).mock.calls[0];
-      expect(call[1]).toEqual({ searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('grades-historical', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle limit of 0', async () => {
@@ -604,10 +585,9 @@ describe('AnalystResource', () => {
 
       await analyst.getHistoricalGrades('AAPL', 0);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-rating/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('grades-historical', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle large limit values', async () => {
@@ -615,12 +595,12 @@ describe('AnalystResource', () => {
 
       await analyst.getHistoricalGrades('AAPL', 1000);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-rating/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('grades-historical', {
         searchParams: {
+          symbol: 'AAPL',
           limit: 1000,
-      },
-      }
-);
+        },
+      });
     });
   });
 
@@ -668,7 +648,7 @@ describe('AnalystResource', () => {
     it('should handle already uppercase symbols', async () => {
       await analyst.getEstimates('AAPL');
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-estimates',
+        'analyst-estimates',
         expect.objectContaining({
           searchParams: expect.objectContaining({ symbol: 'AAPL' })
         })
@@ -678,7 +658,7 @@ describe('AnalystResource', () => {
     it('should handle lowercase symbols', async () => {
       await analyst.getEstimates('aapl');
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-estimates',
+        'analyst-estimates',
         expect.objectContaining({
           searchParams: expect.objectContaining({ symbol: 'AAPL' })
         })
@@ -688,7 +668,7 @@ describe('AnalystResource', () => {
     it('should handle mixed case symbols', async () => {
       await analyst.getEstimates('AaPl');
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-estimates',
+        'analyst-estimates',
         expect.objectContaining({
           searchParams: expect.objectContaining({ symbol: 'AAPL' })
         })
@@ -698,7 +678,7 @@ describe('AnalystResource', () => {
     it('should handle symbols with special characters', async () => {
       await analyst.getEstimates('BRK.B');
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-estimates',
+        'analyst-estimates',
         expect.objectContaining({
           searchParams: expect.objectContaining({ symbol: 'BRK.B' })
         })
@@ -708,7 +688,7 @@ describe('AnalystResource', () => {
     it('should handle symbols with hyphens', async () => {
       await analyst.getEstimates('some-etf');
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-estimates',
+        'analyst-estimates',
         expect.objectContaining({
           searchParams: expect.objectContaining({ symbol: 'SOME-ETF' })
         })
@@ -724,7 +704,7 @@ describe('AnalystResource', () => {
     it('should default to annual period', async () => {
       await analyst.getEstimates('AAPL');
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-estimates',
+        'analyst-estimates',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 'annual' })
         })
@@ -734,7 +714,7 @@ describe('AnalystResource', () => {
     it('should accept annual period explicitly', async () => {
       await analyst.getEstimates('AAPL', 'annual');
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-estimates',
+        'analyst-estimates',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 'annual' })
         })
@@ -744,7 +724,7 @@ describe('AnalystResource', () => {
     it('should accept quarter period', async () => {
       await analyst.getEstimates('AAPL', 'quarter');
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/analyst-estimates',
+        'analyst-estimates',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 'quarter' })
         })
@@ -753,14 +733,13 @@ describe('AnalystResource', () => {
 
     it('should combine period with limit', async () => {
       await analyst.getEstimates('AAPL', 'quarter', 5);
-      expect(mockClient.get).toHaveBeenCalledWith('v3/analyst-estimates', {
+      expect(mockClient.get).toHaveBeenCalledWith('analyst-estimates', {
         searchParams: {
           symbol: 'AAPL',
-        period: 'quarter',
-        limit: 5,
-      },
-      }
-);
+          period: 'quarter',
+          limit: 5,
+        },
+      });
     });
   });
 
@@ -784,7 +763,7 @@ describe('AnalystResource', () => {
     it('should include limit when positive number', async () => {
       await analyst.getGrades('AAPL', 10);
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/grade',
+        'grades',
         expect.objectContaining({
           searchParams: expect.objectContaining({ limit: 10, symbol: 'AAPL' })
         })
@@ -794,7 +773,7 @@ describe('AnalystResource', () => {
     it('should handle limit value of 1', async () => {
       await analyst.getHistoricalGrades('AAPL', 1);
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-rating/AAPL',
+        'grades-historical',
         expect.objectContaining({
           searchParams: expect.objectContaining({ limit: 1 })
         })

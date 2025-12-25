@@ -9,7 +9,7 @@ export interface DCFValuation {
   symbol: string;
   date: string;
   dcf: number;
-  'Stock Price': number;
+  stockPrice: number | null;
 }
 
 /**
@@ -19,7 +19,7 @@ export interface LeveredDCF {
   symbol: string;
   date: string;
   dcf: number;
-  'Stock Price': number;
+  stockPrice: number | null;
 }
 
 /**

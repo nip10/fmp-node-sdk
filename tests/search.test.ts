@@ -47,7 +47,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.searchBySymbol('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-ticker', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-symbol', {
         searchParams: {
           query: 'AAPL',
         limit: 10,
@@ -62,7 +62,7 @@ describe('SearchResource', () => {
 
       await searchResource.searchBySymbol('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-ticker', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-symbol', {
         searchParams: {
           query: 'AAPL',
         limit: 10,
@@ -76,7 +76,7 @@ describe('SearchResource', () => {
 
       await searchResource.searchBySymbol('AAPL', 20);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-ticker', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-symbol', {
         searchParams: {
           query: 'AAPL',
         limit: 20,
@@ -90,7 +90,7 @@ describe('SearchResource', () => {
 
       await searchResource.searchBySymbol('AAPL', 10, 'NASDAQ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-ticker', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-symbol', {
         searchParams: {
           query: 'AAPL',
         limit: 10,
@@ -105,7 +105,7 @@ describe('SearchResource', () => {
 
       await searchResource.searchBySymbol('AAPL', 10, 'nasdaq');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-ticker', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-symbol', {
         searchParams: {
           query: 'AAPL',
         limit: 10,
@@ -173,7 +173,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.searchByName('Apple');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-name', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-name', {
         searchParams: {
           query: 'Apple',
         limit: 10,
@@ -188,7 +188,7 @@ describe('SearchResource', () => {
 
       await searchResource.searchByName('apple');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-name', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-name', {
         searchParams: {
           query: 'apple',
         limit: 10,
@@ -202,7 +202,7 @@ describe('SearchResource', () => {
 
       await searchResource.searchByName('Apple', 50);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-name', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-name', {
         searchParams: {
           query: 'Apple',
         limit: 50,
@@ -216,7 +216,7 @@ describe('SearchResource', () => {
 
       await searchResource.searchByName('Apple', 10, 'NASDAQ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-name', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-name', {
         searchParams: {
           query: 'Apple',
         limit: 10,
@@ -231,7 +231,7 @@ describe('SearchResource', () => {
 
       await searchResource.searchByName('Apple', 10, 'nyse');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-name', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-name', {
         searchParams: {
           query: 'Apple',
         limit: 10,
@@ -288,7 +288,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.searchByCIK('0000320193');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik/0000320193');
+      expect(mockClient.get).toHaveBeenCalledWith('search-cik', { searchParams: { cik: '0000320193' } });
       expect(result).toEqual(mockCIKResults);
     });
 
@@ -303,7 +303,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.searchByCIK('320193');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik/320193');
+      expect(mockClient.get).toHaveBeenCalledWith('search-cik', { searchParams: { cik: '320193' } });
       expect(result).toEqual(results);
     });
 
@@ -332,7 +332,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.searchByCUSIP('037833100');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cusip/037833100');
+      expect(mockClient.get).toHaveBeenCalledWith('search-cusip', { searchParams: { cusip: '037833100' } });
       expect(result).toEqual(mockCUSIPResults);
     });
 
@@ -341,7 +341,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.searchByCUSIP('037833100');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cusip/037833100');
+      expect(mockClient.get).toHaveBeenCalledWith('search-cusip', { searchParams: { cusip: '037833100' } });
       expect(result).toHaveLength(1);
       expect(result[0].cusip).toBe('037833100');
     });
@@ -371,7 +371,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.searchByISIN('US0378331005');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-isin', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-isin', {
         searchParams: {
           isin: 'US0378331005',
       },
@@ -395,7 +395,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.searchByISIN('CH0038863350');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search-isin', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-isin', {
         searchParams: {
           isin: 'CH0038863350',
       },
@@ -457,7 +457,7 @@ describe('SearchResource', () => {
         marketCapLowerThan: 5000000000000,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           marketCapMoreThan: 1000000000000,
         marketCapLowerThan: 5000000000000,
@@ -475,7 +475,7 @@ describe('SearchResource', () => {
         priceLowerThan: 500,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           priceMoreThan: 100,
         priceLowerThan: 500,
@@ -492,7 +492,7 @@ describe('SearchResource', () => {
         betaLowerThan: 1.0,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           betaMoreThan: 0.5,
         betaLowerThan: 1.0,
@@ -509,7 +509,7 @@ describe('SearchResource', () => {
         volumeLowerThan: 100000000,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           volumeMoreThan: 10000000,
         volumeLowerThan: 100000000,
@@ -526,7 +526,7 @@ describe('SearchResource', () => {
         dividendLowerThan: 5,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           dividendMoreThan: 1,
         dividendLowerThan: 5,
@@ -542,7 +542,7 @@ describe('SearchResource', () => {
         sector: 'Technology',
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           sector: 'Technology',
       },
@@ -557,7 +557,7 @@ describe('SearchResource', () => {
         industry: 'Consumer Electronics',
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           industry: 'Consumer Electronics',
       },
@@ -572,7 +572,7 @@ describe('SearchResource', () => {
         country: 'US',
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           country: 'US',
       },
@@ -587,7 +587,7 @@ describe('SearchResource', () => {
         exchange: 'NASDAQ',
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           exchange: 'NASDAQ',
       },
@@ -602,7 +602,7 @@ describe('SearchResource', () => {
         exchange: 'nasdaq',
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           exchange: 'NASDAQ',
       },
@@ -636,7 +636,7 @@ describe('SearchResource', () => {
         isEtf: true,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           isEtf: true,
       },
@@ -651,7 +651,7 @@ describe('SearchResource', () => {
         isActivelyTrading: true,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           isActivelyTrading: true,
       },
@@ -667,7 +667,7 @@ describe('SearchResource', () => {
         limit: 100,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           sector: 'Technology',
         limit: 100,
@@ -689,7 +689,7 @@ describe('SearchResource', () => {
         limit: 50,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           marketCapMoreThan: 100000000000,
         sector: 'Technology',
@@ -708,7 +708,7 @@ describe('SearchResource', () => {
 
       await searchResource.screenStocks({});
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', { searchParams: {} });
     });
 
     it('should screen stocks with no parameters', async () => {
@@ -716,7 +716,7 @@ describe('SearchResource', () => {
 
       await searchResource.screenStocks();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', { searchParams: {} });
     });
 
     it('should not include undefined parameters', async () => {
@@ -728,7 +728,7 @@ describe('SearchResource', () => {
         marketCapMoreThan: undefined,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           sector: 'Technology',
       },
@@ -744,7 +744,7 @@ describe('SearchResource', () => {
         volumeMoreThan: 0,
       });
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-screener', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-screener', {
         searchParams: {
           priceMoreThan: 0,
         volumeMoreThan: 0,
@@ -805,7 +805,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('NASDAQ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/NASDAQ');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'NASDAQ' } });
       expect(result).toEqual(mockNasdaqSymbols);
     });
 
@@ -814,7 +814,7 @@ describe('SearchResource', () => {
 
       await searchResource.getExchangeSymbols('nasdaq');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/NASDAQ');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'NASDAQ' } });
     });
 
     it('should get NYSE symbols', async () => {
@@ -833,7 +833,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('NYSE');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/NYSE');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'NYSE' } });
       expect(result).toEqual(nyseSymbols);
     });
 
@@ -861,7 +861,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('ETF');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/ETF');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'ETF' } });
       expect(result).toEqual(etfSymbols);
     });
 
@@ -881,7 +881,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('AMEX');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/AMEX');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'AMEX' } });
       expect(result).toEqual(amexSymbols);
     });
 
@@ -901,7 +901,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('MUTUAL_FUND');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/MUTUAL_FUND');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'MUTUAL_FUND' } });
       expect(result).toEqual(mutualFundSymbols);
     });
 
@@ -921,7 +921,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('COMMODITY');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/COMMODITY');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'COMMODITY' } });
       expect(result).toEqual(commoditySymbols);
     });
 
@@ -941,7 +941,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('INDEX');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/INDEX');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'INDEX' } });
       expect(result).toEqual(indexSymbols);
     });
 
@@ -961,7 +961,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('CRYPTO');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/CRYPTO');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'CRYPTO' } });
       expect(result).toEqual(cryptoSymbols);
     });
 
@@ -981,7 +981,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('FOREX');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/FOREX');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'FOREX' } });
       expect(result).toEqual(forexSymbols);
     });
 
@@ -1001,7 +1001,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('TSX');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/TSX');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'TSX' } });
       expect(result).toEqual(tsxSymbols);
     });
 
@@ -1021,7 +1021,7 @@ describe('SearchResource', () => {
 
       const result = await searchResource.getExchangeSymbols('EURONEXT');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/EURONEXT');
+      expect(mockClient.get).toHaveBeenCalledWith('exchange-symbols', { searchParams: { exchange: 'EURONEXT' } });
       expect(result).toEqual(euronextSymbols);
     });
 

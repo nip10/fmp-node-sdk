@@ -39,7 +39,7 @@ export interface FMPConfig {
 
   /**
    * Base URL for the FMP API
-   * @default "https://financialmodelingprep.com/api"
+   * @default "https://financialmodelingprep.com/stable"
    */
   baseUrl?: string;
 

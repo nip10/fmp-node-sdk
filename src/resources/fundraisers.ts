@@ -17,7 +17,9 @@ export class FundraisersResource {
    * @param page - Page number (default: 0)
    */
   async getLatestCrowdfunding(page = 0): Promise<CrowdfundingRSSItem[]> {
-    return this.client.get<CrowdfundingRSSItem[]>('v4/crowdfunding-rss-feed', { searchParams: { page } });
+    return this.client.get<CrowdfundingRSSItem[]>('crowdfunding-offerings-latest', {
+      searchParams: { page },
+    });
   }
 
   /**
@@ -31,7 +33,7 @@ export class FundraisersResource {
     if (name) params.name = name;
     if (cik) params.cik = cik;
 
-    return this.client.get<Crowdfunding[]>('v4/crowdfunding', { searchParams: params });
+    return this.client.get<Crowdfunding[]>('crowdfunding-offerings-search', { searchParams: params });
   }
 
   /**
@@ -40,7 +42,9 @@ export class FundraisersResource {
    * @param page - Page number (default: 0)
    */
   async getCrowdfundingByCIK(cik: string, page = 0): Promise<Crowdfunding[]> {
-    return this.client.get<Crowdfunding[]>(`v4/crowdfunding/${cik}`, { searchParams: { page } });
+    return this.client.get<Crowdfunding[]>('crowdfunding-offerings', {
+      searchParams: { cik, page },
+    });
   }
 
   /**
@@ -48,7 +52,9 @@ export class FundraisersResource {
    * @param page - Page number (default: 0)
    */
   async getLatestEquity(page = 0): Promise<EquityOfferingRSSItem[]> {
-    return this.client.get<EquityOfferingRSSItem[]>('v4/fundraising-rss-feed', { searchParams: { page } });
+    return this.client.get<EquityOfferingRSSItem[]>('fundraising-latest', {
+      searchParams: { page },
+    });
   }
 
   /**
@@ -62,7 +68,7 @@ export class FundraisersResource {
     if (name) params.name = name;
     if (cik) params.cik = cik;
 
-    return this.client.get<EquityOffering[]>('v4/fundraising', { searchParams: params });
+    return this.client.get<EquityOffering[]>('fundraising-search', { searchParams: params });
   }
 
   /**
@@ -71,6 +77,8 @@ export class FundraisersResource {
    * @param page - Page number (default: 0)
    */
   async getEquityByCIK(cik: string, page = 0): Promise<EquityOffering[]> {
-    return this.client.get<EquityOffering[]>(`v4/fundraising/${cik}`, { searchParams: { page } });
+    return this.client.get<EquityOffering[]>('fundraising', {
+      searchParams: { cik, page },
+    });
   }
 }
