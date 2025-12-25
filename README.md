@@ -8,6 +8,8 @@
 
 TypeScript/JavaScript SDK for the [Financial Modeling Prep API](https://site.financialmodelingprep.com/) with 100% API coverage
 
+> **v2.0 Migration**: This version uses FMP's new **stable API** instead of the legacy v3/v4 endpoints. See the [CHANGELOG](./CHANGELOG.md) for migration details.
+
 ## Features
 
 - 🚀 **Modern TypeScript** - Full type safety with TypeScript
@@ -52,7 +54,7 @@ console.log(quote);
 
 // Get historical prices
 const prices = await fmp.market.getHistoricalPrices('AAPL', '2024-01-01', '2024-12-31');
-console.log(prices.historical);
+console.log(prices);
 
 // Get income statement
 const income = await fmp.financials.getIncomeStatement('AAPL', Period.Annual);
@@ -106,14 +108,15 @@ const symbols = await fmp.company.getSymbolsList();
 const nasdaqSymbols = await fmp.company.getExchangeSymbols('NASDAQ');
 
 // Search companies
-const results = await fmp.company.search('Apple', 10, 'NASDAQ');
+const results = await fmp.company.searchSymbol('Apple', 10, 'NASDAQ');
+const nameResults = await fmp.company.searchName('Apple', 10, 'NASDAQ');
 
 // Company notes and peers
 const notes = await fmp.company.getCompanyNotes('AAPL');
 const peers = await fmp.company.getStockPeers('AAPL');
 
 // Delisted companies
-const delisted = await fmp.company.getDelistedCompanies(100);
+const delisted = await fmp.company.getDelistedCompanies(0, 100);
 
 // Employee count
 const employees = await fmp.company.getEmployeeCount('AAPL');
@@ -135,6 +138,11 @@ const ma = await fmp.company.getMergerAcquisitions();
 
 // Pre/post market data
 const aftermarket = await fmp.company.getAftermarketQuote('AAPL');
+const batchAftermarket = await fmp.company.getBatchAftermarketTrades(['AAPL', 'GOOGL']);
+
+// ETF and mutual fund lists
+const etfList = await fmp.company.getETFList();
+const mutualFundList = await fmp.company.getMutualFundList();
 ```
 
 ### 2. Market Data (`fmp.market`)
@@ -221,18 +229,19 @@ Analyst estimates, price targets, recommendations, and upgrades/downgrades.
 import { Period } from 'fmp-node-sdk';
 
 // Analyst estimates
-const estimates = await fmp.analyst.getAnalystEstimates('AAPL', Period.Annual);
+const estimates = await fmp.analyst.getEstimates('AAPL', Period.Annual);
 
 // Price targets
-const targets = await fmp.analyst.getPriceTarget('AAPL');
+const targets = await fmp.analyst.getPriceTargets('AAPL');
 const targetSummary = await fmp.analyst.getPriceTargetSummary('AAPL');
 const consensus = await fmp.analyst.getPriceTargetConsensus('AAPL');
 
 // Analyst recommendations
-const recommendations = await fmp.analyst.getAnalystRecommendations('AAPL');
+const recommendations = await fmp.analyst.getRecommendations('AAPL');
 
 // Upgrades and downgrades
-const grades = await fmp.analyst.getStockGrade('AAPL');
+const grades = await fmp.analyst.getGrades('AAPL');
+const gradesSummary = await fmp.analyst.getGradesSummary('AAPL');
 const upgradesConsensus = await fmp.analyst.getUpgradesDowngradesConsensus('AAPL');
 
 // Historical ratings
@@ -288,6 +297,8 @@ const analytics = await fmp.insider.get13FWithAnalytics('0001067983', '2024-03-3
 // Portfolio analysis
 const portfolioSummary = await fmp.insider.getPortfolioHoldingsSummary('0001067983');
 const industryBreakdown = await fmp.insider.getIndustryPortfolioBreakdown('0001067983');
+const holderPerformance = await fmp.insider.getHolderPerformanceSummary('0001067983');
+const industryPerformance = await fmp.insider.getIndustryPerformanceSummary('0001067983');
 
 // Symbol ownership
 const ownership = await fmp.insider.getSymbolOwnershipPositions('AAPL');
@@ -321,6 +332,13 @@ const latest = await fmp.news.getLatestPressReleases('AAPL', 50);
 const transcript = await fmp.news.getEarningsTranscript('AAPL', 2024, 4);
 const batchTranscripts = await fmp.news.getBatchEarningsTranscripts('AAPL');
 const transcriptDates = await fmp.news.getEarningsTranscriptDates('AAPL');
+const availableSymbols = await fmp.news.getAvailableTranscriptSymbols();
+
+// News search
+const stockNewsResults = await fmp.news.searchStockNews('earnings', 50);
+const pressResults = await fmp.news.searchPressReleases('acquisition', 50);
+const cryptoResults = await fmp.news.searchCryptoNews('bitcoin', 50);
+const forexResults = await fmp.news.searchForexNews('fed', 50);
 ```
 
 ### 8. SEC Filings (`fmp.sec`)
@@ -432,12 +450,12 @@ Index constituents and historical constituent changes.
 
 ```typescript
 // Current index constituents
-const sp500 = await fmp.indexes.getConstituents('SP500');
-const nasdaq = await fmp.indexes.getConstituents('NASDAQ');
-const dowjones = await fmp.indexes.getConstituents('DOWJONES');
+const sp500 = await fmp.indexes.getSP500Constituents();
+const nasdaq = await fmp.indexes.getNASDAQConstituents();
+const dowjones = await fmp.indexes.getDowJonesConstituents();
 
 // Historical constituents
-const historical = await fmp.indexes.getHistoricalConstituents('SP500');
+const historical = await fmp.indexes.getHistoricalSP500();
 
 // Index quotes
 const quote = await fmp.indexes.getQuoteShort('^GSPC');
@@ -452,10 +470,10 @@ Commodity prices, quotes, and historical data.
 
 ```typescript
 // Commodity list
-const commodities = await fmp.commodities.getCommoditiesList();
+const commodities = await fmp.commodities.getList();
 
 // Commodity quote
-const gold = await fmp.commodities.getCommodityQuote('GCUSD');
+const gold = await fmp.commodities.getQuote('GCUSD');
 
 // Short quotes
 const quickQuote = await fmp.commodities.getQuoteShort('GCUSD');
@@ -493,9 +511,14 @@ const dcf = await fmp.valuation.getDCF('AAPL');
 
 // Levered DCF
 const leveredDCF = await fmp.valuation.getLeveredDCF('AAPL');
+const customLeveredDCF = await fmp.valuation.getCustomLeveredDCF('AAPL');
 
 // Advanced DCF
 const advancedDCF = await fmp.valuation.getAdvancedDCF('AAPL');
+
+// Historical DCF
+const historicalDCF = await fmp.valuation.getHistoricalDCF('AAPL', 'annual');
+const dailyDCF = await fmp.valuation.getHistoricalDailyDCF('AAPL', 30);
 ```
 
 ### 16. ESG Data (`fmp.esg`)
@@ -561,27 +584,20 @@ const eodPrices = await fmp.bulk.getBatchEODPrices('2024-01-15');
 const eodRange = await fmp.bulk.getBatchEODPricesRange('2024-01-01', '2024-01-31');
 
 // Earnings surprises
-const surprises = await fmp.bulk.getEarningsSurprises();
+const surprises = await fmp.bulk.getAllEarningsSurprises();
 
 // Growth metrics
-const incomeGrowth = await fmp.bulk.getIncomeStatementGrowth();
-const balanceGrowth = await fmp.bulk.getBalanceSheetGrowth();
-const cashFlowGrowth = await fmp.bulk.getCashFlowStatementGrowth();
+const incomeGrowth = await fmp.bulk.getAllIncomeStatementGrowth();
+const balanceGrowth = await fmp.bulk.getAllBalanceSheetGrowth();
+const cashFlowGrowth = await fmp.bulk.getAllCashFlowStatementGrowth();
 
 // Bulk financials
 const allIncomeStatements = await fmp.bulk.getAllIncomeStatements(Period.Annual);
 const allBalanceSheets = await fmp.bulk.getAllBalanceSheets(Period.Annual);
 const allCashFlows = await fmp.bulk.getAllCashFlowStatements(Period.Annual);
-const allRatios = await fmp.bulk.getAllFinancialRatios(Period.Annual);
-const allMetrics = await fmp.bulk.getAllKeyMetrics(Period.Annual);
-const allScores = await fmp.bulk.getAllFinancialScores();
-
-// Bulk ownership
-const allInsiderTrades = await fmp.bulk.getAllInsiderTrades();
-
-// Batch requests
-const batchQuotes = await fmp.bulk.getBatchQuotes(['AAPL', 'GOOGL', 'MSFT']);
-const batchProfiles = await fmp.bulk.getBatchProfiles(['AAPL', 'GOOGL', 'MSFT']);
+const allRatios = await fmp.bulk.getAllRatiosTTM();
+const allMetrics = await fmp.bulk.getAllKeyMetricsTTM();
+const allScores = await fmp.bulk.getAllScores();
 ```
 
 ### 20. Search & Screening (`fmp.search`)
