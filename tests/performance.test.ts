@@ -56,7 +56,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getGainers();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_market/gainers');
+      expect(mockClient.get).toHaveBeenCalledWith('stock-market-gainers');
       expect(mockClient.get).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockGainersData);
       expect(result).toHaveLength(3);
@@ -118,7 +118,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getLosers();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_market/losers');
+      expect(mockClient.get).toHaveBeenCalledWith('stock-market-losers');
       expect(mockClient.get).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockLosersData);
       expect(result).toHaveLength(2);
@@ -163,7 +163,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getMostActive();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_market/actives');
+      expect(mockClient.get).toHaveBeenCalledWith('stock-market-actives');
       expect(mockClient.get).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockMostActiveData);
       expect(result).toHaveLength(2);
@@ -211,7 +211,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getSectorPerformance();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sector-performance', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sector-performance', { searchParams: {} });
       expect(mockClient.get).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockSectorPerformanceData);
       expect(result).toHaveLength(4);
@@ -223,7 +223,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getSectorPerformance(2);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sector-performance', { searchParams: {   limit: 2 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('sector-performance', { searchParams: {   limit: 2 }, }
 );
       expect(mockClient.get).toHaveBeenCalledTimes(1);
       expect(result).toHaveLength(2);
@@ -235,7 +235,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getSectorPerformance(1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sector-performance', { searchParams: {   limit: 1 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('sector-performance', { searchParams: {   limit: 1 }, }
 );
       expect(result).toHaveLength(1);
       expect(result[0].sector).toBe('Technology');
@@ -246,7 +246,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getSectorPerformance(100);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sector-performance', { searchParams: {   limit: 100 }, }
+      expect(mockClient.get).toHaveBeenCalledWith('sector-performance', { searchParams: {   limit: 100 }, }
 );
       expect(result).toEqual(mockSectorPerformanceData);
     });
@@ -256,7 +256,7 @@ describe('PerformanceResource', () => {
 
       await performanceResource.getSectorPerformance(undefined);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sector-performance', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sector-performance', { searchParams: {} });
     });
 
     it('should return empty array when no sectors available', async () => {
@@ -305,7 +305,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getHistoricalSectorPerformance('Technology');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: 'Technology',
       },
@@ -322,7 +322,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getHistoricalSectorPerformance('Healthcare', 2);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: 'Healthcare',
         limit: 2,
@@ -340,7 +340,7 @@ describe('PerformanceResource', () => {
 
         const result = await performanceResource.getHistoricalSectorPerformance(sector);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
           searchParams: {
             sector,
         },
@@ -357,7 +357,7 @@ describe('PerformanceResource', () => {
 
       await performanceResource.getHistoricalSectorPerformance('Financial Services', 5);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: 'Financial Services',
         limit: 5,
@@ -372,7 +372,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getHistoricalSectorPerformance('Technology', 1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: 'Technology',
         limit: 1,
@@ -388,7 +388,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getHistoricalSectorPerformance('Energy', 365);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: 'Energy',
         limit: 365,
@@ -403,7 +403,7 @@ describe('PerformanceResource', () => {
 
       await performanceResource.getHistoricalSectorPerformance('Technology', undefined);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: 'Technology',
       },
@@ -462,7 +462,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getSectorPE('2024-01-15');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/sector_price_earning_ratio', {
+      expect(mockClient.get).toHaveBeenCalledWith('sector-price-earning-ratio', {
         searchParams: {
           date: '2024-01-15',
       },
@@ -478,7 +478,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getSectorPE('2024-01-15', 'NYSE');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/sector_price_earning_ratio', {
+      expect(mockClient.get).toHaveBeenCalledWith('sector-price-earning-ratio', {
         searchParams: {
           date: '2024-01-15',
         exchange: 'NYSE',
@@ -496,7 +496,7 @@ describe('PerformanceResource', () => {
 
         await performanceResource.getSectorPE('2024-01-15', exchange);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/sector_price_earning_ratio', {
+        expect(mockClient.get).toHaveBeenCalledWith('sector-price-earning-ratio', {
           searchParams: {
             date: '2024-01-15',
           exchange,
@@ -514,7 +514,7 @@ describe('PerformanceResource', () => {
 
         await performanceResource.getSectorPE(date);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/sector_price_earning_ratio', {
+        expect(mockClient.get).toHaveBeenCalledWith('sector-price-earning-ratio', {
           searchParams: {
             date,
         },
@@ -528,7 +528,7 @@ describe('PerformanceResource', () => {
 
       await performanceResource.getSectorPE('2024-01-15', undefined);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/sector_price_earning_ratio', {
+      expect(mockClient.get).toHaveBeenCalledWith('sector-price-earning-ratio', {
         searchParams: {
           date: '2024-01-15',
       },
@@ -603,7 +603,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getIndustryPE('2024-01-15');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/industry_price_earning_ratio', {
+      expect(mockClient.get).toHaveBeenCalledWith('industry-price-earning-ratio', {
         searchParams: {
           date: '2024-01-15',
       },
@@ -617,7 +617,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getIndustryPE('2024-01-15', 'NASDAQ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/industry_price_earning_ratio', {
+      expect(mockClient.get).toHaveBeenCalledWith('industry-price-earning-ratio', {
         searchParams: {
           date: '2024-01-15',
         exchange: 'NASDAQ',
@@ -659,7 +659,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getHistoricalSectorPE('Technology');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/historical-sector-pe', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-pe', {
         searchParams: {
           sector: 'Technology',
       },
@@ -674,7 +674,7 @@ describe('PerformanceResource', () => {
 
       await performanceResource.getHistoricalSectorPE('Financial Services');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/historical-sector-pe', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-pe', {
         searchParams: {
           sector: 'Financial Services',
       },
@@ -719,7 +719,7 @@ describe('PerformanceResource', () => {
 
       const result = await performanceResource.getHistoricalIndustryPE('Software');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/historical-industry-pe', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-industry-pe', {
         searchParams: {
           industry: 'Software',
       },
@@ -734,7 +734,7 @@ describe('PerformanceResource', () => {
 
       await performanceResource.getHistoricalIndustryPE('Semiconductors');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/historical-industry-pe', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-industry-pe', {
         searchParams: {
           industry: 'Semiconductors',
       },
@@ -809,7 +809,7 @@ describe('PerformanceResource', () => {
       await performanceResource.getSectorPerformance(0);
 
       // Note: limit of 0 is falsy, so it should not be included
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sector-performance', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sector-performance', { searchParams: {} });
     });
 
     it('should handle zero limit for getHistoricalSectorPerformance', async () => {
@@ -818,7 +818,7 @@ describe('PerformanceResource', () => {
       await performanceResource.getHistoricalSectorPerformance('Technology', 0);
 
       // Note: limit of 0 is falsy, so it should not be included
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: 'Technology',
       },
@@ -831,7 +831,7 @@ describe('PerformanceResource', () => {
 
       await performanceResource.getHistoricalSectorPerformance('');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: '',
       },
@@ -845,7 +845,7 @@ describe('PerformanceResource', () => {
       await performanceResource.getSectorPE('2024-01-15', '');
 
       // Note: empty string is falsy, so exchange parameter should not be included
-      expect(mockClient.get).toHaveBeenCalledWith('v4/sector_price_earning_ratio', {
+      expect(mockClient.get).toHaveBeenCalledWith('sector-price-earning-ratio', {
         searchParams: {
           date: '2024-01-15',
       },
@@ -858,7 +858,7 @@ describe('PerformanceResource', () => {
 
       await performanceResource.getHistoricalSectorPerformance('Real Estate & Construction');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-sector-performance', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-sector-performance', {
         searchParams: {
           sector: 'Real Estate & Construction',
       },

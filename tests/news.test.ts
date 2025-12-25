@@ -50,7 +50,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getFMPArticles();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fmp/articles', {
+      expect(mockClient.get).toHaveBeenCalledWith('fmp-articles', {
         searchParams: {
           page: 0,
         size: 50,
@@ -65,7 +65,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getFMPArticles(2);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fmp/articles', {
+      expect(mockClient.get).toHaveBeenCalledWith('fmp-articles', {
         searchParams: {
           page: 2,
         size: 50,
@@ -80,7 +80,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getFMPArticles(0, 100);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fmp/articles', {
+      expect(mockClient.get).toHaveBeenCalledWith('fmp-articles', {
         searchParams: {
           page: 0,
         size: 100,
@@ -95,7 +95,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getFMPArticles(5, 25);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/fmp/articles', {
+      expect(mockClient.get).toHaveBeenCalledWith('fmp-articles', {
         searchParams: {
           page: 5,
         size: 25,
@@ -139,7 +139,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getGeneralNews();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/general_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('general-news', {
         searchParams: {
           page: 0,
       },
@@ -153,7 +153,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getGeneralNews(3);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/general_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('general-news', {
         searchParams: {
           page: 3,
       },
@@ -196,7 +196,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getCryptoNews();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crypto_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('crypto-news', {
         searchParams: {
           page: 0,
         limit: 50,
@@ -211,7 +211,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getCryptoNews(2);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crypto_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('crypto-news', {
         searchParams: {
           page: 2,
         limit: 50,
@@ -226,7 +226,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getCryptoNews(0, 100);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/crypto_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('crypto-news', {
         searchParams: {
           page: 0,
         limit: 100,
@@ -270,7 +270,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getForexNews();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/forex_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('forex-news', {
         searchParams: {
           page: 0,
         limit: 50,
@@ -285,7 +285,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getForexNews(3);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/forex_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('forex-news', {
         searchParams: {
           page: 3,
         limit: 50,
@@ -300,7 +300,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getForexNews(0, 75);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/forex_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('forex-news', {
         searchParams: {
           page: 0,
         limit: 75,
@@ -353,7 +353,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getStockNews();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
         searchParams: {
           limit: 50,
       },
@@ -367,7 +367,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getStockNews('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
         searchParams: {
           limit: 50,
         tickers: 'AAPL',
@@ -382,7 +382,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getStockNews('AAPL,MSFT,GOOGL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
         searchParams: {
           limit: 50,
         tickers: 'AAPL,MSFT,GOOGL',
@@ -397,7 +397,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getStockNews(undefined, 100);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
         searchParams: {
           limit: 100,
       },
@@ -411,7 +411,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getStockNews('TSLA,NVDA', 25);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
         searchParams: {
           limit: 25,
         tickers: 'TSLA,NVDA',
@@ -426,7 +426,7 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getStockNews('');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+      expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
         searchParams: {
           limit: 50,
       },
@@ -472,12 +472,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getPressReleases('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'AAPL',
           page: 0,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -486,12 +486,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getPressReleases('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'AAPL',
           page: 0,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -500,12 +500,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getPressReleases('MSFT', 3);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/MSFT', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'MSFT',
           page: 3,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -514,12 +514,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getPressReleases('googl', 1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/GOOGL', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'GOOGL',
           page: 1,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -528,12 +528,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getPressReleases('TsLa');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/TSLA', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'TSLA',
           page: 0,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -568,12 +568,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getLatestPressReleases('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'AAPL',
           limit: 50,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -582,12 +582,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getLatestPressReleases('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'AAPL',
           limit: 50,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -596,12 +596,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getLatestPressReleases('MSFT', 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/MSFT', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'MSFT',
           limit: 10,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -610,12 +610,12 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getLatestPressReleases('GOOGL', 200);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/GOOGL', {
+      expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
         searchParams: {
+          symbol: 'GOOGL',
           limit: 200,
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockPressReleases);
     });
 
@@ -651,13 +651,13 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscript('AAPL', 2023, 4);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
         searchParams: {
+          symbol: 'AAPL',
           year: 2023,
-        quarter: 4,
-      },
-      }
-);
+          quarter: 4,
+        },
+      });
       expect(result).toEqual(mockTranscript);
     });
 
@@ -666,13 +666,13 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscript('aapl', 2023, 4);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
         searchParams: {
+          symbol: 'AAPL',
           year: 2023,
-        quarter: 4,
-      },
-      }
-);
+          quarter: 4,
+        },
+      });
       expect(result).toEqual(mockTranscript);
     });
 
@@ -681,13 +681,13 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscript('MSFT', 2024, 1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/MSFT', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
         searchParams: {
+          symbol: 'MSFT',
           year: 2024,
-        quarter: 1,
-      },
-      }
-);
+          quarter: 1,
+        },
+      });
       expect(result).toEqual(mockTranscript);
     });
 
@@ -696,13 +696,13 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscript('GOOGL', 2024, 2);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/GOOGL', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
         searchParams: {
+          symbol: 'GOOGL',
           year: 2024,
-        quarter: 2,
-      },
-      }
-);
+          quarter: 2,
+        },
+      });
       expect(result).toEqual(mockTranscript);
     });
 
@@ -711,13 +711,13 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscript('AMZN', 2024, 3);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/AMZN', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
         searchParams: {
+          symbol: 'AMZN',
           year: 2024,
-        quarter: 3,
-      },
-      }
-);
+          quarter: 3,
+        },
+      });
       expect(result).toEqual(mockTranscript);
     });
 
@@ -726,13 +726,13 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscript('TSLA', 2020, 1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/TSLA', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
         searchParams: {
+          symbol: 'TSLA',
           year: 2020,
-        quarter: 1,
-      },
-      }
-);
+          quarter: 1,
+        },
+      });
       expect(result).toEqual(mockTranscript);
     });
 
@@ -741,13 +741,13 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscript('NvDa', 2023, 4);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/NVDA', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
         searchParams: {
+          symbol: 'NVDA',
           year: 2023,
-        quarter: 4,
-      },
-      }
-);
+          quarter: 4,
+        },
+      });
       expect(result).toEqual(mockTranscript);
     });
 
@@ -782,12 +782,11 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscriptDates('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning_call_transcript', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript-dates', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockDates);
     });
 
@@ -796,12 +795,11 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscriptDates('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning_call_transcript', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript-dates', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockDates);
     });
 
@@ -810,12 +808,11 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscriptDates('msft');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning_call_transcript', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript-dates', {
         searchParams: {
           symbol: 'MSFT',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockDates);
     });
 
@@ -824,12 +821,11 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getEarningsTranscriptDates('GoOgL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning_call_transcript', {
+      expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript-dates', {
         searchParams: {
           symbol: 'GOOGL',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockDates);
     });
 
@@ -881,7 +877,9 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getBatchEarningsTranscripts('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch_earning_call_transcript/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-earning-call-transcript', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockBatchTranscripts);
     });
 
@@ -890,7 +888,9 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getBatchEarningsTranscripts('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch_earning_call_transcript/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-earning-call-transcript', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockBatchTranscripts);
     });
 
@@ -899,7 +899,9 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getBatchEarningsTranscripts('msft');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch_earning_call_transcript/MSFT');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-earning-call-transcript', {
+        searchParams: { symbol: 'MSFT' },
+      });
       expect(result).toEqual(mockBatchTranscripts);
     });
 
@@ -908,7 +910,9 @@ describe('NewsResource', () => {
 
       const result = await newsResource.getBatchEarningsTranscripts('TsLa');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch_earning_call_transcript/TSLA');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-earning-call-transcript', {
+        searchParams: { symbol: 'TSLA' },
+      });
       expect(result).toEqual(mockBatchTranscripts);
     });
 
@@ -938,12 +942,12 @@ describe('NewsResource', () => {
         await newsResource.getPressReleases('  AAPL  ');
 
         // toUpperCase preserves spaces, so the endpoint will include them
-        expect(mockClient.get).toHaveBeenCalledWith('v3/press-releases/  AAPL  ', {
+        expect(mockClient.get).toHaveBeenCalledWith('press-releases', {
           searchParams: {
+            symbol: '  AAPL  ',
             page: 0,
-        },
-        }
-);
+          },
+        });
       });
 
       it('should handle symbol with special characters', async () => {
@@ -951,13 +955,13 @@ describe('NewsResource', () => {
 
         await newsResource.getEarningsTranscript('BRK.B', 2023, 4);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/BRK.B', {
+        expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
           searchParams: {
+            symbol: 'BRK.B',
             year: 2023,
-          quarter: 4,
-        },
-        }
-);
+            quarter: 4,
+          },
+        });
       });
     });
 
@@ -967,7 +971,7 @@ describe('NewsResource', () => {
 
         await newsResource.getFMPArticles(0, 50);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/fmp/articles', {
+        expect(mockClient.get).toHaveBeenCalledWith('fmp-articles', {
           searchParams: {
             page: 0,
           size: 50,
@@ -981,7 +985,7 @@ describe('NewsResource', () => {
 
         await newsResource.getFMPArticles(9999, 10);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/fmp/articles', {
+        expect(mockClient.get).toHaveBeenCalledWith('fmp-articles', {
           searchParams: {
             page: 9999,
           size: 10,
@@ -995,7 +999,7 @@ describe('NewsResource', () => {
 
         await newsResource.getStockNews('AAPL', 1);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+        expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
           searchParams: {
             limit: 1,
           tickers: 'AAPL',
@@ -1011,13 +1015,13 @@ describe('NewsResource', () => {
 
         await newsResource.getEarningsTranscript('AAPL', 2024, 1);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/AAPL', {
+        expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
           searchParams: {
+            symbol: 'AAPL',
             year: 2024,
-          quarter: 1,
-        },
-        }
-);
+            quarter: 1,
+          },
+        });
       });
 
       it('should pass quarter 4 correctly', async () => {
@@ -1025,13 +1029,13 @@ describe('NewsResource', () => {
 
         await newsResource.getEarningsTranscript('AAPL', 2024, 4);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/earning_call_transcript/AAPL', {
+        expect(mockClient.get).toHaveBeenCalledWith('earning-call-transcript', {
           searchParams: {
+            symbol: 'AAPL',
             year: 2024,
-          quarter: 4,
-        },
-        }
-);
+            quarter: 4,
+          },
+        });
       });
     });
 
@@ -1073,7 +1077,7 @@ describe('NewsResource', () => {
 
         await newsResource.getStockNews('AAPL,MSFT');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+        expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
           searchParams: {
             limit: 50,
           tickers: 'AAPL,MSFT',
@@ -1087,7 +1091,7 @@ describe('NewsResource', () => {
 
         await newsResource.getStockNews('AAPL,MSFT,GOOGL,AMZN,TSLA,NVDA,META,NFLX');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+        expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
           searchParams: {
             limit: 50,
           tickers: 'AAPL,MSFT,GOOGL,AMZN,TSLA,NVDA,META,NFLX',
@@ -1101,7 +1105,7 @@ describe('NewsResource', () => {
 
         await newsResource.getStockNews('AAPL,MSFT,GOOGL');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/stock_news', {
+        expect(mockClient.get).toHaveBeenCalledWith('stock-news', {
           searchParams: {
             limit: 50,
           tickers: 'AAPL,MSFT,GOOGL',

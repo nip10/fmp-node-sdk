@@ -19,42 +19,42 @@ export class IndexesResource {
    * Get S&P 500 constituents
    */
   async getSP500Constituents(): Promise<IndexConstituent[]> {
-    return this.client.get<IndexConstituent[]>('v3/sp500_constituent');
+    return this.client.get<IndexConstituent[]>('sp500-constituent');
   }
 
   /**
    * Get NASDAQ constituents
    */
   async getNASDAQConstituents(): Promise<IndexConstituent[]> {
-    return this.client.get<IndexConstituent[]>('v3/nasdaq_constituent');
+    return this.client.get<IndexConstituent[]>('nasdaq-constituent');
   }
 
   /**
    * Get Dow Jones constituents
    */
   async getDowJonesConstituents(): Promise<IndexConstituent[]> {
-    return this.client.get<IndexConstituent[]>('v3/dowjones_constituent');
+    return this.client.get<IndexConstituent[]>('dowjones-constituent');
   }
 
   /**
    * Get historical S&P 500 constituents
    */
   async getHistoricalSP500(): Promise<HistoricalIndexConstituent[]> {
-    return this.client.get<HistoricalIndexConstituent[]>('v3/historical/sp500_constituent');
+    return this.client.get<HistoricalIndexConstituent[]>('historical-sp500-constituent');
   }
 
   /**
    * Get historical NASDAQ constituents
    */
   async getHistoricalNASDAQ(): Promise<HistoricalIndexConstituent[]> {
-    return this.client.get<HistoricalIndexConstituent[]>('v3/historical/nasdaq_constituent');
+    return this.client.get<HistoricalIndexConstituent[]>('historical-nasdaq-constituent');
   }
 
   /**
    * Get historical Dow Jones constituents
    */
   async getHistoricalDowJones(): Promise<HistoricalIndexConstituent[]> {
-    return this.client.get<HistoricalIndexConstituent[]>('v3/historical/dowjones_constituent');
+    return this.client.get<HistoricalIndexConstituent[]>('historical-dowjones-constituent');
   }
 
   /**
@@ -62,7 +62,9 @@ export class IndexesResource {
    * @param symbol - Index symbol (e.g., "^GSPC" for S&P 500)
    */
   async getQuote(symbol: string): Promise<Quote[]> {
-    return this.client.get<Quote[]>(`v3/quote/${symbol.toUpperCase()}`);
+    return this.client.get<Quote[]>('quote', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -70,21 +72,23 @@ export class IndexesResource {
    * @param symbol - Index symbol
    */
   async getQuoteShort(symbol: string): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>(`v3/quote-short/${symbol.toUpperCase()}`);
+    return this.client.get<Record<string, unknown>[]>('quote-short', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get all index quotes
    */
   async getAllQuotes(): Promise<Quote[]> {
-    return this.client.get<Quote[]>('v3/quotes/index');
+    return this.client.get<Quote[]>('batch-index-quotes');
   }
 
   /**
    * Get index list
    */
   async getList(): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>('v3/symbol/available-indexes');
+    return this.client.get<Record<string, unknown>[]>('index-list');
   }
 
   /**
@@ -97,15 +101,14 @@ export class IndexesResource {
     symbol: string,
     from?: string,
     to?: string
-  ): Promise<{ historical: HistoricalPrice[] }> {
-    const params: Record<string, string> = {};
+  ): Promise<HistoricalPrice[]> {
+    const params: Record<string, string> = { symbol: symbol.toUpperCase() };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<{ historical: HistoricalPrice[] }>(
-      `v3/historical-price-full/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<HistoricalPrice[]>('historical-price-eod/full', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -119,14 +122,13 @@ export class IndexesResource {
     from?: string,
     to?: string
   ): Promise<{ date: string; close: number }[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = { symbol: symbol.toUpperCase() };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<{ date: string; close: number }[]>(
-      `v3/historical-chart/line/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<{ date: string; close: number }[]>('historical-price-eod/light', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -142,13 +144,12 @@ export class IndexesResource {
     from?: string,
     to?: string
   ): Promise<IntradayChart[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = { symbol: symbol.toUpperCase() };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/${interval}/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<IntradayChart[]>(`historical-chart/${interval}`, {
+      searchParams: params,
+    });
   }
 }

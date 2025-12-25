@@ -24,7 +24,7 @@ import type {
   CompensationBenchmark,
   CIKMapping,
   SymbolChange,
-  Exchange,
+  ExchangeInfo,
   SectorIndustry,
   TradableSymbol,
 } from '../src/types/index.js';
@@ -87,7 +87,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getProfile('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/profile/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('profile', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockProfile);
     });
 
@@ -96,7 +98,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getProfile('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/profile/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('profile', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -159,7 +163,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getQuote('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockQuote);
     });
 
@@ -168,7 +174,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getQuote('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -213,7 +221,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getQuotes(['AAPL', 'MSFT']);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/AAPL,MSFT');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-quote', {
+        searchParams: { symbols: 'AAPL,MSFT' },
+      });
       expect(result).toEqual(mockQuotes);
     });
 
@@ -222,7 +232,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getQuotes(['aapl', 'msft', 'goog']);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/AAPL,MSFT,GOOG');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-quote', {
+        searchParams: { symbols: 'AAPL,MSFT,GOOG' },
+      });
     });
 
     it('should handle empty array', async () => {
@@ -230,7 +242,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getQuotes([]);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-quote', {
+        searchParams: { symbols: '' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -261,7 +275,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getSymbolsList();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock/list');
+      expect(mockClient.get).toHaveBeenCalledWith('stock-list');
       expect(result).toEqual(mockSymbols);
     });
 
@@ -291,7 +305,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getExchangeSymbols('NASDAQ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/NASDAQ');
+      expect(mockClient.get).toHaveBeenCalledWith('stock-list', {
+        searchParams: { exchange: 'NASDAQ' },
+      });
       expect(result).toEqual(mockSymbols);
     });
 
@@ -300,7 +316,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getExchangeSymbols('nasdaq');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/NASDAQ');
+      expect(mockClient.get).toHaveBeenCalledWith('stock-list', {
+        searchParams: { exchange: 'NASDAQ' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -331,7 +349,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.search('Apple');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-symbol', {
         searchParams: {
           query: 'Apple',
           limit: 10,
@@ -345,7 +363,7 @@ describe('CompanyResource', () => {
 
       await companyResource.search('Apple', 25);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-symbol', {
         searchParams: {
           query: 'Apple',
           limit: 25,
@@ -358,7 +376,7 @@ describe('CompanyResource', () => {
 
       await companyResource.search('Apple', 10, 'NASDAQ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/search', {
+      expect(mockClient.get).toHaveBeenCalledWith('search-symbol', {
         searchParams: {
           query: 'Apple',
           limit: 10,
@@ -423,7 +441,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getProfileByCIK('0000320193');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/profile/0000320193');
+      expect(mockClient.get).toHaveBeenCalledWith('profile-cik', {
+        searchParams: { cik: '0000320193' },
+      });
       expect(result).toEqual(mockProfile);
     });
 
@@ -453,7 +473,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getCompanyNotes('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/company-notes', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-notes', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -466,7 +486,7 @@ describe('CompanyResource', () => {
 
       await companyResource.getCompanyNotes('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/company-notes', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-notes', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -497,7 +517,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getStockPeers('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/stock_peers', {
+      expect(mockClient.get).toHaveBeenCalledWith('stock-peers', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -510,7 +530,7 @@ describe('CompanyResource', () => {
 
       await companyResource.getStockPeers('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/stock_peers', {
+      expect(mockClient.get).toHaveBeenCalledWith('stock-peers', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -527,7 +547,7 @@ describe('CompanyResource', () => {
   });
 
   describe('getDelistedCompanies', () => {
-    it('should get delisted companies without limit', async () => {
+    it('should get delisted companies with default pagination', async () => {
       const mockDelisted: DelistedCompany[] = [
         {
           symbol: 'XYZ',
@@ -542,17 +562,20 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getDelistedCompanies();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/delisted-companies', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('delisted-companies', {
+        searchParams: { page: 0, limit: 100 },
+      });
       expect(result).toEqual(mockDelisted);
     });
 
-    it('should get delisted companies with limit', async () => {
+    it('should get delisted companies with custom pagination', async () => {
       vi.mocked(mockClient.get).mockResolvedValue([]);
 
-      await companyResource.getDelistedCompanies(50);
+      await companyResource.getDelistedCompanies(2, 50);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/delisted-companies', {
+      expect(mockClient.get).toHaveBeenCalledWith('delisted-companies', {
         searchParams: {
+          page: 2,
           limit: 50,
         },
       });
@@ -587,7 +610,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getEmployeeCount('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/employee_count', {
+      expect(mockClient.get).toHaveBeenCalledWith('employee-count', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -600,7 +623,7 @@ describe('CompanyResource', () => {
 
       await companyResource.getEmployeeCount('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/employee_count', {
+      expect(mockClient.get).toHaveBeenCalledWith('employee-count', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -638,7 +661,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getHistoricalEmployeeCount('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/historical/employee_count', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-employee-count', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -651,7 +674,7 @@ describe('CompanyResource', () => {
 
       await companyResource.getHistoricalEmployeeCount('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/historical/employee_count', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-employee-count', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -683,7 +706,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getMarketCap('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/market-capitalization/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('market-capitalization', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockMarketCap);
     });
 
@@ -692,7 +717,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getMarketCap('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/market-capitalization/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('market-capitalization', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -725,7 +752,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getBatchMarketCap(['AAPL', 'MSFT']);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/market-capitalization/AAPL,MSFT');
+      expect(mockClient.get).toHaveBeenCalledWith('market-capitalization-batch', {
+        searchParams: { symbols: 'AAPL,MSFT' },
+      });
       expect(result).toEqual(mockMarketCaps);
     });
 
@@ -734,9 +763,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getBatchMarketCap(['aapl', 'msft', 'goog']);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/market-capitalization/AAPL,MSFT,GOOG'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('market-capitalization-batch', {
+        searchParams: { symbols: 'AAPL,MSFT,GOOG' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -764,14 +793,11 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getHistoricalMarketCap('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-market-capitalization/AAPL',
-        {
-          searchParams: {
-            symbol: 'AAPL',
-          },
-        }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-market-capitalization', {
+        searchParams: {
+          symbol: 'AAPL',
+        },
+      });
       expect(result).toEqual(mockHistorical);
     });
 
@@ -780,15 +806,12 @@ describe('CompanyResource', () => {
 
       await companyResource.getHistoricalMarketCap('AAPL', 100);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-market-capitalization/AAPL',
-        {
-          searchParams: {
-            symbol: 'AAPL',
-            limit: 100,
-          },
-        }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-market-capitalization', {
+        searchParams: {
+          symbol: 'AAPL',
+          limit: 100,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -796,14 +819,11 @@ describe('CompanyResource', () => {
 
       await companyResource.getHistoricalMarketCap('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-market-capitalization/AAPL',
-        {
-          searchParams: {
-            symbol: 'AAPL',
-          },
-        }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('historical-market-capitalization', {
+        searchParams: {
+          symbol: 'AAPL',
+        },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -834,7 +854,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getSharesFloat('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/shares_float', {
+      expect(mockClient.get).toHaveBeenCalledWith('shares-float', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -847,7 +867,7 @@ describe('CompanyResource', () => {
 
       await companyResource.getSharesFloat('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/shares_float', {
+      expect(mockClient.get).toHaveBeenCalledWith('shares-float', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -882,7 +902,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getAllSharesFloat();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/shares_float/all');
+      expect(mockClient.get).toHaveBeenCalledWith('shares-float-all', {
+        searchParams: { page: 0, limit: 1000 },
+      });
       expect(result).toEqual(mockAllShares);
     });
 
@@ -913,7 +935,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getMergerAcquisitions();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/mergers-acquisitions-rss-feed');
+      expect(mockClient.get).toHaveBeenCalledWith('mergers-acquisitions-latest', {
+        searchParams: { page: 0, limit: 100 },
+      });
       expect(result).toEqual(mockMA);
     });
 
@@ -946,7 +970,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.searchMergerAcquisitions('Apple');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/mergers-acquisitions/search', {
+      expect(mockClient.get).toHaveBeenCalledWith('mergers-acquisitions-search', {
         searchParams: {
           name: 'Apple',
         },
@@ -983,7 +1007,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getExecutives('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-executives/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('key-executives', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockExecutives);
     });
 
@@ -992,7 +1018,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getExecutives('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-executives/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('key-executives', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -1032,7 +1060,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getExecutiveCompensation('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/governance/executive_compensation', {
+      expect(mockClient.get).toHaveBeenCalledWith('governance-executive-compensation', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -1045,7 +1073,7 @@ describe('CompanyResource', () => {
 
       await companyResource.getExecutiveCompensation('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/governance/executive_compensation', {
+      expect(mockClient.get).toHaveBeenCalledWith('governance-executive-compensation', {
         searchParams: {
           symbol: 'AAPL',
         },
@@ -1082,7 +1110,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getCompensationBenchmark(2023);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/executive-compensation-benchmark', {
+      expect(mockClient.get).toHaveBeenCalledWith('executive-compensation-benchmark', {
         searchParams: {
           year: 2023,
         },
@@ -1118,7 +1146,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getFinancialStatementSymbols();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/financial-statement-symbol-lists');
+      expect(mockClient.get).toHaveBeenCalledWith('financial-statement-symbol-list');
       expect(result).toEqual(mockSymbols);
     });
 
@@ -1146,7 +1174,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getCIKList();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik_list');
+      expect(mockClient.get).toHaveBeenCalledWith('cik-list', {
+        searchParams: { page: 0, limit: 1000 },
+      });
       expect(result).toEqual(mockCIK);
     });
 
@@ -1174,7 +1204,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getSymbolChanges();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/symbol_change');
+      expect(mockClient.get).toHaveBeenCalledWith('symbol-change');
       expect(result).toEqual(mockChanges);
     });
 
@@ -1204,7 +1234,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getETFSymbols();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf/list');
+      expect(mockClient.get).toHaveBeenCalledWith('etf-list');
       expect(result).toEqual(mockETFs);
     });
 
@@ -1232,7 +1262,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getActivelyTrading();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/available-traded/list');
+      expect(mockClient.get).toHaveBeenCalledWith('actively-trading-list');
       expect(result).toEqual(mockTrading);
     });
 
@@ -1245,41 +1275,9 @@ describe('CompanyResource', () => {
     });
   });
 
-  describe('getEarningsTranscriptsSymbols', () => {
-    it('should get earnings transcripts symbols successfully', async () => {
-      const mockSymbols: SymbolsList[] = [
-        {
-          symbol: 'AAPL',
-          name: 'Apple Inc.',
-          price: 150.0,
-          exchange: 'NASDAQ Global Select',
-          exchangeShortName: 'NASDAQ',
-          type: 'stock',
-        },
-      ];
-
-      vi.mocked(mockClient.get).mockResolvedValue(mockSymbols);
-
-      const result = await companyResource.getEarningsTranscriptsSymbols();
-
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning_call_transcript');
-      expect(result).toEqual(mockSymbols);
-    });
-
-    it('should handle API errors', async () => {
-      vi.mocked(mockClient.get).mockRejectedValue(
-        new FMPAPIError('Server error', 500, 'Internal Server Error')
-      );
-
-      await expect(companyResource.getEarningsTranscriptsSymbols()).rejects.toThrow(
-        FMPAPIError
-      );
-    });
-  });
-
   describe('getExchanges', () => {
     it('should get exchanges successfully', async () => {
-      const mockExchanges: Exchange[] = [
+      const mockExchanges: ExchangeInfo[] = [
         {
           name: 'NASDAQ',
           code: 'NASDAQ',
@@ -1292,7 +1290,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getExchanges();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/exchanges-list');
+      expect(mockClient.get).toHaveBeenCalledWith('available-exchanges');
       expect(result).toEqual(mockExchanges);
     });
 
@@ -1317,7 +1315,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getSectors();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sector-list');
+      expect(mockClient.get).toHaveBeenCalledWith('available-sectors');
       expect(result).toEqual(mockSectors);
     });
 
@@ -1342,7 +1340,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getIndustries();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/industry-list');
+      expect(mockClient.get).toHaveBeenCalledWith('available-industries');
       expect(result).toEqual(mockIndustries);
     });
 
@@ -1363,7 +1361,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getCountries();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/get-all-countries');
+      expect(mockClient.get).toHaveBeenCalledWith('available-countries');
       expect(result).toEqual(mockCountries);
     });
 
@@ -1384,7 +1382,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getQuoteShort('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote-short/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockQuote);
     });
 
@@ -1393,7 +1393,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getQuoteShort('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote-short/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -1415,7 +1417,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getAftermarketTrade('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/pre-post-market-trade/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('aftermarket-trade', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockTrade);
     });
 
@@ -1424,7 +1428,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getAftermarketTrade('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/pre-post-market-trade/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('aftermarket-trade', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -1446,7 +1452,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getAftermarketQuote('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/pre-post-market/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('aftermarket-quote', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockQuote);
     });
 
@@ -1455,7 +1463,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getAftermarketQuote('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/pre-post-market/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('aftermarket-quote', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -1479,7 +1489,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getPriceChange('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-price-change/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('stock-price-change', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockChange);
     });
 
@@ -1488,7 +1500,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getPriceChange('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock-price-change/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('stock-price-change', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -1513,7 +1527,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getBatchQuotesShort(['AAPL', 'MSFT']);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote-short/AAPL,MSFT');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', {
+        searchParams: { symbol: 'AAPL,MSFT' },
+      });
       expect(result).toEqual(mockQuotes);
     });
 
@@ -1522,7 +1538,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getBatchQuotesShort(['aapl', 'msft', 'goog']);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote-short/AAPL,MSFT,GOOG');
+      expect(mockClient.get).toHaveBeenCalledWith('quote-short', {
+        searchParams: { symbol: 'AAPL,MSFT,GOOG' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -1533,42 +1551,6 @@ describe('CompanyResource', () => {
       await expect(companyResource.getBatchQuotesShort(['AAPL', 'MSFT'])).rejects.toThrow(
         FMPAPIError
       );
-    });
-  });
-
-  describe('getBatchAftermarketTrades', () => {
-    it('should get batch aftermarket trades successfully', async () => {
-      const mockTrades = [
-        { symbol: 'AAPL', price: 150.5, volume: 100000 },
-        { symbol: 'MSFT', price: 350.5, volume: 75000 },
-      ];
-
-      vi.mocked(mockClient.get).mockResolvedValue(mockTrades);
-
-      const result = await companyResource.getBatchAftermarketTrades(['AAPL', 'MSFT']);
-
-      expect(mockClient.get).toHaveBeenCalledWith('v4/pre-post-market-trade/AAPL,MSFT');
-      expect(result).toEqual(mockTrades);
-    });
-
-    it('should normalize symbols to uppercase', async () => {
-      vi.mocked(mockClient.get).mockResolvedValue([]);
-
-      await companyResource.getBatchAftermarketTrades(['aapl', 'msft', 'goog']);
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/pre-post-market-trade/AAPL,MSFT,GOOG'
-      );
-    });
-
-    it('should handle API errors', async () => {
-      vi.mocked(mockClient.get).mockRejectedValue(
-        new FMPAPIError('Server error', 500, 'Internal Server Error')
-      );
-
-      await expect(
-        companyResource.getBatchAftermarketTrades(['AAPL', 'MSFT'])
-      ).rejects.toThrow(FMPAPIError);
     });
   });
 
@@ -1583,7 +1565,9 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getBatchAftermarketQuotes(['AAPL', 'MSFT']);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/pre-post-market/AAPL,MSFT');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-aftermarket-quote', {
+        searchParams: { symbols: 'AAPL,MSFT' },
+      });
       expect(result).toEqual(mockQuotes);
     });
 
@@ -1592,7 +1576,9 @@ describe('CompanyResource', () => {
 
       await companyResource.getBatchAftermarketQuotes(['aapl', 'msft', 'goog']);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/pre-post-market/AAPL,MSFT,GOOG');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-aftermarket-quote', {
+        searchParams: { symbols: 'AAPL,MSFT,GOOG' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -1617,7 +1603,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getMutualFundQuotes();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/mutual_fund');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-mutualfund-quotes');
       expect(result).toEqual(mockQuotes);
     });
 
@@ -1641,7 +1627,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getETFQuotes();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/etf');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-etf-quotes');
       expect(result).toEqual(mockQuotes);
     });
 
@@ -1665,7 +1651,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getCommoditiesQuotes();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/commodity');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-commodity-quotes');
       expect(result).toEqual(mockQuotes);
     });
 
@@ -1689,7 +1675,7 @@ describe('CompanyResource', () => {
 
       const result = await companyResource.getIndexQuotes();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/index');
+      expect(mockClient.get).toHaveBeenCalledWith('batch-index-quotes');
       expect(result).toEqual(mockQuotes);
     });
 

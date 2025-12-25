@@ -51,12 +51,9 @@ describe('COTResource', () => {
 
       const result = await cotResource.getReport('GC');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report', {
-        searchParams: {
-          symbol: 'GC',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-report', {
+        searchParams: { symbol: 'GC' }
+      });
       expect(result).toEqual(mockReportData);
     });
 
@@ -65,12 +62,9 @@ describe('COTResource', () => {
 
       await cotResource.getReport('gc');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report', {
-        searchParams: {
-          symbol: 'GC',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-report', {
+        searchParams: { symbol: 'GC' }
+      });
     });
 
     it('should fetch COT report with from date', async () => {
@@ -78,13 +72,9 @@ describe('COTResource', () => {
 
       const result = await cotResource.getReport('GC', '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report', {
-        searchParams: {
-          symbol: 'GC',
-        from: '2024-01-01',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-report', {
+        searchParams: { symbol: 'GC', from: '2024-01-01' }
+      });
       expect(result).toEqual(mockReportData);
     });
 
@@ -93,13 +83,9 @@ describe('COTResource', () => {
 
       const result = await cotResource.getReport('GC', undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report', {
-        searchParams: {
-          symbol: 'GC',
-        to: '2024-12-31',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-report', {
+        searchParams: { symbol: 'GC', to: '2024-12-31' }
+      });
       expect(result).toEqual(mockReportData);
     });
 
@@ -108,14 +94,9 @@ describe('COTResource', () => {
 
       const result = await cotResource.getReport('GC', '2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report', {
-        searchParams: {
-          symbol: 'GC',
-        from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-report', {
+        searchParams: { symbol: 'GC', from: '2024-01-01', to: '2024-12-31' }
+      });
       expect(result).toEqual(mockReportData);
     });
 
@@ -191,12 +172,9 @@ describe('COTResource', () => {
 
       const result = await cotResource.getAnalysis('CL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report_analysis', {
-        searchParams: {
-          symbol: 'CL',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-analysis', {
+        searchParams: { symbol: 'CL' }
+      });
       expect(result).toEqual(mockAnalysisData);
     });
 
@@ -205,12 +183,9 @@ describe('COTResource', () => {
 
       await cotResource.getAnalysis('cl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report_analysis', {
-        searchParams: {
-          symbol: 'CL',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-analysis', {
+        searchParams: { symbol: 'CL' }
+      });
     });
 
     it('should fetch COT analysis with from date', async () => {
@@ -218,13 +193,9 @@ describe('COTResource', () => {
 
       const result = await cotResource.getAnalysis('CL', '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report_analysis', {
-        searchParams: {
-          symbol: 'CL',
-        from: '2024-01-01',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-analysis', {
+        searchParams: { symbol: 'CL', from: '2024-01-01' }
+      });
       expect(result).toEqual(mockAnalysisData);
     });
 
@@ -233,13 +204,9 @@ describe('COTResource', () => {
 
       const result = await cotResource.getAnalysis('CL', undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report_analysis', {
-        searchParams: {
-          symbol: 'CL',
-        to: '2024-12-31',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-analysis', {
+        searchParams: { symbol: 'CL', to: '2024-12-31' }
+      });
       expect(result).toEqual(mockAnalysisData);
     });
 
@@ -248,14 +215,9 @@ describe('COTResource', () => {
 
       const result = await cotResource.getAnalysis('CL', '2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report_analysis', {
-        searchParams: {
-          symbol: 'CL',
-        from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-analysis', {
+        searchParams: { symbol: 'CL', from: '2024-01-01', to: '2024-12-31' }
+      });
       expect(result).toEqual(mockAnalysisData);
     });
 
@@ -335,7 +297,7 @@ describe('COTResource', () => {
 
       const result = await cotResource.getSymbols();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report/list');
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-list');
       expect(result).toEqual(mockSymbolsData);
     });
 
@@ -345,7 +307,7 @@ describe('COTResource', () => {
       const result = await cotResource.getSymbols();
 
       expect(mockClient.get).toHaveBeenCalledTimes(1);
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report/list');
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-list');
       expect(result).toHaveLength(4);
     });
 
@@ -421,12 +383,9 @@ describe('COTResource', () => {
 
       await cotResource.getReport('ES_F');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report', {
-        searchParams: {
-          symbol: 'ES_F',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-report', {
+        searchParams: { symbol: 'ES_F' }
+      });
     });
 
     it('should handle mixed case symbols correctly', async () => {
@@ -435,12 +394,9 @@ describe('COTResource', () => {
 
       await cotResource.getReport('GcEuR');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report', {
-        searchParams: {
-          symbol: 'GCEUR',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-report', {
+        searchParams: { symbol: 'GCEUR' }
+      });
     });
 
     it('should not modify date format when passed', async () => {
@@ -449,14 +405,9 @@ describe('COTResource', () => {
 
       await cotResource.getReport('GC', '2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report', {
-        searchParams: {
-          symbol: 'GC',
-        from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-report', {
+        searchParams: { symbol: 'GC', from: '2024-01-01', to: '2024-12-31' }
+      });
     });
 
     it('should handle only from date without to date', async () => {
@@ -465,13 +416,9 @@ describe('COTResource', () => {
 
       await cotResource.getAnalysis('CL', '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report_analysis', {
-        searchParams: {
-          symbol: 'CL',
-        from: '2024-01-01',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-analysis', {
+        searchParams: { symbol: 'CL', from: '2024-01-01' }
+      });
       expect(mockClient.get).toHaveBeenCalledTimes(1);
     });
 
@@ -481,13 +428,9 @@ describe('COTResource', () => {
 
       await cotResource.getAnalysis('CL', undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/commitment_of_traders_report_analysis', {
-        searchParams: {
-          symbol: 'CL',
-        to: '2024-12-31',
-      },
-      }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('commitment-of-traders-analysis', {
+        searchParams: { symbol: 'CL', to: '2024-12-31' }
+      });
       expect(mockClient.get).toHaveBeenCalledTimes(1);
     });
   });
@@ -515,7 +458,7 @@ describe('COTResource', () => {
       await cotResource.getReport('GC');
 
       const [[endpoint]] = vi.mocked(mockClient.get).mock.calls;
-      expect(endpoint).toBe('v4/commitment_of_traders_report');
+      expect(endpoint).toBe('commitment-of-traders-report');
     });
 
     it('should call correct endpoint for getAnalysis', async () => {
@@ -524,7 +467,7 @@ describe('COTResource', () => {
       await cotResource.getAnalysis('CL');
 
       const [[endpoint]] = vi.mocked(mockClient.get).mock.calls;
-      expect(endpoint).toBe('v4/commitment_of_traders_report_analysis');
+      expect(endpoint).toBe('commitment-of-traders-analysis');
     });
 
     it('should call correct endpoint for getSymbols', async () => {
@@ -533,7 +476,7 @@ describe('COTResource', () => {
       await cotResource.getSymbols();
 
       const [[endpoint]] = vi.mocked(mockClient.get).mock.calls;
-      expect(endpoint).toBe('v4/commitment_of_traders_report/list');
+      expect(endpoint).toBe('commitment-of-traders-list');
     });
   });
 });

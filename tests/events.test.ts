@@ -44,10 +44,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getEarnings('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical/earning_calendar/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('earnings', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockEarnings);
     });
 
@@ -57,10 +56,9 @@ describe('EventsResource', () => {
 
       await eventsResource.getEarnings('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical/earning_calendar/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('earnings', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should include limit parameter when provided', async () => {
@@ -69,11 +67,9 @@ describe('EventsResource', () => {
 
       await eventsResource.getEarnings('AAPL', 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical/earning_calendar/AAPL',
-        { searchParams: {   limit: 10 }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('earnings', {
+        searchParams: { symbol: 'AAPL', limit: 10 },
+      });
     });
 
     it('should handle mixed case symbols', async () => {
@@ -82,10 +78,9 @@ describe('EventsResource', () => {
 
       await eventsResource.getEarnings('TsLa');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical/earning_calendar/TSLA',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('earnings', {
+        searchParams: { symbol: 'TSLA' },
+      });
     });
 
     it('should handle API errors', async () => {
@@ -116,7 +111,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getEarningsCalendar();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_calendar', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar', {
+        searchParams: {},
+      });
       expect(result).toEqual(mockCalendar);
     });
 
@@ -126,12 +123,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getEarningsCalendar('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch earnings calendar with to date only', async () => {
@@ -140,12 +136,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getEarningsCalendar(undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch earnings calendar with both from and to dates', async () => {
@@ -154,13 +149,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getEarningsCalendar('2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
 
     it('should handle null/undefined earnings data', async () => {
@@ -206,9 +200,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getDividends('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/stock_dividend/AAPL'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('dividends', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockDividends);
     });
 
@@ -218,9 +212,9 @@ describe('EventsResource', () => {
 
       await eventsResource.getDividends('msft');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/stock_dividend/MSFT'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('dividends', {
+        searchParams: { symbol: 'MSFT' },
+      });
     });
 
     it('should handle empty dividend history', async () => {
@@ -251,7 +245,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getDividendCalendar();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_dividend_calendar', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('dividends-calendar', {
+        searchParams: {},
+      });
       expect(result).toEqual(mockCalendar);
     });
 
@@ -261,12 +257,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getDividendCalendar('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_dividend_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('dividends-calendar', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch dividend calendar with to date', async () => {
@@ -275,12 +270,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getDividendCalendar(undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_dividend_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('dividends-calendar', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch dividend calendar with date range', async () => {
@@ -289,13 +283,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getDividendCalendar('2024-01-01', '2024-03-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_dividend_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('dividends-calendar', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-03-31',
-      },
-      }
-);
+          to: '2024-03-31',
+        },
+      });
     });
   });
 
@@ -315,9 +308,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getSplits('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/stock_split/AAPL'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('splits', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockSplits);
     });
 
@@ -327,9 +320,9 @@ describe('EventsResource', () => {
 
       await eventsResource.getSplits('googl');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/stock_split/GOOGL'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('splits', {
+        searchParams: { symbol: 'GOOGL' },
+      });
     });
 
     it('should handle companies with no split history', async () => {
@@ -357,7 +350,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getSplitsCalendar();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_split_calendar', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('splits-calendar', {
+        searchParams: {},
+      });
       expect(result).toEqual(mockCalendar);
     });
 
@@ -367,12 +362,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getSplitsCalendar('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_split_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('splits-calendar', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch stock splits calendar with to date', async () => {
@@ -381,12 +375,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getSplitsCalendar(undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_split_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('splits-calendar', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch stock splits calendar with date range', async () => {
@@ -395,13 +388,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getSplitsCalendar('2024-01-01', '2024-06-30');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/stock_split_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('splits-calendar', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-06-30',
-      },
-      }
-);
+          to: '2024-06-30',
+        },
+      });
     });
   });
 
@@ -424,7 +416,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getIPOCalendar();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ipo_calendar', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-calendar', {
+        searchParams: {},
+      });
       expect(result).toEqual(mockIPOs);
     });
 
@@ -434,12 +428,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOCalendar('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ipo_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-calendar', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch IPO calendar with to date', async () => {
@@ -448,12 +441,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOCalendar(undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ipo_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-calendar', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch IPO calendar with date range', async () => {
@@ -462,13 +454,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOCalendar('2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ipo_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-calendar', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
 
     it('should handle empty IPO calendar', async () => {
@@ -499,7 +490,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getIPOProspectus();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/ipo-calendar-prospectus', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-prospectus', {
+        searchParams: {},
+      });
       expect(result).toEqual(mockProspectus);
     });
 
@@ -509,12 +502,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOProspectus('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/ipo-calendar-prospectus', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-prospectus', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch IPO prospectus with to date', async () => {
@@ -523,12 +515,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOProspectus(undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/ipo-calendar-prospectus', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-prospectus', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch IPO prospectus with date range', async () => {
@@ -537,13 +528,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOProspectus('2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/ipo-calendar-prospectus', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-prospectus', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
   });
 
@@ -566,7 +556,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getIPOConfirmed();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/ipo-calendar-confirmed', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-confirmed', {
+        searchParams: {},
+      });
       expect(result).toEqual(mockConfirmed);
     });
 
@@ -576,12 +568,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOConfirmed('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/ipo-calendar-confirmed', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-confirmed', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch confirmed IPOs with to date', async () => {
@@ -590,12 +581,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOConfirmed(undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/ipo-calendar-confirmed', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-confirmed', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch confirmed IPOs with date range', async () => {
@@ -604,13 +594,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getIPOConfirmed('2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/ipo-calendar-confirmed', {
+      expect(mockClient.get).toHaveBeenCalledWith('ipos-confirmed', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
   });
 
@@ -634,7 +623,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getEconomicCalendar();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/economic_calendar', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('economic-calendar', {
+        searchParams: {},
+      });
       expect(result).toEqual(mockEconomic);
     });
 
@@ -644,12 +635,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getEconomicCalendar('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/economic_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-calendar', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch economic calendar with to date', async () => {
@@ -658,12 +648,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getEconomicCalendar(undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/economic_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-calendar', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch economic calendar with date range', async () => {
@@ -672,13 +661,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getEconomicCalendar('2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/economic_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-calendar', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
 
     it('should handle multiple economic events', async () => {
@@ -737,7 +725,9 @@ describe('EventsResource', () => {
 
       const result = await eventsResource.getConfirmedEarnings();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning-calendar-confirmed', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar-confirmed', {
+        searchParams: {},
+      });
       expect(result).toEqual(mockConfirmed);
     });
 
@@ -747,12 +737,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getConfirmedEarnings('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning-calendar-confirmed', {
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar-confirmed', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch confirmed earnings with to date', async () => {
@@ -761,12 +750,11 @@ describe('EventsResource', () => {
 
       await eventsResource.getConfirmedEarnings(undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning-calendar-confirmed', {
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar-confirmed', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should fetch confirmed earnings with date range', async () => {
@@ -775,13 +763,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getConfirmedEarnings('2024-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/earning-calendar-confirmed', {
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar-confirmed', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
   });
 
@@ -843,9 +830,9 @@ describe('EventsResource', () => {
 
       await eventsResource.getDividends('BRK.B');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical-price-full/stock_dividend/BRK.B'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('dividends', {
+        searchParams: { symbol: 'BRK.B' },
+      });
     });
 
     it('should handle empty string dates gracefully', async () => {
@@ -855,7 +842,9 @@ describe('EventsResource', () => {
       await eventsResource.getEarningsCalendar('', '');
 
       // Empty strings are falsy, so they won't be included in params
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_calendar', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar', {
+        searchParams: {},
+      });
     });
 
     it('should handle limit of 0 in getEarnings', async () => {
@@ -865,10 +854,9 @@ describe('EventsResource', () => {
       await eventsResource.getEarnings('AAPL', 0);
 
       // 0 is falsy, so it won't be included
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical/earning_calendar/AAPL',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('earnings', {
+        searchParams: { symbol: 'AAPL' },
+      });
     });
 
     it('should include limit when it is a positive number', async () => {
@@ -877,11 +865,9 @@ describe('EventsResource', () => {
 
       await eventsResource.getEarnings('AAPL', 100);
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/historical/earning_calendar/AAPL',
-        { searchParams: {   limit: 100 }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('earnings', {
+        searchParams: { symbol: 'AAPL', limit: 100 },
+      });
     });
 
     it('should handle very long date ranges in calendar methods', async () => {
@@ -890,13 +876,12 @@ describe('EventsResource', () => {
 
       await eventsResource.getEarningsCalendar('2000-01-01', '2030-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earning_calendar', {
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-calendar', {
         searchParams: {
           from: '2000-01-01',
-        to: '2030-12-31',
-      },
-      }
-);
+          to: '2030-12-31',
+        },
+      });
     });
   });
 

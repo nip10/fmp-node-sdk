@@ -18,7 +18,9 @@ export class NewsResource {
    * @param limit - Results per page
    */
   async getFMPArticles(page = 0, limit = 50): Promise<FMPArticle[]> {
-    return this.client.get<FMPArticle[]>('v3/fmp/articles', { searchParams: { page, size: limit } });
+    return this.client.get<FMPArticle[]>('fmp-articles', {
+      searchParams: { page, size: limit },
+    });
   }
 
   /**
@@ -26,7 +28,9 @@ export class NewsResource {
    * @param page - Page number
    */
   async getGeneralNews(page = 0): Promise<StockNews[]> {
-    return this.client.get<StockNews[]>('v4/general_news', { searchParams: { page } });
+    return this.client.get<StockNews[]>('general-news', {
+      searchParams: { page },
+    });
   }
 
   /**
@@ -38,7 +42,9 @@ export class NewsResource {
     const params: Record<string, string | number> = { limit };
     if (tickers) params.tickers = tickers;
 
-    return this.client.get<StockNews[]>('v3/stock_news', { searchParams: params });
+    return this.client.get<StockNews[]>('stock-news', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -47,7 +53,9 @@ export class NewsResource {
    * @param limit - Results per page
    */
   async getCryptoNews(page = 0, limit = 50): Promise<StockNews[]> {
-    return this.client.get<StockNews[]>('v4/crypto_news', { searchParams: { page, limit } });
+    return this.client.get<StockNews[]>('crypto-news', {
+      searchParams: { page, limit },
+    });
   }
 
   /**
@@ -56,16 +64,20 @@ export class NewsResource {
    * @param limit - Results per page
    */
   async getForexNews(page = 0, limit = 50): Promise<StockNews[]> {
-    return this.client.get<StockNews[]>('v4/forex_news', { searchParams: { page, limit } });
+    return this.client.get<StockNews[]>('forex-news', {
+      searchParams: { page, limit },
+    });
   }
 
   /**
-   * Get press releases (search endpoint)
+   * Get press releases
    * @param symbol - Stock symbol
    * @param page - Page number
    */
   async getPressReleases(symbol: string, page = 0): Promise<PressRelease[]> {
-    return this.client.get<PressRelease[]>(`v3/press-releases/${symbol.toUpperCase()}`, { searchParams: { page } });
+    return this.client.get<PressRelease[]>('press-releases', {
+      searchParams: { symbol: symbol.toUpperCase(), page },
+    });
   }
 
   /**
@@ -74,7 +86,9 @@ export class NewsResource {
    * @param limit - Number of results (default: 50)
    */
   async getLatestPressReleases(symbol: string, limit = 50): Promise<PressRelease[]> {
-    return this.client.get<PressRelease[]>(`v3/press-releases/${symbol.toUpperCase()}`, { searchParams: { limit } });
+    return this.client.get<PressRelease[]>('press-releases', {
+      searchParams: { symbol: symbol.toUpperCase(), limit },
+    });
   }
 
   /**
@@ -88,8 +102,12 @@ export class NewsResource {
     year: number,
     quarter: number
   ): Promise<EarningsTranscript[]> {
-    return this.client.get<EarningsTranscript[]>(`v3/earning_call_transcript/${symbol.toUpperCase()}`, {
-      searchParams: { year, quarter },
+    return this.client.get<EarningsTranscript[]>('earning-call-transcript', {
+      searchParams: {
+        symbol: symbol.toUpperCase(),
+        year,
+        quarter,
+      },
     });
   }
 
@@ -99,8 +117,9 @@ export class NewsResource {
    */
   async getEarningsTranscriptDates(symbol: string): Promise<Array<{ year: number; quarter: number }>> {
     return this.client.get<Array<{ year: number; quarter: number }>>(
-      `v4/earning_call_transcript`,
-      { searchParams: { symbol: symbol.toUpperCase() } }
+      'earning-call-transcript-dates', {
+        searchParams: { symbol: symbol.toUpperCase() },
+      }
     );
   }
 
@@ -109,8 +128,59 @@ export class NewsResource {
    * @param symbol - Stock symbol
    */
   async getBatchEarningsTranscripts(symbol: string): Promise<EarningsTranscript[]> {
-    return this.client.get<EarningsTranscript[]>(
-      `v4/batch_earning_call_transcript/${symbol.toUpperCase()}`
-    );
+    return this.client.get<EarningsTranscript[]>('batch-earning-call-transcript', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
+  }
+
+  /**
+   * Get list of symbols with available earnings transcripts
+   */
+  async getAvailableTranscriptSymbols(): Promise<Array<{ symbol: string }>> {
+    return this.client.get<Array<{ symbol: string }>>('earning-call-transcript-available-symbols');
+  }
+
+  /**
+   * Search press releases
+   * @param query - Search query
+   * @param limit - Number of results
+   */
+  async searchPressReleases(query: string, limit = 50): Promise<PressRelease[]> {
+    return this.client.get<PressRelease[]>('press-releases-search', {
+      searchParams: { query, limit },
+    });
+  }
+
+  /**
+   * Search stock news
+   * @param query - Search query
+   * @param limit - Number of results
+   */
+  async searchStockNews(query: string, limit = 50): Promise<StockNews[]> {
+    return this.client.get<StockNews[]>('stock-news-search', {
+      searchParams: { query, limit },
+    });
+  }
+
+  /**
+   * Search crypto news
+   * @param query - Search query
+   * @param limit - Number of results
+   */
+  async searchCryptoNews(query: string, limit = 50): Promise<StockNews[]> {
+    return this.client.get<StockNews[]>('crypto-news-search', {
+      searchParams: { query, limit },
+    });
+  }
+
+  /**
+   * Search forex news
+   * @param query - Search query
+   * @param limit - Number of results
+   */
+  async searchForexNews(query: string, limit = 50): Promise<StockNews[]> {
+    return this.client.get<StockNews[]>('forex-news-search', {
+      searchParams: { query, limit },
+    });
   }
 }

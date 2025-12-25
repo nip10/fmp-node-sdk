@@ -47,7 +47,7 @@ export class SearchResource {
       params.exchange = exchange.toUpperCase();
     }
 
-    return this.client.get<SymbolSearchResult[]>('v3/search-ticker', { searchParams: params });
+    return this.client.get<SymbolSearchResult[]>('search-symbol', { searchParams: params });
   }
 
   /**
@@ -80,7 +80,7 @@ export class SearchResource {
       params.exchange = exchange.toUpperCase();
     }
 
-    return this.client.get<NameSearchResult[]>('v3/search-name', { searchParams: params });
+    return this.client.get<NameSearchResult[]>('search-name', { searchParams: params });
   }
 
   /**
@@ -95,7 +95,9 @@ export class SearchResource {
    * ```
    */
   async searchByCIK(cik: string): Promise<CIKSearchResult[]> {
-    return this.client.get<CIKSearchResult[]>(`v3/cik/${cik}`);
+    return this.client.get<CIKSearchResult[]>('search-cik', {
+      searchParams: { cik },
+    });
   }
 
   /**
@@ -110,7 +112,9 @@ export class SearchResource {
    * ```
    */
   async searchByCUSIP(cusip: string): Promise<CUSIPSearchResult[]> {
-    return this.client.get<CUSIPSearchResult[]>(`v3/cusip/${cusip}`);
+    return this.client.get<CUSIPSearchResult[]>('search-cusip', {
+      searchParams: { cusip },
+    });
   }
 
   /**
@@ -125,7 +129,7 @@ export class SearchResource {
    * ```
    */
   async searchByISIN(isin: string): Promise<ISINSearchResult[]> {
-    return this.client.get<ISINSearchResult[]>('v3/search-isin', { searchParams: { isin } });
+    return this.client.get<ISINSearchResult[]>('search-isin', { searchParams: { isin } });
   }
 
   /**
@@ -221,7 +225,7 @@ export class SearchResource {
       queryParams.limit = params.limit;
     }
 
-    return this.client.get<StockScreenerResult[]>('v3/stock-screener', { searchParams: queryParams });
+    return this.client.get<StockScreenerResult[]>('company-screener', { searchParams: queryParams });
   }
 
   /**
@@ -242,6 +246,8 @@ export class SearchResource {
    * ```
    */
   async getExchangeSymbols(exchange: string): Promise<ExchangeSymbol[]> {
-    return this.client.get<ExchangeSymbol[]>(`v3/symbol/${exchange.toUpperCase()}`);
+    return this.client.get<ExchangeSymbol[]>('exchange-symbols', {
+      searchParams: { exchange: exchange.toUpperCase() },
+    });
   }
 }

@@ -17,21 +17,21 @@ export class PerformanceResource {
    * Get biggest gainers
    */
   async getGainers(): Promise<StockMover[]> {
-    return this.client.get<StockMover[]>('v3/stock_market/gainers');
+    return this.client.get<StockMover[]>('stock-market-gainers');
   }
 
   /**
    * Get biggest losers
    */
   async getLosers(): Promise<StockMover[]> {
-    return this.client.get<StockMover[]>('v3/stock_market/losers');
+    return this.client.get<StockMover[]>('stock-market-losers');
   }
 
   /**
    * Get most active stocks
    */
   async getMostActive(): Promise<StockMover[]> {
-    return this.client.get<StockMover[]>('v3/stock_market/actives');
+    return this.client.get<StockMover[]>('stock-market-actives');
   }
 
   /**
@@ -42,7 +42,9 @@ export class PerformanceResource {
     const params: Record<string, number> = {};
     if (limit) params.limit = limit;
 
-    return this.client.get<SectorPerformance[]>('v3/sector-performance', { searchParams: params });
+    return this.client.get<SectorPerformance[]>('sector-performance', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -57,10 +59,9 @@ export class PerformanceResource {
     const params: Record<string, string | number> = { sector };
     if (limit) params.limit = limit;
 
-    return this.client.get<HistoricalSectorPerformance[]>(
-      'v3/historical-sector-performance',
-      { searchParams: params }
-    );
+    return this.client.get<HistoricalSectorPerformance[]>('historical-sector-performance', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -72,7 +73,9 @@ export class PerformanceResource {
     const params: Record<string, string> = { date };
     if (exchange) params.exchange = exchange;
 
-    return this.client.get<SectorPE[]>('v4/sector_price_earning_ratio', { searchParams: params });
+    return this.client.get<SectorPE[]>('sector-price-earning-ratio', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -84,7 +87,9 @@ export class PerformanceResource {
     const params: Record<string, string> = { date };
     if (exchange) params.exchange = exchange;
 
-    return this.client.get<Record<string, unknown>[]>('v4/industry_price_earning_ratio', { searchParams: params });
+    return this.client.get<Record<string, unknown>[]>('industry-price-earning-ratio', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -92,7 +97,9 @@ export class PerformanceResource {
    * @param sector - Sector name
    */
   async getHistoricalSectorPE(sector: string): Promise<SectorPE[]> {
-    return this.client.get<SectorPE[]>('v4/historical-sector-pe', { searchParams: { sector } });
+    return this.client.get<SectorPE[]>('historical-sector-pe', {
+      searchParams: { sector },
+    });
   }
 
   /**
@@ -100,6 +107,8 @@ export class PerformanceResource {
    * @param industry - Industry name
    */
   async getHistoricalIndustryPE(industry: string): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>('v4/historical-industry-pe', { searchParams: { industry } });
+    return this.client.get<Record<string, unknown>[]>('historical-industry-pe', {
+      searchParams: { industry },
+    });
   }
 }

@@ -20,6 +20,11 @@ import type {
   ExchangeInfo,
   SectorIndustry,
   TradableSymbol,
+  QuoteShort,
+  AftermarketTrade,
+  AftermarketQuote,
+  PriceChange,
+  FundListItem,
 } from '../types/index.js';
 
 /**
@@ -34,7 +39,9 @@ export class CompanyResource {
    * @param symbol - Stock symbol (e.g., "AAPL")
    */
   async getProfile(symbol: string): Promise<CompanyProfile[]> {
-    return this.client.get<CompanyProfile[]>(`v3/profile/${symbol.toUpperCase()}`);
+    return this.client.get<CompanyProfile[]>('profile', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -42,7 +49,9 @@ export class CompanyResource {
    * @param symbol - Stock symbol (e.g., "AAPL")
    */
   async getQuote(symbol: string): Promise<Quote[]> {
-    return this.client.get<Quote[]>(`v3/quote/${symbol.toUpperCase()}`);
+    return this.client.get<Quote[]>('quote', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -51,14 +60,16 @@ export class CompanyResource {
    */
   async getQuotes(symbols: string[]): Promise<Quote[]> {
     const symbolsParam = symbols.map(s => s.toUpperCase()).join(',');
-    return this.client.get<Quote[]>(`v3/quote/${symbolsParam}`);
+    return this.client.get<Quote[]>('batch-quote', {
+      searchParams: { symbols: symbolsParam },
+    });
   }
 
   /**
    * Get all available trading symbols
    */
   async getSymbolsList(): Promise<SymbolsList[]> {
-    return this.client.get<SymbolsList[]>('v3/stock/list');
+    return this.client.get<SymbolsList[]>('stock-list');
   }
 
   /**
@@ -66,16 +77,18 @@ export class CompanyResource {
    * @param exchange - Exchange name (e.g., "NASDAQ", "NYSE")
    */
   async getExchangeSymbols(exchange: string): Promise<SymbolsList[]> {
-    return this.client.get<SymbolsList[]>(`v3/symbol/${exchange.toUpperCase()}`);
+    return this.client.get<SymbolsList[]>('stock-list', {
+      searchParams: { exchange: exchange.toUpperCase() },
+    });
   }
 
   /**
-   * Search for companies by query
+   * Search for companies by symbol query
    * @param query - Search query
    * @param limit - Maximum number of results
    * @param exchange - Filter by exchange (optional)
    */
-  async search(query: string, limit = 10, exchange?: string): Promise<SymbolsList[]> {
+  async searchSymbol(query: string, limit = 10, exchange?: string): Promise<SymbolsList[]> {
     const params: Record<string, string | number> = {
       query,
       limit,
@@ -85,7 +98,37 @@ export class CompanyResource {
       params.exchange = exchange;
     }
 
-    return this.client.get<SymbolsList[]>('v3/search', { searchParams: params });
+    return this.client.get<SymbolsList[]>('search-symbol', { searchParams: params });
+  }
+
+  /**
+   * Search for companies by name query
+   * @param query - Search query
+   * @param limit - Maximum number of results
+   * @param exchange - Filter by exchange (optional)
+   */
+  async searchName(query: string, limit = 10, exchange?: string): Promise<SymbolsList[]> {
+    const params: Record<string, string | number> = {
+      query,
+      limit,
+    };
+
+    if (exchange) {
+      params.exchange = exchange;
+    }
+
+    return this.client.get<SymbolsList[]>('search-name', { searchParams: params });
+  }
+
+  /**
+   * Search for companies by query (alias for searchSymbol)
+   * @param query - Search query
+   * @param limit - Maximum number of results
+   * @param exchange - Filter by exchange (optional)
+   * @deprecated Use searchSymbol or searchName instead
+   */
+  async search(query: string, limit = 10, exchange?: string): Promise<SymbolsList[]> {
+    return this.searchSymbol(query, limit, exchange);
   }
 
   /**
@@ -93,7 +136,9 @@ export class CompanyResource {
    * @param cik - Central Index Key
    */
   async getProfileByCIK(cik: string): Promise<CompanyProfile[]> {
-    return this.client.get<CompanyProfile[]>(`v3/profile/${cik}`);
+    return this.client.get<CompanyProfile[]>('profile-cik', {
+      searchParams: { cik },
+    });
   }
 
   /**
@@ -101,7 +146,9 @@ export class CompanyResource {
    * @param symbol - Stock symbol
    */
   async getCompanyNotes(symbol: string): Promise<CompanyNotes[]> {
-    return this.client.get<CompanyNotes[]>(`v4/company-notes`, { searchParams: { symbol: symbol.toUpperCase() } });
+    return this.client.get<CompanyNotes[]>('company-notes', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -109,17 +156,20 @@ export class CompanyResource {
    * @param symbol - Stock symbol
    */
   async getStockPeers(symbol: string): Promise<StockPeer[]> {
-    return this.client.get<StockPeer[]>(`v4/stock_peers`, { searchParams: { symbol: symbol.toUpperCase() } });
+    return this.client.get<StockPeer[]>('stock-peers', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get delisted companies
+   * @param page - Page number
    * @param limit - Maximum number of results
    */
-  async getDelistedCompanies(limit?: number): Promise<DelistedCompany[]> {
-    const params: Record<string, number> = {};
-    if (limit) params.limit = limit;
-    return this.client.get<DelistedCompany[]>('v3/delisted-companies', { searchParams: params });
+  async getDelistedCompanies(page = 0, limit = 100): Promise<DelistedCompany[]> {
+    return this.client.get<DelistedCompany[]>('delisted-companies', {
+      searchParams: { page, limit },
+    });
   }
 
   /**
@@ -127,7 +177,9 @@ export class CompanyResource {
    * @param symbol - Stock symbol
    */
   async getEmployeeCount(symbol: string): Promise<EmployeeCount[]> {
-    return this.client.get<EmployeeCount[]>(`v4/employee_count`, { searchParams: { symbol: symbol.toUpperCase() } });
+    return this.client.get<EmployeeCount[]>('employee-count', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -135,10 +187,9 @@ export class CompanyResource {
    * @param symbol - Stock symbol
    */
   async getHistoricalEmployeeCount(symbol: string): Promise<HistoricalEmployeeCount[]> {
-    return this.client.get<HistoricalEmployeeCount[]>(
-      `v4/historical/employee_count`,
-      { searchParams: { symbol: symbol.toUpperCase() } }
-    );
+    return this.client.get<HistoricalEmployeeCount[]>('historical-employee-count', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -146,7 +197,9 @@ export class CompanyResource {
    * @param symbol - Stock symbol
    */
   async getMarketCap(symbol: string): Promise<MarketCap[]> {
-    return this.client.get<MarketCap[]>(`v3/market-capitalization/${symbol.toUpperCase()}`);
+    return this.client.get<MarketCap[]>('market-capitalization', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -155,7 +208,9 @@ export class CompanyResource {
    */
   async getBatchMarketCap(symbols: string[]): Promise<MarketCap[]> {
     const symbolsParam = symbols.map(s => s.toUpperCase()).join(',');
-    return this.client.get<MarketCap[]>(`v3/market-capitalization/${symbolsParam}`);
+    return this.client.get<MarketCap[]>('market-capitalization-batch', {
+      searchParams: { symbols: symbolsParam },
+    });
   }
 
   /**
@@ -166,7 +221,9 @@ export class CompanyResource {
   async getHistoricalMarketCap(symbol: string, limit?: number): Promise<HistoricalMarketCap[]> {
     const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (limit) params.limit = limit;
-    return this.client.get<HistoricalMarketCap[]>(`v3/historical-market-capitalization/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<HistoricalMarketCap[]>('historical-market-capitalization', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -174,21 +231,31 @@ export class CompanyResource {
    * @param symbol - Stock symbol
    */
   async getSharesFloat(symbol: string): Promise<SharesFloat[]> {
-    return this.client.get<SharesFloat[]>(`v4/shares_float`, { searchParams: { symbol: symbol.toUpperCase() } });
+    return this.client.get<SharesFloat[]>('shares-float', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get all shares float
+   * @param page - Page number
+   * @param limit - Maximum number of results
    */
-  async getAllSharesFloat(): Promise<SharesFloat[]> {
-    return this.client.get<SharesFloat[]>('v4/shares_float/all');
+  async getAllSharesFloat(page = 0, limit = 1000): Promise<SharesFloat[]> {
+    return this.client.get<SharesFloat[]>('shares-float-all', {
+      searchParams: { page, limit },
+    });
   }
 
   /**
    * Get latest M&A transactions
+   * @param page - Page number
+   * @param limit - Maximum number of results
    */
-  async getMergerAcquisitions(): Promise<MergerAcquisition[]> {
-    return this.client.get<MergerAcquisition[]>('v4/mergers-acquisitions-rss-feed');
+  async getMergerAcquisitions(page = 0, limit = 100): Promise<MergerAcquisition[]> {
+    return this.client.get<MergerAcquisition[]>('mergers-acquisitions-latest', {
+      searchParams: { page, limit },
+    });
   }
 
   /**
@@ -196,7 +263,9 @@ export class CompanyResource {
    * @param name - Company name
    */
   async searchMergerAcquisitions(name: string): Promise<MergerAcquisition[]> {
-    return this.client.get<MergerAcquisition[]>('v4/mergers-acquisitions/search', { searchParams: { name } });
+    return this.client.get<MergerAcquisition[]>('mergers-acquisitions-search', {
+      searchParams: { name },
+    });
   }
 
   /**
@@ -204,7 +273,9 @@ export class CompanyResource {
    * @param symbol - Stock symbol
    */
   async getExecutives(symbol: string): Promise<Executive[]> {
-    return this.client.get<Executive[]>(`v3/key-executives/${symbol.toUpperCase()}`);
+    return this.client.get<Executive[]>('key-executives', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -212,173 +283,202 @@ export class CompanyResource {
    * @param symbol - Stock symbol
    */
   async getExecutiveCompensation(symbol: string): Promise<ExecutiveCompensation[]> {
-    return this.client.get<ExecutiveCompensation[]>(`v4/governance/executive_compensation`, {
+    return this.client.get<ExecutiveCompensation[]>('governance-executive-compensation', {
       searchParams: { symbol: symbol.toUpperCase() },
     });
   }
 
   /**
    * Get compensation benchmark by industry
-   * @param year - Year
+   * @param year - Year (optional)
    */
-  async getCompensationBenchmark(year: number): Promise<CompensationBenchmark[]> {
-    return this.client.get<CompensationBenchmark[]>('v4/executive-compensation-benchmark', { searchParams: { year } });
+  async getCompensationBenchmark(year?: number): Promise<CompensationBenchmark[]> {
+    const params: Record<string, number> = {};
+    if (year) params.year = year;
+    return this.client.get<CompensationBenchmark[]>('executive-compensation-benchmark', {
+      searchParams: params,
+    });
   }
 
   /**
    * Get symbols with financial statements
    */
   async getFinancialStatementSymbols(): Promise<SymbolsList[]> {
-    return this.client.get<SymbolsList[]>('v3/financial-statement-symbol-lists');
+    return this.client.get<SymbolsList[]>('financial-statement-symbol-list');
   }
 
   /**
    * Get CIK list
+   * @param page - Page number
+   * @param limit - Maximum number of results
    */
-  async getCIKList(): Promise<CIKMapping[]> {
-    return this.client.get<CIKMapping[]>('v3/cik_list');
+  async getCIKList(page = 0, limit = 1000): Promise<CIKMapping[]> {
+    return this.client.get<CIKMapping[]>('cik-list', {
+      searchParams: { page, limit },
+    });
   }
 
   /**
    * Get symbol changes
    */
   async getSymbolChanges(): Promise<SymbolChange[]> {
-    return this.client.get<SymbolChange[]>('v4/symbol_change');
+    return this.client.get<SymbolChange[]>('symbol-change');
   }
 
   /**
    * Get ETF symbols
    */
   async getETFSymbols(): Promise<SymbolsList[]> {
-    return this.client.get<SymbolsList[]>('v3/etf/list');
+    return this.client.get<SymbolsList[]>('etf-list');
   }
 
   /**
    * Get actively trading symbols
    */
   async getActivelyTrading(): Promise<TradableSymbol[]> {
-    return this.client.get<TradableSymbol[]>('v3/available-traded/list');
-  }
-
-  /**
-   * Get available earnings transcripts symbols
-   */
-  async getEarningsTranscriptsSymbols(): Promise<SymbolsList[]> {
-    return this.client.get<SymbolsList[]>('v4/earning_call_transcript');
+    return this.client.get<TradableSymbol[]>('actively-trading-list');
   }
 
   /**
    * Get list of available exchanges
    */
   async getExchanges(): Promise<ExchangeInfo[]> {
-    return this.client.get<ExchangeInfo[]>('v3/exchanges-list');
+    return this.client.get<ExchangeInfo[]>('available-exchanges');
   }
 
   /**
    * Get list of available sectors
    */
   async getSectors(): Promise<SectorIndustry[]> {
-    return this.client.get<SectorIndustry[]>('v3/sector-list');
+    return this.client.get<SectorIndustry[]>('available-sectors');
   }
 
   /**
    * Get list of available industries
    */
   async getIndustries(): Promise<SectorIndustry[]> {
-    return this.client.get<SectorIndustry[]>('v3/industry-list');
+    return this.client.get<SectorIndustry[]>('available-industries');
   }
 
   /**
    * Get list of available countries
    */
   async getCountries(): Promise<string[]> {
-    return this.client.get<string[]>('v3/get-all-countries');
+    return this.client.get<string[]>('available-countries');
   }
 
   /**
    * Get short quote (simplified quote data)
    * @param symbol - Stock symbol
    */
-  async getQuoteShort(symbol: string): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>(`v3/quote-short/${symbol.toUpperCase()}`);
+  async getQuoteShort(symbol: string): Promise<QuoteShort[]> {
+    return this.client.get<QuoteShort[]>('quote-short', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get aftermarket trade price
    * @param symbol - Stock symbol
    */
-  async getAftermarketTrade(symbol: string): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>(`v4/pre-post-market-trade/${symbol.toUpperCase()}`);
+  async getAftermarketTrade(symbol: string): Promise<AftermarketTrade[]> {
+    return this.client.get<AftermarketTrade[]>('aftermarket-trade', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get aftermarket quote
    * @param symbol - Stock symbol
    */
-  async getAftermarketQuote(symbol: string): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>(`v4/pre-post-market/${symbol.toUpperCase()}`);
+  async getAftermarketQuote(symbol: string): Promise<AftermarketQuote[]> {
+    return this.client.get<AftermarketQuote[]>('aftermarket-quote', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get price change
    * @param symbol - Stock symbol
    */
-  async getPriceChange(symbol: string): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>(`v3/stock-price-change/${symbol.toUpperCase()}`);
+  async getPriceChange(symbol: string): Promise<PriceChange[]> {
+    return this.client.get<PriceChange[]>('stock-price-change', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
    * Get batch short quotes
    * @param symbols - Array of stock symbols
    */
-  async getBatchQuotesShort(symbols: string[]): Promise<Record<string, unknown>[]> {
+  async getBatchQuotesShort(symbols: string[]): Promise<QuoteShort[]> {
     const symbolsParam = symbols.map(s => s.toUpperCase()).join(',');
-    return this.client.get<Record<string, unknown>[]>(`v3/quote-short/${symbolsParam}`);
-  }
-
-  /**
-   * Get batch aftermarket trades
-   * @param symbols - Array of stock symbols
-   */
-  async getBatchAftermarketTrades(symbols: string[]): Promise<Record<string, unknown>[]> {
-    const symbolsParam = symbols.map(s => s.toUpperCase()).join(',');
-    return this.client.get<Record<string, unknown>[]>(`v4/pre-post-market-trade/${symbolsParam}`);
+    return this.client.get<QuoteShort[]>('quote-short', {
+      searchParams: { symbol: symbolsParam },
+    });
   }
 
   /**
    * Get batch aftermarket quotes
    * @param symbols - Array of stock symbols
    */
-  async getBatchAftermarketQuotes(symbols: string[]): Promise<Record<string, unknown>[]> {
+  async getBatchAftermarketQuotes(symbols: string[]): Promise<AftermarketQuote[]> {
     const symbolsParam = symbols.map(s => s.toUpperCase()).join(',');
-    return this.client.get<Record<string, unknown>[]>(`v4/pre-post-market/${symbolsParam}`);
+    return this.client.get<AftermarketQuote[]>('batch-aftermarket-quote', {
+      searchParams: { symbols: symbolsParam },
+    });
   }
 
   /**
    * Get mutual fund quotes
    */
-  async getMutualFundQuotes(): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>('v3/quotes/mutual_fund');
+  async getMutualFundQuotes(): Promise<Quote[]> {
+    return this.client.get<Quote[]>('batch-mutualfund-quotes');
   }
 
   /**
    * Get ETF quotes
    */
-  async getETFQuotes(): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>('v3/quotes/etf');
+  async getETFQuotes(): Promise<Quote[]> {
+    return this.client.get<Quote[]>('batch-etf-quotes');
   }
 
   /**
    * Get commodities quotes
    */
-  async getCommoditiesQuotes(): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>('v3/quotes/commodity');
+  async getCommoditiesQuotes(): Promise<Quote[]> {
+    return this.client.get<Quote[]>('batch-commodity-quotes');
   }
 
   /**
    * Get index quotes
    */
-  async getIndexQuotes(): Promise<Record<string, unknown>[]> {
-    return this.client.get<Record<string, unknown>[]>('v3/quotes/index');
+  async getIndexQuotes(): Promise<Quote[]> {
+    return this.client.get<Quote[]>('batch-index-quotes');
+  }
+
+  /**
+   * Get batch aftermarket trades for multiple symbols
+   * @param symbols - Array of stock symbols
+   */
+  async getBatchAftermarketTrades(symbols: string[]): Promise<AftermarketTrade[]> {
+    const symbolsParam = symbols.map(s => s.toUpperCase()).join(',');
+    return this.client.get<AftermarketTrade[]>('batch-aftermarket-trade', {
+      searchParams: { symbols: symbolsParam },
+    });
+  }
+
+  /**
+   * Get ETF list
+   */
+  async getETFList(): Promise<FundListItem[]> {
+    return this.client.get<FundListItem[]>('etf-list');
+  }
+
+  /**
+   * Get mutual fund list
+   */
+  async getMutualFundList(): Promise<FundListItem[]> {
+    return this.client.get<FundListItem[]>('mutual-fund-list');
   }
 }

@@ -14,10 +14,9 @@ export class ESGResource {
    * @param symbol - Stock symbol (e.g., "AAPL")
    */
   async getESGData(symbol: string): Promise<ESGData[]> {
-    return this.client.get<ESGData[]>(
-      'v4/esg-environmental-social-governance-data',
-      { searchParams: { symbol: symbol.toUpperCase() } }
-    );
+    return this.client.get<ESGData[]>('esg-disclosures', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -26,10 +25,9 @@ export class ESGResource {
    * @param symbol - Stock symbol (e.g., "AAPL")
    */
   async getESGRatings(symbol: string): Promise<ESGRating[]> {
-    return this.client.get<ESGRating[]>(
-      'v4/esg-environmental-social-governance-data-ratings',
-      { searchParams: { symbol: symbol.toUpperCase() } }
-    );
+    return this.client.get<ESGRating[]>('esg-ratings', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -38,9 +36,8 @@ export class ESGResource {
    * @param year - Year for benchmark data
    */
   async getESGBenchmark(year: number): Promise<ESGBenchmark[]> {
-    return this.client.get<ESGBenchmark[]>(
-      'v4/esg-environmental-social-governance-sector-benchmark',
-      { searchParams: { year } }
-    );
+    return this.client.get<ESGBenchmark[]>('esg-benchmark', {
+      searchParams: { year },
+    });
   }
 }

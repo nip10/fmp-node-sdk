@@ -120,7 +120,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllProfiles();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/profile/all');
+      expect(mockClient.get).toHaveBeenCalledWith('profile-bulk', { searchParams: { part: 0 } });
       expect(result).toEqual(mockProfiles);
       expect(result).toHaveLength(2);
     });
@@ -162,7 +162,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllRatings();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rating');
+      expect(mockClient.get).toHaveBeenCalledWith('rating-bulk');
       expect(result).toEqual(mockRatings);
       expect(result).toHaveLength(2);
     });
@@ -189,7 +189,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllDCF();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/dcf');
+      expect(mockClient.get).toHaveBeenCalledWith('dcf-bulk');
       expect(result).toEqual(mockDCF);
     });
   });
@@ -215,7 +215,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllScores();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/score');
+      expect(mockClient.get).toHaveBeenCalledWith('scores-bulk');
       expect(result).toEqual(mockScores);
     });
   });
@@ -242,7 +242,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllPriceTargets();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/price-target');
+      expect(mockClient.get).toHaveBeenCalledWith('price-target-summary-bulk');
       expect(result).toEqual(mockTargets);
     });
   });
@@ -270,7 +270,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllETFHoldings();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/etf-holder');
+      expect(mockClient.get).toHaveBeenCalledWith('etf-holder-bulk', { searchParams: { part: 1 } });
       expect(result).toEqual(mockHoldings);
     });
   });
@@ -298,7 +298,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllUpgradesDowngrades();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/upgrades-downgrades');
+      expect(mockClient.get).toHaveBeenCalledWith('upgrades-downgrades-consensus-bulk');
       expect(result).toEqual(mockGrades);
     });
   });
@@ -375,7 +375,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllKeyMetricsTTM();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/key-metrics-ttm');
+      expect(mockClient.get).toHaveBeenCalledWith('key-metrics-ttm-bulk');
       expect(result).toEqual(mockMetrics);
     });
   });
@@ -448,7 +448,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllRatiosTTM();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/ratios-ttm');
+      expect(mockClient.get).toHaveBeenCalledWith('ratios-ttm-bulk');
       expect(result).toEqual(mockRatios);
     });
   });
@@ -470,7 +470,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllPeers();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/stock_peers');
+      expect(mockClient.get).toHaveBeenCalledWith('peers-bulk');
       expect(result).toEqual(mockPeers);
     });
   });
@@ -496,7 +496,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllEarningsSurprises();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/earnings-surprises');
+      expect(mockClient.get).toHaveBeenCalledWith('earnings-surprises-bulk');
       expect(result).toEqual(mockSurprises);
     });
   });
@@ -550,7 +550,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllIncomeStatements();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement', { searchParams: {   period: 'annual' }, }
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement-bulk', { searchParams: {   period: 'annual' }, }
 );
       expect(result).toEqual(mockStatements);
     });
@@ -562,7 +562,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllIncomeStatements('quarter');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement', { searchParams: {   period: 'quarter' }, }
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement-bulk', { searchParams: {   period: 'quarter' }, }
 );
       expect(result).toEqual(mockStatements);
     });
@@ -574,7 +574,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllIncomeStatements('annual', 2023);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement', {
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement-bulk', {
         searchParams: {
           period: 'annual',
         year: 2023,
@@ -591,7 +591,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllIncomeStatements('quarter', 2023);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement', {
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement-bulk', {
         searchParams: {
           period: 'quarter',
         year: 2023,
@@ -642,7 +642,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllIncomeStatementGrowth();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement-growth', {
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement-growth-bulk', {
         searchParams: {
           period: 'annual',
       },
@@ -658,7 +658,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllIncomeStatementGrowth('quarter', 2023);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/income-statement-growth', {
+      expect(mockClient.get).toHaveBeenCalledWith('income-statement-growth-bulk', {
         searchParams: {
           period: 'quarter',
         year: 2023,
@@ -734,7 +734,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllBalanceSheets();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement', {
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-bulk', {
         searchParams: {
           period: 'annual',
       },
@@ -750,7 +750,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllBalanceSheets('quarter', 2023);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement', {
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-bulk', {
         searchParams: {
           period: 'quarter',
         year: 2023,
@@ -814,7 +814,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllBalanceSheetGrowth();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement-growth', {
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-growth-bulk', {
         searchParams: {
           period: 'annual',
       },
@@ -830,7 +830,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllBalanceSheetGrowth('quarter', 2023);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/balance-sheet-statement-growth', {
+      expect(mockClient.get).toHaveBeenCalledWith('balance-sheet-statement-growth-bulk', {
         searchParams: {
           period: 'quarter',
         year: 2023,
@@ -892,7 +892,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllCashFlowStatements();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement', {
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-bulk', {
         searchParams: {
           period: 'annual',
       },
@@ -908,7 +908,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllCashFlowStatements('quarter', 2023);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement', {
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-bulk', {
         searchParams: {
           period: 'quarter',
         year: 2023,
@@ -963,7 +963,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllCashFlowStatementGrowth();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement-growth', {
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-growth-bulk', {
         searchParams: {
           period: 'annual',
       },
@@ -979,7 +979,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getAllCashFlowStatementGrowth('quarter', 2023);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cash-flow-statement-growth', {
+      expect(mockClient.get).toHaveBeenCalledWith('cash-flow-statement-growth-bulk', {
         searchParams: {
           period: 'quarter',
         year: 2023,
@@ -1019,7 +1019,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getBatchEODPrices('2024-01-15');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch-request-end-of-day-prices', {
+      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
         searchParams: {
           date: '2024-01-15',
       },
@@ -1036,7 +1036,7 @@ describe('BulkResource', () => {
 
       await bulkResource.getBatchEODPrices('2023-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch-request-end-of-day-prices', {
+      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
         searchParams: {
           date: '2023-12-31',
       },
@@ -1094,7 +1094,7 @@ describe('BulkResource', () => {
 
       const result = await bulkResource.getBatchEODPricesRange('2024-01-15', '2024-01-16');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch-request-end-of-day-prices', {
+      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
         searchParams: {
           from: '2024-01-15',
         to: '2024-01-16',
@@ -1112,7 +1112,7 @@ describe('BulkResource', () => {
 
       await bulkResource.getBatchEODPricesRange('2024-01-15', '2024-01-15');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch-request-end-of-day-prices', {
+      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
         searchParams: {
           from: '2024-01-15',
         to: '2024-01-15',
@@ -1128,7 +1128,7 @@ describe('BulkResource', () => {
 
       await bulkResource.getBatchEODPricesRange('2024-01-01', '2024-03-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/batch-request-end-of-day-prices', {
+      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
         searchParams: {
           from: '2024-01-01',
         to: '2024-03-31',

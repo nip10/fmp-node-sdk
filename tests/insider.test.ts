@@ -53,7 +53,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getInsiderTrades('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           symbol: 'AAPL',
       },
@@ -68,7 +68,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTrades('tsla');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           symbol: 'TSLA',
       },
@@ -82,7 +82,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTrades('AAPL', 50);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           symbol: 'AAPL',
         limit: 50,
@@ -97,7 +97,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTrades('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           symbol: 'AAPL',
       },
@@ -134,7 +134,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getInsiderStatistics('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-roaster-statistic', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-roaster-statistic', {
         searchParams: {
           symbol: 'AAPL',
       },
@@ -149,7 +149,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderStatistics('msft');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-roaster-statistic', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-roaster-statistic', {
         searchParams: {
           symbol: 'MSFT',
       },
@@ -179,7 +179,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getInsiderRoster('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-roaster', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-roaster', {
         searchParams: {
           symbol: 'AAPL',
       },
@@ -194,7 +194,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderRoster('googl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-roaster', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-roaster', {
         searchParams: {
           symbol: 'GOOGL',
       },
@@ -226,7 +226,9 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getInstitutionalHolders('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/institutional-holder/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('institutional-holder', {
+        searchParams: { symbol: 'AAPL' },
+      });
       expect(result).toEqual(mockResponse);
     });
 
@@ -236,7 +238,9 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInstitutionalHolders('nvda');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/institutional-holder/NVDA');
+      expect(mockClient.get).toHaveBeenCalledWith('institutional-holder', {
+        searchParams: { symbol: 'NVDA' },
+      });
     });
   });
 
@@ -262,7 +266,9 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.get13F('0001067983');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/form-thirteen/0001067983', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
+        searchParams: { cik: '0001067983' },
+      });
       expect(result).toEqual(mockResponse);
     });
 
@@ -272,12 +278,12 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13F('0001067983', '2024-03-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/form-thirteen/0001067983', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
         searchParams: {
+          cik: '0001067983',
           date: '2024-03-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should not include date parameter when not provided', async () => {
@@ -286,7 +292,9 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13F('0001067983');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/form-thirteen/0001067983', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
+        searchParams: { cik: '0001067983' },
+      });
     });
 
     it('should handle different CIK formats', async () => {
@@ -295,7 +303,9 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13F('1067983');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/form-thirteen/1067983', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
+        searchParams: { cik: '1067983' },
+      });
     });
   });
 
@@ -326,7 +336,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getSenateTrades();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading', { searchParams: {} });
       expect(result).toEqual(mockResponse);
     });
 
@@ -336,7 +346,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getSenateTrades('TSLA');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading', {
         searchParams: {
           symbol: 'TSLA',
       },
@@ -350,7 +360,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getSenateTrades('nvda');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading', {
         searchParams: {
           symbol: 'NVDA',
       },
@@ -366,7 +376,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getHouseTrades();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-disclosure', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('house-disclosure', { searchParams: {} });
       expect(result).toEqual(mockResponse);
     });
 
@@ -376,7 +386,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getHouseTrades('MSFT');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-disclosure', {
+      expect(mockClient.get).toHaveBeenCalledWith('house-disclosure', {
         searchParams: {
           symbol: 'MSFT',
       },
@@ -390,7 +400,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getHouseTrades('meta');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-disclosure', {
+      expect(mockClient.get).toHaveBeenCalledWith('house-disclosure', {
         searchParams: {
           symbol: 'META',
       },
@@ -426,7 +436,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getLatestSenateTrades();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading-rss-feed');
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading-rss-feed');
       expect(result).toEqual(mockResponse);
     });
 
@@ -436,7 +446,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getLatestSenateTrades();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading-rss-feed');
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading-rss-feed');
       expect(mockClient.get).toHaveBeenCalledTimes(1);
     });
   });
@@ -448,7 +458,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getLatestHouseTrades();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-disclosure-rss-feed');
+      expect(mockClient.get).toHaveBeenCalledWith('house-disclosure-rss-feed');
       expect(result).toEqual(mockResponse);
     });
 
@@ -458,7 +468,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getLatestHouseTrades();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-disclosure-rss-feed');
+      expect(mockClient.get).toHaveBeenCalledWith('house-disclosure-rss-feed');
       expect(mockClient.get).toHaveBeenCalledTimes(1);
     });
   });
@@ -470,7 +480,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getSenateTradingByName('Nancy Pelosi');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading', {
         searchParams: {
           name: 'Nancy Pelosi',
       },
@@ -484,7 +494,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getSenateTradingByName("Dan O'Brien");
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading', {
         searchParams: {
           name: "Dan O'Brien",
       },
@@ -498,7 +508,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getSenateTradingByName('Pelosi');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading', {
         searchParams: {
           name: 'Pelosi',
       },
@@ -514,7 +524,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getHouseTradingByName('Alexandria Ocasio-Cortez');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-disclosure', {
+      expect(mockClient.get).toHaveBeenCalledWith('house-disclosure', {
         searchParams: {
           name: 'Alexandria Ocasio-Cortez',
       },
@@ -528,7 +538,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getHouseTradingByName('Smith-Jones');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-disclosure', {
+      expect(mockClient.get).toHaveBeenCalledWith('house-disclosure', {
         searchParams: {
           name: 'Smith-Jones',
       },
@@ -544,7 +554,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getLatestInsiderTrades();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', { searchParams: {} });
       expect(result).toEqual(mockResponse);
     });
 
@@ -554,7 +564,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getLatestInsiderTrades(100);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           limit: 100,
       },
@@ -568,7 +578,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getLatestInsiderTrades(0);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', { searchParams: {} });
     });
   });
 
@@ -579,7 +589,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTradesByName('Tim Cook');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           reportingName: 'Tim Cook',
       },
@@ -593,7 +603,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTradesByName('Tim Cook', 25);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           reportingName: 'Tim Cook',
         limit: 25,
@@ -608,7 +618,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTradesByName('Mary-Anne O\'Connor Jr.');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           reportingName: 'Mary-Anne O\'Connor Jr.',
       },
@@ -622,7 +632,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTradesByName('Tim Cook', 0);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           reportingName: 'Tim Cook',
       },
@@ -645,7 +655,7 @@ describe('InsiderResource', () => {
       const result = await insiderResource.getInsiderTransactionTypes();
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/insider-trading-transaction-type'
+        'insider-trading-transaction-type'
       );
       expect(result).toEqual(mockResponse);
     });
@@ -657,7 +667,7 @@ describe('InsiderResource', () => {
       await insiderResource.getInsiderTransactionTypes();
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/insider-trading-transaction-type'
+        'insider-trading-transaction-type'
       );
       expect(mockClient.get).toHaveBeenCalledTimes(1);
     });
@@ -678,7 +688,7 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.getForm4Ownership('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-four', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-four', {
         searchParams: {
           symbol: 'AAPL',
       },
@@ -693,7 +703,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getForm4Ownership('googl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-four', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-four', {
         searchParams: {
           symbol: 'GOOGL',
       },
@@ -707,7 +717,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getForm4Ownership('AAPL', 50);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-four', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-four', {
         searchParams: {
           symbol: 'AAPL',
         limit: 50,
@@ -722,7 +732,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getForm4Ownership('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-four', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-four', {
         searchParams: {
           symbol: 'AAPL',
       },
@@ -743,7 +753,7 @@ describe('InsiderResource', () => {
       const result = await insiderResource.getLatest13FFilings();
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-date',
+        'institutional-ownership-portfolio-date',
         { searchParams: {} }
       );
       expect(result).toEqual(mockResponse);
@@ -756,7 +766,7 @@ describe('InsiderResource', () => {
       await insiderResource.getLatest13FFilings('0001067983');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-date',
+        'institutional-ownership-portfolio-date',
         { searchParams: {   cik: '0001067983' }, }
 
       );
@@ -769,7 +779,7 @@ describe('InsiderResource', () => {
       await insiderResource.getLatest13FFilings(undefined, 2);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-date',
+        'institutional-ownership-portfolio-date',
         { searchParams: {   page: 2 }, }
 
       );
@@ -782,7 +792,7 @@ describe('InsiderResource', () => {
       await insiderResource.getLatest13FFilings('0001067983', 3);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-date',
+        'institutional-ownership-portfolio-date',
         { searchParams: {   cik: '0001067983', page: 3 }, }
 
       );
@@ -795,7 +805,7 @@ describe('InsiderResource', () => {
       await insiderResource.getLatest13FFilings('0001067983', 0);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-date',
+        'institutional-ownership-portfolio-date',
         { searchParams: {   cik: '0001067983' }, }
 
       );
@@ -815,7 +825,7 @@ describe('InsiderResource', () => {
       const result = await insiderResource.get13FFilingDates('0001067983');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-date',
+        'institutional-ownership-portfolio-date',
         { searchParams: {   cik: '0001067983' }, }
 
       );
@@ -829,7 +839,7 @@ describe('InsiderResource', () => {
       await insiderResource.get13FFilingDates('1067983');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-date',
+        'institutional-ownership-portfolio-date',
         { searchParams: {   cik: '1067983' }, }
 
       );
@@ -861,7 +871,9 @@ describe('InsiderResource', () => {
 
       const result = await insiderResource.get13FWithAnalytics('0001067983');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-thirteen/0001067983', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
+        searchParams: { cik: '0001067983' },
+      });
       expect(result).toEqual(mockResponse);
     });
 
@@ -871,12 +883,12 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13FWithAnalytics('0001067983', '2024-03-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-thirteen/0001067983', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
         searchParams: {
+          cik: '0001067983',
           date: '2024-03-31',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should include page parameter for pagination', async () => {
@@ -885,12 +897,12 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13FWithAnalytics('0001067983', undefined, 2);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-thirteen/0001067983', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
         searchParams: {
+          cik: '0001067983',
           page: 2,
-      },
-      }
-);
+        },
+      });
     });
 
     it('should include both date and page parameters', async () => {
@@ -899,13 +911,13 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13FWithAnalytics('0001067983', '2024-03-31', 1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-thirteen/0001067983', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
         searchParams: {
+          cik: '0001067983',
           date: '2024-03-31',
-        page: 1,
-      },
-      }
-);
+          page: 1,
+        },
+      });
     });
 
     it('should handle different date formats', async () => {
@@ -914,12 +926,12 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13FWithAnalytics('0001067983', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/form-thirteen/0001067983', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
         searchParams: {
+          cik: '0001067983',
           date: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
   });
 
@@ -942,7 +954,7 @@ describe('InsiderResource', () => {
       const result = await insiderResource.getPortfolioHoldingsSummary('0001067983');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-holdings-summary',
+        'institutional-ownership-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983' }, }
 
       );
@@ -956,7 +968,7 @@ describe('InsiderResource', () => {
       await insiderResource.getPortfolioHoldingsSummary('0001067983', '2024-03-31');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-holdings-summary',
+        'institutional-ownership-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983', date: '2024-03-31' }, }
 
       );
@@ -969,7 +981,7 @@ describe('InsiderResource', () => {
       await insiderResource.getPortfolioHoldingsSummary('0001067983', undefined, 2);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-holdings-summary',
+        'institutional-ownership-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983', page: 2 }, }
 
       );
@@ -986,7 +998,7 @@ describe('InsiderResource', () => {
       );
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-holdings-summary',
+        'institutional-ownership-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983', date: '2023-12-31', page: 3 }, }
 
       );
@@ -999,7 +1011,7 @@ describe('InsiderResource', () => {
       await insiderResource.getPortfolioHoldingsSummary('0001067983', undefined, 0);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-holdings-summary',
+        'institutional-ownership-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983' }, }
 
       );
@@ -1034,7 +1046,7 @@ describe('InsiderResource', () => {
       const result = await insiderResource.getIndustryPortfolioBreakdown('0001067983');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/industry/portfolio-holdings-summary',
+        'institutional-ownership-industry-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983' }, }
 
       );
@@ -1048,7 +1060,7 @@ describe('InsiderResource', () => {
       await insiderResource.getIndustryPortfolioBreakdown('0001067983', '2024-03-31');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/industry/portfolio-holdings-summary',
+        'institutional-ownership-industry-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983', date: '2024-03-31' }, }
 
       );
@@ -1061,7 +1073,7 @@ describe('InsiderResource', () => {
       await insiderResource.getIndustryPortfolioBreakdown('0001067983', undefined, 2);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/industry/portfolio-holdings-summary',
+        'institutional-ownership-industry-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983', page: 2 }, }
 
       );
@@ -1078,7 +1090,7 @@ describe('InsiderResource', () => {
       );
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/industry/portfolio-holdings-summary',
+        'institutional-ownership-industry-portfolio-holdings-summary',
         { searchParams: {   cik: '0001067983', date: '2023-09-30', page: 1 }, }
 
       );
@@ -1106,7 +1118,7 @@ describe('InsiderResource', () => {
       const result = await insiderResource.getSymbolOwnershipPositions('AAPL');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/symbol-ownership',
+        'institutional-ownership-symbol-ownership',
         { searchParams: {   symbol: 'AAPL' }, }
 
       );
@@ -1120,7 +1132,7 @@ describe('InsiderResource', () => {
       await insiderResource.getSymbolOwnershipPositions('msft');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/symbol-ownership',
+        'institutional-ownership-symbol-ownership',
         { searchParams: {   symbol: 'MSFT' }, }
 
       );
@@ -1133,7 +1145,7 @@ describe('InsiderResource', () => {
       await insiderResource.getSymbolOwnershipPositions('AAPL', true);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/symbol-ownership',
+        'institutional-ownership-symbol-ownership',
         { searchParams: {   symbol: 'AAPL', includeCurrentQuarter: true }, }
 
       );
@@ -1146,7 +1158,7 @@ describe('InsiderResource', () => {
       await insiderResource.getSymbolOwnershipPositions('AAPL', false);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/symbol-ownership',
+        'institutional-ownership-symbol-ownership',
         { searchParams: {   symbol: 'AAPL', includeCurrentQuarter: false }, }
 
       );
@@ -1159,7 +1171,7 @@ describe('InsiderResource', () => {
       await insiderResource.getSymbolOwnershipPositions('AAPL', undefined);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/symbol-ownership',
+        'institutional-ownership-symbol-ownership',
         { searchParams: {   symbol: 'AAPL' }, }
 
       );
@@ -1172,7 +1184,7 @@ describe('InsiderResource', () => {
       await insiderResource.getSymbolOwnershipPositions('AAPL', undefined, 2);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/symbol-ownership',
+        'institutional-ownership-symbol-ownership',
         { searchParams: {   symbol: 'AAPL', page: 2 }, }
 
       );
@@ -1185,7 +1197,7 @@ describe('InsiderResource', () => {
       await insiderResource.getSymbolOwnershipPositions('AAPL', true, 3);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/symbol-ownership',
+        'institutional-ownership-symbol-ownership',
         { searchParams: {   symbol: 'AAPL', includeCurrentQuarter: true, page: 3 }, }
 
       );
@@ -1198,7 +1210,7 @@ describe('InsiderResource', () => {
       await insiderResource.getSymbolOwnershipPositions('AAPL', false, 0);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/symbol-ownership',
+        'institutional-ownership-symbol-ownership',
         { searchParams: {   symbol: 'AAPL', includeCurrentQuarter: false }, }
 
       );
@@ -1224,7 +1236,7 @@ describe('InsiderResource', () => {
       const result = await insiderResource.getIndustryInstitutionalOwnership('AAPL');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/institutional-holders/symbol-ownership-percent',
+        'institutional-ownership-symbol-ownership-percent',
         { searchParams: {   symbol: 'AAPL' }, }
 
       );
@@ -1238,7 +1250,7 @@ describe('InsiderResource', () => {
       await insiderResource.getIndustryInstitutionalOwnership('tsla');
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/institutional-holders/symbol-ownership-percent',
+        'institutional-ownership-symbol-ownership-percent',
         { searchParams: {   symbol: 'TSLA' }, }
 
       );
@@ -1251,7 +1263,7 @@ describe('InsiderResource', () => {
       await insiderResource.getIndustryInstitutionalOwnership('AAPL', 2);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/institutional-holders/symbol-ownership-percent',
+        'institutional-ownership-symbol-ownership-percent',
         { searchParams: {   symbol: 'AAPL', page: 2 }, }
 
       );
@@ -1264,7 +1276,7 @@ describe('InsiderResource', () => {
       await insiderResource.getIndustryInstitutionalOwnership('AAPL', 0);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/institutional-holders/symbol-ownership-percent',
+        'institutional-ownership-symbol-ownership-percent',
         { searchParams: {   symbol: 'AAPL' }, }
 
       );
@@ -1306,7 +1318,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTrades('');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           symbol: '',
       },
@@ -1320,10 +1332,9 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13F('00000000001067983');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v3/form-thirteen/00000000001067983',
-        { searchParams: {} }
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
+        searchParams: { cik: '00000000001067983' },
+      });
     });
 
     it('should handle special characters in names', async () => {
@@ -1332,7 +1343,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getSenateTradingByName('José María García-López');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/senate-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('senate-trading', {
         searchParams: {
           name: 'José María García-López',
       },
@@ -1346,12 +1357,12 @@ describe('InsiderResource', () => {
 
       await insiderResource.get13F('0001067983', '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/form-thirteen/0001067983', {
+      expect(mockClient.get).toHaveBeenCalledWith('form-thirteen', {
         searchParams: {
+          cik: '0001067983',
           date: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle very large page numbers', async () => {
@@ -1361,7 +1372,7 @@ describe('InsiderResource', () => {
       await insiderResource.getLatest13FFilings('0001067983', 9999);
 
       expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/institutional-ownership/portfolio-date',
+        'institutional-ownership-portfolio-date',
         { searchParams: {   cik: '0001067983', page: 9999 }, }
 
       );
@@ -1373,7 +1384,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTrades('AAPL', 10000);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           symbol: 'AAPL',
         limit: 10000,
@@ -1388,7 +1399,7 @@ describe('InsiderResource', () => {
 
       await insiderResource.getInsiderTrades('BRK.B');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/insider-trading', {
+      expect(mockClient.get).toHaveBeenCalledWith('insider-trading', {
         searchParams: {
           symbol: 'BRK.B',
       },

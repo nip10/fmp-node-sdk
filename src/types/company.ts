@@ -57,18 +57,18 @@ export interface Quote {
   dayHigh: number;
   yearHigh: number;
   yearLow: number;
-  marketCap: number;
-  priceAvg50: number;
-  priceAvg200: number;
+  marketCap: number | null;
+  priceAvg50: number | null;
+  priceAvg200: number | null;
   exchange: string;
   volume: number;
   avgVolume: number;
   open: number;
   previousClose: number;
-  eps: number;
-  pe: number;
-  earningsAnnouncement: string;
-  sharesOutstanding: number;
+  eps: number | null;
+  pe: number | null;
+  earningsAnnouncement: string | null;
+  sharesOutstanding: number | null;
   timestamp: number;
 }
 
@@ -278,4 +278,78 @@ export interface TradableSymbol {
   name: string;
   price: number;
   exchange: string;
+}
+
+/**
+ * Short quote (simplified quote data)
+ */
+export interface QuoteShort {
+  symbol: string;
+  price: number;
+  volume: number;
+}
+
+/**
+ * Aftermarket trade data
+ */
+export interface AftermarketTrade {
+  symbol: string;
+  price: number;
+  size: number;
+  timestamp: number;
+}
+
+/**
+ * Aftermarket quote data
+ */
+export interface AftermarketQuote {
+  symbol: string;
+  ask: number;
+  bid: number;
+  asize: number;
+  bsize: number;
+  timestamp: number;
+}
+
+/**
+ * Stock price change data
+ */
+export interface PriceChange {
+  symbol: string;
+  '1D': number | null;
+  '5D': number | null;
+  '1M': number | null;
+  '3M': number | null;
+  '6M': number | null;
+  ytd: number | null;
+  '1Y': number | null;
+  '3Y': number | null;
+  '5Y': number | null;
+  '10Y': number | null;
+  max: number | null;
+}
+
+/**
+ * Enterprise value data
+ */
+export interface EnterpriseValue {
+  symbol: string;
+  date: string;
+  stockPrice: number | null;
+  numberOfShares: number | null;
+  marketCapitalization: number | null;
+  minusCashAndCashEquivalents: number | null;
+  addTotalDebt: number | null;
+  enterpriseValue: number | null;
+}
+
+/**
+ * ETF/Fund list item
+ */
+export interface FundListItem {
+  symbol: string;
+  name: string;
+  price: number | null;
+  exchange: string;
+  exchangeShortName: string;
 }

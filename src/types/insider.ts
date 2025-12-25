@@ -178,3 +178,24 @@ export interface IndustryInstitutionalOwnership {
   percentageOwned: number;
   date: string;
 }
+
+/**
+ * Form 4 ownership filing data
+ */
+export interface Form4Ownership {
+  symbol: string;
+  filingDate: string;
+  transactionDate: string;
+  reportingCik: string;
+  reportingName: string;
+  typeOfOwner: string;
+  acquistionOrDisposition: string;
+  formType: string;
+  securitiesOwned: number | null;
+  securitiesTransacted: number | null;
+  transactionType: string;
+  price: number | null;
+  securityName: string;
+  companyCik: string;
+  link: string;
+}

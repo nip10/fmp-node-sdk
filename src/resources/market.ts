@@ -33,7 +33,7 @@ export class MarketResource {
   constructor(private readonly client: FMPClient) {}
 
   /**
-   * Get historical daily prices for a symbol
+   * Get historical daily prices for a symbol (full data with OHLCV)
    * @param symbol - Stock symbol
    * @param from - Start date (YYYY-MM-DD)
    * @param to - End date (YYYY-MM-DD)
@@ -42,19 +42,46 @@ export class MarketResource {
     symbol: string,
     from?: string,
     to?: string
-  ): Promise<{ historical: HistoricalPrice[] }> {
+  ): Promise<HistoricalPrice[]> {
     validateSymbol(symbol);
     validateDateRange(from, to);
 
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = {
+      symbol: symbol.toUpperCase(),
+    };
 
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<{ historical: HistoricalPrice[] }>(
-      `v3/historical-price-full/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<HistoricalPrice[]>('historical-price-eod/full', {
+      searchParams: params,
+    });
+  }
+
+  /**
+   * Get light historical daily prices (date and close only)
+   * @param symbol - Stock symbol
+   * @param from - Start date (YYYY-MM-DD)
+   * @param to - End date (YYYY-MM-DD)
+   */
+  async getHistoricalPricesLight(
+    symbol: string,
+    from?: string,
+    to?: string
+  ): Promise<LightChartData[]> {
+    validateSymbol(symbol);
+    validateDateRange(from, to);
+
+    const params: Record<string, string> = {
+      symbol: symbol.toUpperCase(),
+    };
+
+    if (from) params.from = from;
+    if (to) params.to = to;
+
+    return this.client.get<LightChartData[]>('historical-price-eod/light', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -73,67 +100,67 @@ export class MarketResource {
     validateSymbol(symbol);
     validateDateRange(from, to);
 
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = {
+      symbol: symbol.toUpperCase(),
+    };
 
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/${interval}/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<IntradayChart[]>(`historical-chart/${interval}`, {
+      searchParams: params,
+    });
   }
 
   /**
-   * Get forex pair prices
+   * Get forex pair quote
    * @param pair - Forex pair (e.g., "EURUSD")
    */
-  async getForexPrice(pair?: string): Promise<ForexPrice[]> {
-    const endpoint = pair ? `v3/fx/${pair.toUpperCase()}` : 'v3/fx';
-    return this.client.get<ForexPrice[]>(endpoint);
+  async getForexPrice(pair: string): Promise<ForexPrice[]> {
+    return this.client.get<ForexPrice[]>('quote', {
+      searchParams: { symbol: pair.toUpperCase() },
+    });
   }
 
   /**
-   * Get all forex pairs
+   * Get all forex pair quotes
    */
   async getAllForexPrices(): Promise<ForexPrice[]> {
-    return this.getForexPrice();
+    return this.client.get<ForexPrice[]>('batch-forex-quotes');
   }
 
   /**
-   * Get cryptocurrency prices
+   * Get cryptocurrency quote
    * @param symbol - Crypto symbol (e.g., "BTCUSD")
    */
-  async getCryptoPrice(symbol?: string): Promise<CryptoPrice[]> {
-    const endpoint = symbol
-      ? `v3/quote/${symbol.toUpperCase()}`
-      : 'v3/quotes/crypto';
-    return this.client.get<CryptoPrice[]>(endpoint);
+  async getCryptoPrice(symbol: string): Promise<CryptoPrice[]> {
+    return this.client.get<CryptoPrice[]>('quote', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
-   * Get all cryptocurrency prices
+   * Get all cryptocurrency quotes
    */
   async getAllCryptoPrices(): Promise<CryptoPrice[]> {
-    return this.getCryptoPrice();
+    return this.client.get<CryptoPrice[]>('batch-crypto-quotes');
   }
 
   /**
    * Get list of available cryptocurrencies
    */
   async getCryptoList(): Promise<CryptoList[]> {
-    return this.client.get<CryptoList[]>('v3/symbol/available-cryptocurrencies');
+    return this.client.get<CryptoList[]>('cryptocurrency-list');
   }
 
   /**
-   * Get cryptocurrency quotes in short format (symbol, price, volume)
+   * Get cryptocurrency quote (short format)
    * @param symbol - Crypto symbol (e.g., "BTCUSD")
    */
-  async getCryptoQuoteShort(symbol?: string): Promise<CryptoPrice[]> {
-    const endpoint = symbol
-      ? `v3/quote/${symbol.toUpperCase()}`
-      : 'v3/quotes/crypto';
-    return this.client.get<CryptoPrice[]>(endpoint);
+  async getCryptoQuoteShort(symbol: string): Promise<ForexQuoteShort[]> {
+    return this.client.get<ForexQuoteShort[]>('quote-short', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -147,14 +174,15 @@ export class MarketResource {
     from?: string,
     to?: string
   ): Promise<LightChartData[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = {
+      symbol: symbol.toUpperCase(),
+    };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<LightChartData[]>(
-      `v3/historical-chart/line/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<LightChartData[]>('historical-price-eod/light', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -167,78 +195,40 @@ export class MarketResource {
     symbol: string,
     from?: string,
     to?: string
-  ): Promise<{ historical: HistoricalPrice[] }> {
-    const params: Record<string, string> = {};
+  ): Promise<HistoricalPrice[]> {
+    const params: Record<string, string> = {
+      symbol: symbol.toUpperCase(),
+    };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<{ historical: HistoricalPrice[] }>(
-      `v3/historical-price-full/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<HistoricalPrice[]>('historical-price-eod/full', {
+      searchParams: params,
+    });
   }
 
   /**
-   * Get intraday chart data for cryptocurrency (1-minute intervals)
+   * Get intraday chart data for cryptocurrency
    * @param symbol - Crypto symbol (e.g., "BTCUSD")
+   * @param interval - Time interval
    * @param from - Start date (YYYY-MM-DD)
    * @param to - End date (YYYY-MM-DD)
    */
-  async getCryptoIntraday1Min(
+  async getCryptoIntraday(
     symbol: string,
+    interval: IntradayInterval = IntradayInterval.OneHour,
     from?: string,
     to?: string
   ): Promise<IntradayChart[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = {
+      symbol: symbol.toUpperCase(),
+    };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/1min/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
-  }
-
-  /**
-   * Get intraday chart data for cryptocurrency (5-minute intervals)
-   * @param symbol - Crypto symbol (e.g., "BTCUSD")
-   * @param from - Start date (YYYY-MM-DD)
-   * @param to - End date (YYYY-MM-DD)
-   */
-  async getCryptoIntraday5Min(
-    symbol: string,
-    from?: string,
-    to?: string
-  ): Promise<IntradayChart[]> {
-    const params: Record<string, string> = {};
-    if (from) params.from = from;
-    if (to) params.to = to;
-
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/5min/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
-  }
-
-  /**
-   * Get intraday chart data for cryptocurrency (1-hour intervals)
-   * @param symbol - Crypto symbol (e.g., "BTCUSD")
-   * @param from - Start date (YYYY-MM-DD)
-   * @param to - End date (YYYY-MM-DD)
-   */
-  async getCryptoIntraday1Hour(
-    symbol: string,
-    from?: string,
-    to?: string
-  ): Promise<IntradayChart[]> {
-    const params: Record<string, string> = {};
-    if (from) params.from = from;
-    if (to) params.to = to;
-
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/1hour/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<IntradayChart[]>(`historical-chart/${interval}`, {
+      searchParams: params,
+    });
   }
 
   /**
@@ -251,32 +241,34 @@ export class MarketResource {
     pair: string,
     from?: string,
     to?: string
-  ): Promise<{ historical: HistoricalPrice[] }> {
-    const params: Record<string, string> = {};
+  ): Promise<HistoricalPrice[]> {
+    const params: Record<string, string> = {
+      symbol: pair.toUpperCase(),
+    };
 
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<{ historical: HistoricalPrice[] }>(
-      `v3/historical-price-full/${pair.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<HistoricalPrice[]>('historical-price-eod/full', {
+      searchParams: params,
+    });
   }
 
   /**
    * Get list of available forex currency pairs
    */
   async getForexCurrencyPairs(): Promise<ForexCurrencyPair[]> {
-    return this.client.get<ForexCurrencyPair[]>('v3/symbol/available-forex-currency-pairs');
+    return this.client.get<ForexCurrencyPair[]>('forex-list');
   }
 
   /**
    * Get forex quote in short format (symbol, price, volume)
    * @param pair - Forex pair (e.g., "EURUSD")
    */
-  async getForexQuoteShort(pair?: string): Promise<ForexQuoteShort[]> {
-    const endpoint = pair ? `v3/forex/${pair.toUpperCase()}` : 'v3/forex';
-    return this.client.get<ForexQuoteShort[]>(endpoint);
+  async getForexQuoteShort(pair: string): Promise<ForexQuoteShort[]> {
+    return this.client.get<ForexQuoteShort[]>('quote-short', {
+      searchParams: { symbol: pair.toUpperCase() },
+    });
   }
 
   /**
@@ -290,128 +282,70 @@ export class MarketResource {
     from?: string,
     to?: string
   ): Promise<LightChartData[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = {
+      symbol: pair.toUpperCase(),
+    };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<LightChartData[]>(
-      `v3/historical-chart/line/${pair.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<LightChartData[]>('historical-price-eod/light', {
+      searchParams: params,
+    });
   }
 
   /**
-   * Get intraday chart data for forex pairs (1-minute intervals)
+   * Get intraday chart data for forex pairs
    * @param pair - Forex pair (e.g., "EURUSD")
+   * @param interval - Time interval
    * @param from - Start date (YYYY-MM-DD)
    * @param to - End date (YYYY-MM-DD)
    */
-  async getForexIntraday1Min(
+  async getForexIntraday(
     pair: string,
+    interval: IntradayInterval = IntradayInterval.OneHour,
     from?: string,
     to?: string
   ): Promise<IntradayChart[]> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = {
+      symbol: pair.toUpperCase(),
+    };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/1min/${pair.toUpperCase()}`,
-      { searchParams: params }
-    );
-  }
-
-  /**
-   * Get intraday chart data for forex pairs (5-minute intervals)
-   * @param pair - Forex pair (e.g., "EURUSD")
-   * @param from - Start date (YYYY-MM-DD)
-   * @param to - End date (YYYY-MM-DD)
-   */
-  async getForexIntraday5Min(
-    pair: string,
-    from?: string,
-    to?: string
-  ): Promise<IntradayChart[]> {
-    const params: Record<string, string> = {};
-    if (from) params.from = from;
-    if (to) params.to = to;
-
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/5min/${pair.toUpperCase()}`,
-      { searchParams: params }
-    );
-  }
-
-  /**
-   * Get intraday chart data for forex pairs (1-hour intervals)
-   * @param pair - Forex pair (e.g., "EURUSD")
-   * @param from - Start date (YYYY-MM-DD)
-   * @param to - End date (YYYY-MM-DD)
-   */
-  async getForexIntraday1Hour(
-    pair: string,
-    from?: string,
-    to?: string
-  ): Promise<IntradayChart[]> {
-    const params: Record<string, string> = {};
-    if (from) params.from = from;
-    if (to) params.to = to;
-
-    return this.client.get<IntradayChart[]>(
-      `v3/historical-chart/1hour/${pair.toUpperCase()}`,
-      { searchParams: params }
-    );
+    return this.client.get<IntradayChart[]>(`historical-chart/${interval}`, {
+      searchParams: params,
+    });
   }
 
   /**
    * Get market hours for a specific exchange
    * @param exchange - Exchange name (e.g., "NYSE", "NASDAQ")
    */
-  async getMarketHours(exchange?: string): Promise<MarketHours> {
-    const params: Record<string, string> = {};
-    if (exchange) params.exchange = exchange;
-    return this.client.get<MarketHours>('v3/is-the-market-open', { searchParams: params });
+  async getMarketHours(exchange: string): Promise<MarketHours[]> {
+    return this.client.get<MarketHours[]>('exchange-market-hours', {
+      searchParams: { exchange },
+    });
   }
 
   /**
-   * Get market holidays
+   * Get market holidays for a specific exchange
+   * @param exchange - Exchange name (e.g., "NYSE", "NASDAQ")
    */
-  async getMarketHolidays(): Promise<MarketHoliday[]> {
-    return this.client.get<MarketHoliday[]>('v3/market-holidays');
+  async getMarketHolidays(exchange: string): Promise<MarketHoliday[]> {
+    return this.client.get<MarketHoliday[]>('holidays-by-exchange', {
+      searchParams: { exchange },
+    });
   }
 
   /**
    * Get hours for all exchanges
    */
   async getAllMarketHours(): Promise<MarketHours[]> {
-    return this.client.get<MarketHours[]>('v3/market-hours');
+    return this.client.get<MarketHours[]>('all-exchange-market-hours');
   }
 
   /**
-   * Get light historical chart data (lightweight price data with intervals)
-   * @param interval - Time interval (e.g., '1min', '5min', '15min', '30min', '1hour', '4hour')
-   * @param symbol - Stock symbol
-   * @param from - Start date (YYYY-MM-DD)
-   * @param to - End date (YYYY-MM-DD)
-   */
-  async getLightChart(
-    interval: string,
-    symbol: string,
-    from?: string,
-    to?: string
-  ): Promise<LightChartData[]> {
-    const params: Record<string, string> = {};
-    if (from) params.from = from;
-    if (to) params.to = to;
-
-    return this.client.get<LightChartData[]>(
-      `v3/historical-chart/${interval}/${symbol.toUpperCase()}`,
-      { searchParams: params }
-    );
-  }
-
-  /**
-   * Get unadjusted historical prices (not adjusted for splits or dividends)
+   * Get unadjusted historical prices (not adjusted for splits)
    * @param symbol - Stock symbol
    * @param from - Start date (YYYY-MM-DD)
    * @param to - End date (YYYY-MM-DD)
@@ -420,19 +354,21 @@ export class MarketResource {
     symbol: string,
     from?: string,
     to?: string
-  ): Promise<LightChartData[]> {
-    const params: Record<string, string> = {};
+  ): Promise<HistoricalPrice[]> {
+    const params: Record<string, string> = {
+      symbol: symbol.toUpperCase(),
+    };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<LightChartData[]>(
-      `v3/historical-price-full/${symbol.toUpperCase()}/line`,
+    return this.client.get<HistoricalPrice[]>(
+      'historical-price-eod/non-split-adjusted',
       { searchParams: params }
     );
   }
 
   /**
-   * Get dividend-adjusted historical prices (adjusted for dividends only)
+   * Get dividend-adjusted historical prices
    * @param symbol - Stock symbol
    * @param from - Start date (YYYY-MM-DD)
    * @param to - End date (YYYY-MM-DD)
@@ -441,15 +377,15 @@ export class MarketResource {
     symbol: string,
     from?: string,
     to?: string
-  ): Promise<{ historical: HistoricalPrice[] }> {
+  ): Promise<HistoricalPrice[]> {
     const params: Record<string, string> = {
-      serietype: 'line'
+      symbol: symbol.toUpperCase(),
     };
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<{ historical: HistoricalPrice[] }>(
-      `v3/historical-price-full/${symbol.toUpperCase()}`,
+    return this.client.get<HistoricalPrice[]>(
+      'historical-price-eod/dividend-adjusted',
       { searchParams: params }
     );
   }

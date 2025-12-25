@@ -20,11 +20,13 @@ export class SECResource {
    * @param limit - Number of results
    */
   async getFilings(symbol: string, type?: string, limit?: number): Promise<SECFiling[]> {
-    const params: Record<string, string | number> = {};
+    const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (type) params.type = type;
     if (limit) params.limit = limit;
 
-    return this.client.get<SECFiling[]>(`v3/sec_filings/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<SECFiling[]>('sec-filings', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -41,7 +43,9 @@ export class SECResource {
     if (to) params.to = to;
     if (limit) params.limit = limit;
 
-    return this.client.get<SECRSSFeed[]>('v4/rss_feed', { searchParams: params });
+    return this.client.get<SECRSSFeed[]>('rss-feed', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -62,7 +66,9 @@ export class SECResource {
     if (to) params.to = to;
     if (limit) params.limit = limit;
 
-    return this.client.get<SECRSSFeed[]>('v4/rss_feed', { searchParams: params });
+    return this.client.get<SECRSSFeed[]>('rss-feed', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -82,10 +88,12 @@ export class SECResource {
    * @param limit - Number of results
    */
   async getFilingsByCIK(cik: string, type?: string, limit?: number): Promise<SECFiling[]> {
-    const params: Record<string, string | number> = {};
+    const params: Record<string, string | number> = { cik };
     if (type) params.type = type;
     if (limit) params.limit = limit;
-    return this.client.get<SECFiling[]>(`v3/sec_filings/${cik}`, { searchParams: params });
+    return this.client.get<SECFiling[]>('sec-filings', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -98,7 +106,9 @@ export class SECResource {
     const params: Record<string, string | number> = { name };
     if (type) params.type = type;
     if (limit) params.limit = limit;
-    return this.client.get<SECFiling[]>('v3/sec_filings', { searchParams: params });
+    return this.client.get<SECFiling[]>('sec-filings', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -106,7 +116,9 @@ export class SECResource {
    * @param symbol - Stock symbol
    */
   async searchCompanyBySymbol(symbol: string): Promise<CompanyCIKSearch[]> {
-    return this.client.get<CompanyCIKSearch[]>(`v3/cik-search/${symbol.toUpperCase()}`);
+    return this.client.get<CompanyCIKSearch[]>('cik-search', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -114,7 +126,9 @@ export class SECResource {
    * @param cik - Central Index Key
    */
   async searchCompanyByCIK(cik: string): Promise<CompanyCIKSearch[]> {
-    return this.client.get<CompanyCIKSearch[]>(`v3/cik/${cik}`);
+    return this.client.get<CompanyCIKSearch[]>('cik', {
+      searchParams: { cik },
+    });
   }
 
   /**
@@ -124,14 +138,16 @@ export class SECResource {
   async getLatestFilings(limit?: number): Promise<SECRSSFeed[]> {
     const params: Record<string, number> = {};
     if (limit) params.limit = limit;
-    return this.client.get<SECRSSFeed[]>('v4/rss_feed_8k', { searchParams: params });
+    return this.client.get<SECRSSFeed[]>('rss-feed-8k', {
+      searchParams: params,
+    });
   }
 
   /**
    * Get list of all SIC codes
    */
   async getAllSICCodes(): Promise<SICCode[]> {
-    return this.client.get<SICCode[]>('v4/standard_industrial_classification/all');
+    return this.client.get<SICCode[]>('standard-industrial-classification-all');
   }
 
   /**
@@ -139,7 +155,9 @@ export class SECResource {
    * @param sicCode - SIC code
    */
   async getSICByCode(sicCode: string): Promise<SICCode[]> {
-    return this.client.get<SICCode[]>(`v4/standard_industrial_classification`, { searchParams: { sicCode } });
+    return this.client.get<SICCode[]>('standard-industrial-classification', {
+      searchParams: { sicCode },
+    });
   }
 
   /**
@@ -147,7 +165,9 @@ export class SECResource {
    * @param industry - Industry name
    */
   async searchSIC(industry: string): Promise<SICCode[]> {
-    return this.client.get<SICCode[]>('v4/standard_industrial_classification', { searchParams: { industry } });
+    return this.client.get<SICCode[]>('standard-industrial-classification', {
+      searchParams: { industry },
+    });
   }
 
   /**
@@ -156,6 +176,8 @@ export class SECResource {
    * @param symbol - Stock symbol
    */
   async getFullProfile(symbol: string): Promise<SECFullProfile> {
-    return this.client.get<SECFullProfile>(`v4/company-outlook`, { searchParams: { symbol: symbol.toUpperCase() } });
+    return this.client.get<SECFullProfile>('company-outlook', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 }

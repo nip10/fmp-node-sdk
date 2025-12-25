@@ -18,7 +18,7 @@ export class COTResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<COTReport[]>('v4/commitment_of_traders_report', { searchParams: params });
+    return this.client.get<COTReport[]>('commitment-of-traders-report', { searchParams: params });
   }
 
   /**
@@ -32,13 +32,13 @@ export class COTResource {
     if (from) params.from = from;
     if (to) params.to = to;
 
-    return this.client.get<COTAnalysis[]>('v4/commitment_of_traders_report_analysis', { searchParams: params });
+    return this.client.get<COTAnalysis[]>('commitment-of-traders-analysis', { searchParams: params });
   }
 
   /**
    * Get list of available COT symbols
    */
   async getSymbols(): Promise<COTSymbol[]> {
-    return this.client.get<COTSymbol[]>('v4/commitment_of_traders_report/list');
+    return this.client.get<COTSymbol[]>('commitment-of-traders-list');
   }
 }

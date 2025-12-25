@@ -82,7 +82,7 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getTreasuryRates();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', { searchParams: {} });
       expect(result).toEqual(mockTreasuryRates);
       expect(result).toHaveLength(2);
       expect(result[0]).toHaveProperty('date');
@@ -94,12 +94,11 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getTreasuryRates('2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', {
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockTreasuryRates);
     });
 
@@ -108,12 +107,11 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getTreasuryRates(undefined, '2024-01-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', {
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', {
         searchParams: {
           to: '2024-01-31',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockTreasuryRates);
     });
 
@@ -122,13 +120,12 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getTreasuryRates('2024-01-01', '2024-01-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', {
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-01-31',
-      },
-      }
-);
+          to: '2024-01-31',
+        },
+      });
       expect(result).toEqual(mockTreasuryRates);
     });
 
@@ -153,13 +150,12 @@ describe('EconomicsResource', () => {
 
       // Test with various date formats - API should handle validation
       await economics.getTreasuryRates('2024-01-01', '2024-12-31');
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', {
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
   });
 
@@ -169,12 +165,11 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getIndicator('GDP');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'GDP',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -183,13 +178,12 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getIndicator('realGDP', '2023-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'realGDP',
-        from: '2023-01-01',
-      },
-      }
-);
+          from: '2023-01-01',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -198,13 +192,12 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getIndicator('CPI', undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'CPI',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -213,14 +206,13 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getIndicator('inflationRate', '2023-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'inflationRate',
-        from: '2023-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          from: '2023-01-01',
+          to: '2024-12-31',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -256,12 +248,11 @@ describe('EconomicsResource', () => {
       for (const indicator of indicators) {
         vi.mocked(mockClient.get).mockClear();
         await economics.getIndicator(indicator);
-        expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+        expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
           searchParams: {
             name: indicator,
-        },
-        }
-);
+          },
+        });
       }
     });
 
@@ -288,12 +279,11 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getGDP();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'GDP',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -302,13 +292,12 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getGDP('2023-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'GDP',
-        from: '2023-01-01',
-      },
-      }
-);
+          from: '2023-01-01',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -317,14 +306,13 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getGDP('2023-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'GDP',
-        from: '2023-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          from: '2023-01-01',
+          to: '2024-12-31',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
   });
@@ -335,12 +323,11 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getCPI();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'CPI',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -349,13 +336,12 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getCPI('2023-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'CPI',
-        from: '2023-01-01',
-      },
-      }
-);
+          from: '2023-01-01',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -364,14 +350,13 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getCPI('2023-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'CPI',
-        from: '2023-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          from: '2023-01-01',
+          to: '2024-12-31',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
   });
@@ -382,12 +367,11 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getInflationRate();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'inflationRate',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -396,13 +380,12 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getInflationRate('2023-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'inflationRate',
-        from: '2023-01-01',
-      },
-      }
-);
+          from: '2023-01-01',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -411,14 +394,13 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getInflationRate('2023-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'inflationRate',
-        from: '2023-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          from: '2023-01-01',
+          to: '2024-12-31',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
   });
@@ -429,12 +411,11 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getUnemploymentRate();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'unemploymentRate',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -443,13 +424,12 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getUnemploymentRate('2023-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'unemploymentRate',
-        from: '2023-01-01',
-      },
-      }
-);
+          from: '2023-01-01',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -458,14 +438,13 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getUnemploymentRate('2023-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'unemploymentRate',
-        from: '2023-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          from: '2023-01-01',
+          to: '2024-12-31',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
   });
@@ -476,12 +455,11 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getFederalFundsRate();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'federalFunds',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -490,13 +468,12 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getFederalFundsRate('2023-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'federalFunds',
-        from: '2023-01-01',
-      },
-      }
-);
+          from: '2023-01-01',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
 
@@ -505,14 +482,13 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getFederalFundsRate('2023-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/economic', {
+      expect(mockClient.get).toHaveBeenCalledWith('economic-indicators', {
         searchParams: {
           name: 'federalFunds',
-        from: '2023-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          from: '2023-01-01',
+          to: '2024-12-31',
+        },
+      });
       expect(result).toEqual(mockEconomicIndicators);
     });
   });
@@ -523,7 +499,7 @@ describe('EconomicsResource', () => {
 
       const result = await economics.getMarketRiskPremium();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/market_risk_premium');
+      expect(mockClient.get).toHaveBeenCalledWith('market-risk-premium');
       expect(result).toEqual(mockMarketRiskPremiums);
       expect(result).toHaveLength(2);
       expect(result[0]).toHaveProperty('country');
@@ -605,13 +581,12 @@ describe('EconomicsResource', () => {
       // Invalid dates should be passed to API for validation
       await economics.getTreasuryRates('invalid-date', 'also-invalid');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', {
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', {
         searchParams: {
           from: 'invalid-date',
-        to: 'also-invalid',
-      },
-      }
-);
+          to: 'also-invalid',
+        },
+      });
     });
   });
 
@@ -735,13 +710,12 @@ describe('EconomicsResource', () => {
 
       await economics.getTreasuryRates('1990-01-01', '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', {
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', {
         searchParams: {
           from: '1990-01-01',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
 
     it('should handle same from and to dates', async () => {
@@ -749,13 +723,12 @@ describe('EconomicsResource', () => {
 
       await economics.getTreasuryRates('2024-01-15', '2024-01-15');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', {
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', {
         searchParams: {
           from: '2024-01-15',
-        to: '2024-01-15',
-      },
-      }
-);
+          to: '2024-01-15',
+        },
+      });
     });
 
     it('should handle reversed date ranges', async () => {
@@ -764,13 +737,12 @@ describe('EconomicsResource', () => {
       // API should handle validation of reversed dates
       await economics.getTreasuryRates('2024-12-31', '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/treasury', {
+      expect(mockClient.get).toHaveBeenCalledWith('treasury-rates', {
         searchParams: {
           from: '2024-12-31',
-        to: '2024-01-01',
-      },
-      }
-);
+          to: '2024-01-01',
+        },
+      });
     });
   });
 });

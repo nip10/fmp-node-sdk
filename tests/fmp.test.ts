@@ -55,9 +55,9 @@ describe('FMP SDK', () => {
       expect(typeof fmp.market.getForexCurrencyPairs).toBe('function');
       expect(typeof fmp.market.getForexQuoteShort).toBe('function');
       expect(typeof fmp.market.getForexLightChart).toBe('function');
-      expect(typeof fmp.market.getForexIntraday1Min).toBe('function');
-      expect(typeof fmp.market.getForexIntraday5Min).toBe('function');
-      expect(typeof fmp.market.getForexIntraday1Hour).toBe('function');
+      expect(typeof fmp.market.getForexIntraday).toBe('function');
+      expect(typeof fmp.market.getHistoricalForex).toBe('function');
+      expect(typeof fmp.market.getAllForexPrices).toBe('function');
     });
 
     it('should have financials resource', () => {

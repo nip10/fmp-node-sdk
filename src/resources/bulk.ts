@@ -14,6 +14,9 @@ import type {
   IncomeStatement,
   BalanceSheet,
   CashFlowStatement,
+  IncomeStatementGrowth,
+  BalanceSheetGrowth,
+  CashFlowStatementGrowth,
 } from '../types/index.js';
 
 /**
@@ -22,130 +25,8 @@ import type {
 export interface EarningsSurprise {
   symbol: string;
   date: string;
-  actualEarningResult: number;
-  estimatedEarning: number;
-}
-
-/**
- * Income statement growth
- */
-export interface IncomeStatementGrowth {
-  date: string;
-  symbol: string;
-  period: string;
-  growthRevenue: number;
-  growthCostOfRevenue: number;
-  growthGrossProfit: number;
-  growthGrossProfitRatio: number;
-  growthResearchAndDevelopmentExpenses: number;
-  growthGeneralAndAdministrativeExpenses: number;
-  growthSellingAndMarketingExpenses: number;
-  growthOtherExpenses: number;
-  growthOperatingExpenses: number;
-  growthCostAndExpenses: number;
-  growthInterestExpense: number;
-  growthDepreciationAndAmortization: number;
-  growthEBITDA: number;
-  growthEBITDARatio: number;
-  growthOperatingIncome: number;
-  growthOperatingIncomeRatio: number;
-  growthTotalOtherIncomeExpensesNet: number;
-  growthIncomeBeforeTax: number;
-  growthIncomeBeforeTaxRatio: number;
-  growthIncomeTaxExpense: number;
-  growthNetIncome: number;
-  growthNetIncomeRatio: number;
-  growthEPS: number;
-  growthEPSDiluted: number;
-  growthWeightedAverageShsOut: number;
-  growthWeightedAverageShsOutDil: number;
-}
-
-/**
- * Balance sheet growth
- */
-export interface BalanceSheetGrowth {
-  date: string;
-  symbol: string;
-  period: string;
-  growthCashAndCashEquivalents: number;
-  growthShortTermInvestments: number;
-  growthCashAndShortTermInvestments: number;
-  growthNetReceivables: number;
-  growthInventory: number;
-  growthOtherCurrentAssets: number;
-  growthTotalCurrentAssets: number;
-  growthPropertyPlantEquipmentNet: number;
-  growthGoodwill: number;
-  growthIntangibleAssets: number;
-  growthGoodwillAndIntangibleAssets: number;
-  growthLongTermInvestments: number;
-  growthTaxAssets: number;
-  growthOtherNonCurrentAssets: number;
-  growthTotalNonCurrentAssets: number;
-  growthOtherAssets: number;
-  growthTotalAssets: number;
-  growthAccountPayables: number;
-  growthShortTermDebt: number;
-  growthTaxPayables: number;
-  growthDeferredRevenue: number;
-  growthOtherCurrentLiabilities: number;
-  growthTotalCurrentLiabilities: number;
-  growthLongTermDebt: number;
-  growthDeferredRevenueNonCurrent: number;
-  growthDeferrredTaxLiabilitiesNonCurrent: number;
-  growthOtherNonCurrentLiabilities: number;
-  growthTotalNonCurrentLiabilities: number;
-  growthOtherLiabilities: number;
-  growthTotalLiabilities: number;
-  growthCommonStock: number;
-  growthRetainedEarnings: number;
-  growthAccumulatedOtherComprehensiveIncomeLoss: number;
-  growthOthertotalStockholdersEquity: number;
-  growthTotalStockholdersEquity: number;
-  growthTotalLiabilitiesAndStockholdersEquity: number;
-  growthTotalInvestments: number;
-  growthTotalDebt: number;
-  growthNetDebt: number;
-}
-
-/**
- * Cash flow statement growth
- */
-export interface CashFlowStatementGrowth {
-  date: string;
-  symbol: string;
-  period: string;
-  growthNetIncome: number;
-  growthDepreciationAndAmortization: number;
-  growthDeferredIncomeTax: number;
-  growthStockBasedCompensation: number;
-  growthChangeInWorkingCapital: number;
-  growthAccountsReceivables: number;
-  growthInventory: number;
-  growthAccountsPayables: number;
-  growthOtherWorkingCapital: number;
-  growthOtherNonCashItems: number;
-  growthNetCashProvidedByOperatingActivites: number;
-  growthInvestmentsInPropertyPlantAndEquipment: number;
-  growthAcquisitionsNet: number;
-  growthPurchasesOfInvestments: number;
-  growthSalesMaturitiesOfInvestments: number;
-  growthOtherInvestingActivites: number;
-  growthNetCashUsedForInvestingActivites: number;
-  growthDebtRepayment: number;
-  growthCommonStockIssued: number;
-  growthCommonStockRepurchased: number;
-  growthDividendsPaid: number;
-  growthOtherFinancingActivites: number;
-  growthNetCashUsedProvidedByFinancingActivities: number;
-  growthEffectOfForexChangesOnCash: number;
-  growthNetChangeInCash: number;
-  growthCashAtEndOfPeriod: number;
-  growthCashAtBeginningOfPeriod: number;
-  growthOperatingCashFlow: number;
-  growthCapitalExpenditure: number;
-  growthFreeCashFlow: number;
+  actualEarningResult: number | null;
+  estimatedEarning: number | null;
 }
 
 /**
@@ -172,9 +53,12 @@ export class BulkResource {
   /**
    * Get all company profiles (bulk)
    * Returns profiles for all available symbols
+   * @param part - Part number for pagination (default: 0)
    */
-  async getAllProfiles(): Promise<CompanyProfile[]> {
-    return this.client.get<CompanyProfile[]>('v4/profile/all');
+  async getAllProfiles(part = 0): Promise<CompanyProfile[]> {
+    return this.client.get<CompanyProfile[]>('profile-bulk', {
+      searchParams: { part },
+    });
   }
 
   /**
@@ -182,7 +66,7 @@ export class BulkResource {
    * Returns the latest rating for all symbols
    */
   async getAllRatings(): Promise<AnalystRecommendation[]> {
-    return this.client.get<AnalystRecommendation[]>('v4/rating');
+    return this.client.get<AnalystRecommendation[]>('rating-bulk');
   }
 
   /**
@@ -190,7 +74,7 @@ export class BulkResource {
    * Returns DCF valuations for all symbols
    */
   async getAllDCF(): Promise<DCFValuation[]> {
-    return this.client.get<DCFValuation[]>('v4/dcf');
+    return this.client.get<DCFValuation[]>('dcf-bulk');
   }
 
   /**
@@ -198,7 +82,7 @@ export class BulkResource {
    * Returns Altman Z-Score and Piotroski Score for all symbols
    */
   async getAllScores(): Promise<FinancialScores[]> {
-    return this.client.get<FinancialScores[]>('v4/score');
+    return this.client.get<FinancialScores[]>('scores-bulk');
   }
 
   /**
@@ -206,15 +90,18 @@ export class BulkResource {
    * Returns price targets for all symbols
    */
   async getAllPriceTargets(): Promise<PriceTarget[]> {
-    return this.client.get<PriceTarget[]>('v4/price-target');
+    return this.client.get<PriceTarget[]>('price-target-summary-bulk');
   }
 
   /**
    * Get all ETF holdings (bulk)
    * Returns ETF holdings data for all ETF symbols
+   * @param part - Part number for pagination (default: 1)
    */
-  async getAllETFHoldings(): Promise<ETFHolding[]> {
-    return this.client.get<ETFHolding[]>('v4/etf-holder');
+  async getAllETFHoldings(part = 1): Promise<ETFHolding[]> {
+    return this.client.get<ETFHolding[]>('etf-holder-bulk', {
+      searchParams: { part },
+    });
   }
 
   /**
@@ -222,7 +109,7 @@ export class BulkResource {
    * Returns analyst upgrades and downgrades for all symbols
    */
   async getAllUpgradesDowngrades(): Promise<StockGrade[]> {
-    return this.client.get<StockGrade[]>('v4/upgrades-downgrades');
+    return this.client.get<StockGrade[]>('upgrades-downgrades-consensus-bulk');
   }
 
   /**
@@ -230,7 +117,7 @@ export class BulkResource {
    * Returns trailing twelve months key metrics for all symbols
    */
   async getAllKeyMetricsTTM(): Promise<KeyMetrics[]> {
-    return this.client.get<KeyMetrics[]>('v3/key-metrics-ttm');
+    return this.client.get<KeyMetrics[]>('key-metrics-ttm-bulk');
   }
 
   /**
@@ -238,7 +125,7 @@ export class BulkResource {
    * Returns trailing twelve months financial ratios for all symbols
    */
   async getAllRatiosTTM(): Promise<FinancialRatios[]> {
-    return this.client.get<FinancialRatios[]>('v3/ratios-ttm');
+    return this.client.get<FinancialRatios[]>('ratios-ttm-bulk');
   }
 
   /**
@@ -246,7 +133,7 @@ export class BulkResource {
    * Returns peer companies for all symbols
    */
   async getAllPeers(): Promise<StockPeer[]> {
-    return this.client.get<StockPeer[]>('v4/stock_peers');
+    return this.client.get<StockPeer[]>('peers-bulk');
   }
 
   /**
@@ -254,7 +141,7 @@ export class BulkResource {
    * Returns earnings surprises (actual vs estimated) for all symbols
    */
   async getAllEarningsSurprises(): Promise<EarningsSurprise[]> {
-    return this.client.get<EarningsSurprise[]>('v3/earnings-surprises');
+    return this.client.get<EarningsSurprise[]>('earnings-surprises-bulk');
   }
 
   /**
@@ -266,7 +153,7 @@ export class BulkResource {
   async getAllIncomeStatements(period: Period = Period.Annual, year?: number): Promise<IncomeStatement[]> {
     const params: Record<string, string | number> = { period };
     if (year) params.year = year;
-    return this.client.get<IncomeStatement[]>('v3/income-statement', { searchParams: params });
+    return this.client.get<IncomeStatement[]>('income-statement-bulk', { searchParams: params });
   }
 
   /**
@@ -281,7 +168,7 @@ export class BulkResource {
   ): Promise<IncomeStatementGrowth[]> {
     const params: Record<string, string | number> = { period };
     if (year) params.year = year;
-    return this.client.get<IncomeStatementGrowth[]>('v3/income-statement-growth', { searchParams: params });
+    return this.client.get<IncomeStatementGrowth[]>('income-statement-growth-bulk', { searchParams: params });
   }
 
   /**
@@ -293,7 +180,7 @@ export class BulkResource {
   async getAllBalanceSheets(period: Period = Period.Annual, year?: number): Promise<BalanceSheet[]> {
     const params: Record<string, string | number> = { period };
     if (year) params.year = year;
-    return this.client.get<BalanceSheet[]>('v3/balance-sheet-statement', { searchParams: params });
+    return this.client.get<BalanceSheet[]>('balance-sheet-statement-bulk', { searchParams: params });
   }
 
   /**
@@ -308,7 +195,7 @@ export class BulkResource {
   ): Promise<BalanceSheetGrowth[]> {
     const params: Record<string, string | number> = { period };
     if (year) params.year = year;
-    return this.client.get<BalanceSheetGrowth[]>('v3/balance-sheet-statement-growth', { searchParams: params });
+    return this.client.get<BalanceSheetGrowth[]>('balance-sheet-statement-growth-bulk', { searchParams: params });
   }
 
   /**
@@ -320,7 +207,7 @@ export class BulkResource {
   async getAllCashFlowStatements(period: Period = Period.Annual, year?: number): Promise<CashFlowStatement[]> {
     const params: Record<string, string | number> = { period };
     if (year) params.year = year;
-    return this.client.get<CashFlowStatement[]>('v3/cash-flow-statement', { searchParams: params });
+    return this.client.get<CashFlowStatement[]>('cash-flow-statement-bulk', { searchParams: params });
   }
 
   /**
@@ -335,7 +222,7 @@ export class BulkResource {
   ): Promise<CashFlowStatementGrowth[]> {
     const params: Record<string, string | number> = { period };
     if (year) params.year = year;
-    return this.client.get<CashFlowStatementGrowth[]>('v3/cash-flow-statement-growth', { searchParams: params });
+    return this.client.get<CashFlowStatementGrowth[]>('cash-flow-statement-growth-bulk', { searchParams: params });
   }
 
   /**
@@ -344,7 +231,7 @@ export class BulkResource {
    * @param date - Date in YYYY-MM-DD format
    */
   async getBatchEODPrices(date: string): Promise<EODPrice[]> {
-    return this.client.get<EODPrice[]>('v4/batch-request-end-of-day-prices', { searchParams: { date } });
+    return this.client.get<EODPrice[]>('eod-bulk', { searchParams: { date } });
   }
 
   /**
@@ -354,6 +241,6 @@ export class BulkResource {
    * @param to - End date in YYYY-MM-DD format
    */
   async getBatchEODPricesRange(from: string, to: string): Promise<EODPrice[]> {
-    return this.client.get<EODPrice[]>('v4/batch-request-end-of-day-prices', { searchParams: { from, to } });
+    return this.client.get<EODPrice[]>('eod-bulk', { searchParams: { from, to } });
   }
 }

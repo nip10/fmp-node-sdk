@@ -51,7 +51,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getSP500Constituents();
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/sp500_constituent');
+        expect(mockClient.get).toHaveBeenCalledWith('sp500-constituent');
         expect(result).toEqual(mockConstituents);
         expect(result).toHaveLength(2);
         expect(result[0].symbol).toBe('AAPL');
@@ -86,7 +86,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getNASDAQConstituents();
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/nasdaq_constituent');
+        expect(mockClient.get).toHaveBeenCalledWith('nasdaq-constituent');
         expect(result).toEqual(mockConstituents);
         expect(result[0].symbol).toBe('GOOGL');
       });
@@ -111,7 +111,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getDowJonesConstituents();
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/dowjones_constituent');
+        expect(mockClient.get).toHaveBeenCalledWith('dowjones-constituent');
         expect(result).toEqual(mockConstituents);
         expect(result[0].symbol).toBe('GS');
       });
@@ -137,7 +137,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalSP500();
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical/sp500_constituent');
+        expect(mockClient.get).toHaveBeenCalledWith('historical-sp500-constituent');
         expect(result).toEqual(mockHistorical);
         expect(result[0].addedSecurity).toBe('VLTO');
       });
@@ -161,7 +161,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalNASDAQ();
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical/nasdaq_constituent');
+        expect(mockClient.get).toHaveBeenCalledWith('historical-nasdaq-constituent');
         expect(result).toEqual(mockHistorical);
       });
     });
@@ -184,7 +184,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalDowJones();
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical/dowjones_constituent');
+        expect(mockClient.get).toHaveBeenCalledWith('historical-dowjones-constituent');
         expect(result).toEqual(mockHistorical);
       });
     });
@@ -224,7 +224,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getQuote('^GSPC');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^GSPC');
+        expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^GSPC' } });
         expect(result).toEqual(mockQuote);
         expect(result[0].symbol).toBe('^GSPC');
         expect(result[0].price).toBe(4783.45);
@@ -262,7 +262,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getQuote('^IXIC');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^IXIC');
+        expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^IXIC' } });
         expect(result[0].symbol).toBe('^IXIC');
       });
 
@@ -298,7 +298,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getQuote('^DJI');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^DJI');
+        expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^DJI' } });
         expect(result[0].symbol).toBe('^DJI');
       });
 
@@ -307,7 +307,7 @@ describe('IndexesResource', () => {
 
         await indexesResource.getQuote('^gspc');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^GSPC');
+        expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^GSPC' } });
       });
 
       it('should handle lowercase index symbols', async () => {
@@ -315,7 +315,7 @@ describe('IndexesResource', () => {
 
         await indexesResource.getQuote('^ixic');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^IXIC');
+        expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^IXIC' } });
       });
     });
 
@@ -333,7 +333,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getQuoteShort('^GSPC');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/quote-short/^GSPC');
+        expect(mockClient.get).toHaveBeenCalledWith('quote-short', { searchParams: { symbol: '^GSPC' } });
         expect(result).toEqual(mockShortQuote);
       });
 
@@ -342,7 +342,7 @@ describe('IndexesResource', () => {
 
         await indexesResource.getQuoteShort('^dji');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/quote-short/^DJI');
+        expect(mockClient.get).toHaveBeenCalledWith('quote-short', { searchParams: { symbol: '^DJI' } });
       });
     });
 
@@ -403,7 +403,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getAllQuotes();
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/quotes/index');
+        expect(mockClient.get).toHaveBeenCalledWith('batch-index-quotes');
         expect(result).toEqual(mockQuotes);
         expect(result).toHaveLength(2);
       });
@@ -441,7 +441,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getList();
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/available-indexes');
+        expect(mockClient.get).toHaveBeenCalledWith('index-list');
         expect(result).toEqual(mockList);
         expect(result).toHaveLength(3);
       });
@@ -475,7 +475,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalPrices('^GSPC');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^GSPC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', { searchParams: { symbol: '^GSPC' } });
         expect(result).toEqual(mockHistorical);
         expect(result.historical).toHaveLength(1);
       });
@@ -505,8 +505,9 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalPrices('^GSPC', '2023-12-01');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^GSPC', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
           searchParams: {
+            symbol: '^GSPC',
             from: '2023-12-01',
         },
         }
@@ -558,8 +559,9 @@ describe('IndexesResource', () => {
           '2023-12-31'
         );
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^GSPC', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
           searchParams: {
+            symbol: '^GSPC',
             from: '2023-12-01',
           to: '2023-12-31',
         },
@@ -573,8 +575,9 @@ describe('IndexesResource', () => {
 
         await indexesResource.getHistoricalPrices('^dji', '2023-01-01', '2023-12-31');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^DJI', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
           searchParams: {
+            symbol: '^DJI',
             from: '2023-01-01',
           to: '2023-12-31',
         },
@@ -607,7 +610,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalPrices('^IXIC');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^IXIC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', { searchParams: { symbol: '^IXIC' } });
         expect(result.historical[0].symbol).toBeUndefined();
       });
     });
@@ -624,7 +627,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalLight('^GSPC');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/line/^GSPC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', { searchParams: { symbol: '^GSPC' } });
         expect(result).toEqual(mockLightData);
         expect(result).toHaveLength(3);
         expect(result[0]).toHaveProperty('date');
@@ -641,8 +644,9 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalLight('^GSPC', '2023-12-14');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/line/^GSPC', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
           searchParams: {
+            symbol: '^GSPC',
             from: '2023-12-14',
         },
         }
@@ -666,8 +670,9 @@ describe('IndexesResource', () => {
           '2023-12-31'
         );
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/line/^GSPC', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
           searchParams: {
+            symbol: '^GSPC',
             from: '2023-12-27',
           to: '2023-12-31',
         },
@@ -682,8 +687,9 @@ describe('IndexesResource', () => {
 
         await indexesResource.getHistoricalLight('^ixic', '2023-01-01', '2023-12-31');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/line/^IXIC', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
           searchParams: {
+            symbol: '^IXIC',
             from: '2023-01-01',
           to: '2023-12-31',
         },
@@ -701,7 +707,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getHistoricalLight('^DJI');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/line/^DJI', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', { searchParams: { symbol: '^DJI' } });
         expect(result[0].close).toBe(37305.16);
       });
 
@@ -741,7 +747,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getIntradayChart('^GSPC');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/1hour/^GSPC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', { searchParams: { symbol: '^GSPC' } });
         expect(result).toEqual(mockIntraday);
         expect(result).toHaveLength(2);
       });
@@ -762,7 +768,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getIntradayChart('^GSPC', '5min');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/5min/^GSPC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-chart/5min', { searchParams: { symbol: '^GSPC' } });
         expect(result).toEqual(mockIntraday);
       });
 
@@ -782,7 +788,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getIntradayChart('^GSPC', '15min');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/15min/^GSPC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-chart/15min', { searchParams: { symbol: '^GSPC' } });
         expect(result).toEqual(mockIntraday);
       });
 
@@ -791,7 +797,7 @@ describe('IndexesResource', () => {
 
         await indexesResource.getIntradayChart('^GSPC', '30min');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/30min/^GSPC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-chart/30min', { searchParams: { symbol: '^GSPC' } });
       });
 
       it('should fetch intraday chart with 4hour interval', async () => {
@@ -799,7 +805,7 @@ describe('IndexesResource', () => {
 
         await indexesResource.getIntradayChart('^GSPC', '4hour');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/4hour/^GSPC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-chart/4hour', { searchParams: { symbol: '^GSPC' } });
       });
 
       it('should fetch intraday chart with date range', async () => {
@@ -823,8 +829,9 @@ describe('IndexesResource', () => {
           '2023-12-22'
         );
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/1hour/^GSPC', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
           searchParams: {
+            symbol: '^GSPC',
             from: '2023-12-22',
           to: '2023-12-22',
         },
@@ -838,8 +845,9 @@ describe('IndexesResource', () => {
 
         await indexesResource.getIntradayChart('^dji', '1hour', '2023-12-22');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/1hour/^DJI', {
+        expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
           searchParams: {
+            symbol: '^DJI',
             from: '2023-12-22',
         },
         }
@@ -862,7 +870,7 @@ describe('IndexesResource', () => {
 
         const result = await indexesResource.getIntradayChart('^IXIC', '1hour');
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/1hour/^IXIC', { searchParams: {} });
+        expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', { searchParams: { symbol: '^IXIC' } });
         expect(result[0].close).toBe(15011.35);
       });
     });
@@ -924,38 +932,38 @@ describe('IndexesResource', () => {
 
       // S&P 500 variations
       await indexesResource.getQuote('^gspc');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^GSPC');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^GSPC' } });
 
       await indexesResource.getQuote('^GSPC');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^GSPC');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^GSPC' } });
 
       // NASDAQ variations
       await indexesResource.getQuote('^ixic');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^IXIC');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^IXIC' } });
 
       await indexesResource.getQuote('^IXIC');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^IXIC');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^IXIC' } });
 
       // Dow Jones variations
       await indexesResource.getQuote('^dji');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^DJI');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^DJI' } });
 
       await indexesResource.getQuote('^DJI');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/^DJI');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: '^DJI' } });
     });
 
     it('should handle mixed case symbols', async () => {
       vi.mocked(mockClient.get).mockResolvedValue({ historical: [] });
 
       await indexesResource.getHistoricalPrices('^GsPc');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^GSPC', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', { searchParams: { symbol: '^GSPC' } });
     });
 
     it('should handle symbols without caret prefix', async () => {
       vi.mocked(mockClient.get).mockResolvedValue([]);
 
       await indexesResource.getQuote('SPY');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/quote/SPY');
+      expect(mockClient.get).toHaveBeenCalledWith('quote', { searchParams: { symbol: 'SPY' } });
     });
   });
 
@@ -966,8 +974,9 @@ describe('IndexesResource', () => {
 
       await indexesResource.getHistoricalPrices('^GSPC', '2023-01-01', '2023-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^GSPC', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
         searchParams: {
+          symbol: '^GSPC',
           from: '2023-01-01',
         to: '2023-12-31',
       },
@@ -981,8 +990,9 @@ describe('IndexesResource', () => {
 
       await indexesResource.getHistoricalPrices('^GSPC', '2023-06-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^GSPC', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
         searchParams: {
+          symbol: '^GSPC',
           from: '2023-06-01',
       },
       }
@@ -995,8 +1005,9 @@ describe('IndexesResource', () => {
 
       await indexesResource.getHistoricalPrices('^GSPC', undefined, '2023-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-price-full/^GSPC', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/full', {
         searchParams: {
+          symbol: '^GSPC',
           to: '2023-12-31',
       },
       }
@@ -1008,8 +1019,9 @@ describe('IndexesResource', () => {
 
       await indexesResource.getHistoricalLight('^GSPC', '2023-06-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/line/^GSPC', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-price-eod/light', {
         searchParams: {
+          symbol: '^GSPC',
           from: '2023-06-01',
       },
       }
@@ -1021,8 +1033,9 @@ describe('IndexesResource', () => {
 
       await indexesResource.getIntradayChart('^GSPC', '1hour', '2023-12-22');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/historical-chart/1hour/^GSPC', {
+      expect(mockClient.get).toHaveBeenCalledWith('historical-chart/1hour', {
         searchParams: {
+          symbol: '^GSPC',
           from: '2023-12-22',
       },
       }

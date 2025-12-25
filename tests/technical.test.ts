@@ -44,13 +44,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getSMA('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -60,8 +60,9 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 20);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
-       searchParams: {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
+        searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
           period: 20,
         },
@@ -74,8 +75,9 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 10, '1min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1min/AAPL', {
-       searchParams: {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1min', {
+        searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
           period: 10,
         },
@@ -88,13 +90,13 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 10, '5min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/5min/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/5min', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should fetch SMA with 15min timeframe', async () => {
@@ -103,13 +105,13 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 10, '15min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/15min/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/15min', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should fetch SMA with 30min timeframe', async () => {
@@ -118,13 +120,13 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 10, '30min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/30min/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/30min', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should fetch SMA with 1hour timeframe', async () => {
@@ -133,13 +135,13 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 10, '1hour');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1hour/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1hour', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should fetch SMA with 4hour timeframe', async () => {
@@ -148,13 +150,13 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 10, '4hour');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/4hour/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/4hour', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should fetch SMA with 1day timeframe', async () => {
@@ -163,13 +165,13 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 10, '1day');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -178,13 +180,13 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'sma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -213,13 +215,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getEMA('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'ema',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -229,13 +231,13 @@ describe('TechnicalResource', () => {
 
       await technical.getEMA('AAPL', 50);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'ema',
-        period: 50,
-      },
-      }
-);
+          period: 50,
+        },
+      });
     });
 
     it('should fetch EMA with different timeframes', async () => {
@@ -244,13 +246,13 @@ describe('TechnicalResource', () => {
 
       await technical.getEMA('MSFT', 20, '1hour');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1hour/MSFT', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1hour', {
         searchParams: {
+          symbol: 'MSFT',
           type: 'ema',
-        period: 20,
-      },
-      }
-);
+          period: 20,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -259,13 +261,13 @@ describe('TechnicalResource', () => {
 
       await technical.getEMA('tsla');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/TSLA', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'TSLA',
           type: 'ema',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -294,13 +296,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getRSI('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'rsi',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -310,13 +312,13 @@ describe('TechnicalResource', () => {
 
       await technical.getRSI('AAPL', 21);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'rsi',
-        period: 21,
-      },
-      }
-);
+          period: 21,
+        },
+      });
     });
 
     it('should fetch RSI with different timeframes', async () => {
@@ -325,13 +327,13 @@ describe('TechnicalResource', () => {
 
       await technical.getRSI('GOOGL', 14, '15min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/15min/GOOGL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/15min', {
         searchParams: {
+          symbol: 'GOOGL',
           type: 'rsi',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -340,13 +342,13 @@ describe('TechnicalResource', () => {
 
       await technical.getRSI('nvda');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/NVDA', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'NVDA',
           type: 'rsi',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -375,13 +377,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getADX('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'adx',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -391,13 +393,13 @@ describe('TechnicalResource', () => {
 
       await technical.getADX('AAPL', 20);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'adx',
-        period: 20,
-      },
-      }
-);
+          period: 20,
+        },
+      });
     });
 
     it('should fetch ADX with different timeframes', async () => {
@@ -406,13 +408,13 @@ describe('TechnicalResource', () => {
 
       await technical.getADX('AMZN', 14, '30min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/30min/AMZN', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/30min', {
         searchParams: {
+          symbol: 'AMZN',
           type: 'adx',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -421,13 +423,13 @@ describe('TechnicalResource', () => {
 
       await technical.getADX('meta');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/META', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'META',
           type: 'adx',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -456,13 +458,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getWilliams('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'williams',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -472,13 +474,13 @@ describe('TechnicalResource', () => {
 
       await technical.getWilliams('AAPL', 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'williams',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should fetch Williams %R with different timeframes', async () => {
@@ -487,13 +489,13 @@ describe('TechnicalResource', () => {
 
       await technical.getWilliams('NFLX', 14, '4hour');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/4hour/NFLX', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/4hour', {
         searchParams: {
+          symbol: 'NFLX',
           type: 'williams',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -502,13 +504,13 @@ describe('TechnicalResource', () => {
 
       await technical.getWilliams('dis');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/DIS', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'DIS',
           type: 'williams',
-        period: 14,
-      },
-      }
-);
+          period: 14,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -537,13 +539,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getStandardDeviation('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'standardDeviation',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -553,13 +555,13 @@ describe('TechnicalResource', () => {
 
       await technical.getStandardDeviation('AAPL', 20);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'standardDeviation',
-        period: 20,
-      },
-      }
-);
+          period: 20,
+        },
+      });
     });
 
     it('should fetch Standard Deviation with different timeframes', async () => {
@@ -568,13 +570,13 @@ describe('TechnicalResource', () => {
 
       await technical.getStandardDeviation('AMD', 10, '1min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1min/AMD', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1min', {
         searchParams: {
+          symbol: 'AMD',
           type: 'standardDeviation',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -583,13 +585,13 @@ describe('TechnicalResource', () => {
 
       await technical.getStandardDeviation('intc');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/INTC', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'INTC',
           type: 'standardDeviation',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -618,13 +620,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getWMA('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'wma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -634,13 +636,13 @@ describe('TechnicalResource', () => {
 
       await technical.getWMA('AAPL', 25);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'wma',
-        period: 25,
-      },
-      }
-);
+          period: 25,
+        },
+      });
     });
 
     it('should fetch WMA with different timeframes', async () => {
@@ -649,13 +651,13 @@ describe('TechnicalResource', () => {
 
       await technical.getWMA('IBM', 10, '5min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/5min/IBM', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/5min', {
         searchParams: {
+          symbol: 'IBM',
           type: 'wma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -664,13 +666,13 @@ describe('TechnicalResource', () => {
 
       await technical.getWMA('ba');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/BA', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'BA',
           type: 'wma',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -699,13 +701,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getDEMA('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'dema',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -715,13 +717,13 @@ describe('TechnicalResource', () => {
 
       await technical.getDEMA('AAPL', 30);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'dema',
-        period: 30,
-      },
-      }
-);
+          period: 30,
+        },
+      });
     });
 
     it('should fetch DEMA with different timeframes', async () => {
@@ -730,13 +732,13 @@ describe('TechnicalResource', () => {
 
       await technical.getDEMA('JPM', 10, '15min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/15min/JPM', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/15min', {
         searchParams: {
+          symbol: 'JPM',
           type: 'dema',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -745,13 +747,13 @@ describe('TechnicalResource', () => {
 
       await technical.getDEMA('v');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/V', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'V',
           type: 'dema',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -780,13 +782,13 @@ describe('TechnicalResource', () => {
 
       const result = await technical.getTEMA('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'tema',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -796,13 +798,13 @@ describe('TechnicalResource', () => {
 
       await technical.getTEMA('AAPL', 15);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'AAPL',
           type: 'tema',
-        period: 15,
-      },
-      }
-);
+          period: 15,
+        },
+      });
     });
 
     it('should fetch TEMA with different timeframes', async () => {
@@ -811,13 +813,13 @@ describe('TechnicalResource', () => {
 
       await technical.getTEMA('WMT', 10, '30min');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/30min/WMT', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/30min', {
         searchParams: {
+          symbol: 'WMT',
           type: 'tema',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should normalize symbol to uppercase', async () => {
@@ -826,13 +828,13 @@ describe('TechnicalResource', () => {
 
       await technical.getTEMA('pg');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/PG', {
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', {
         searchParams: {
+          symbol: 'PG',
           type: 'tema',
-        period: 10,
-      },
-      }
-);
+          period: 10,
+        },
+      });
     });
 
     it('should handle client errors', async () => {
@@ -849,7 +851,9 @@ describe('TechnicalResource', () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
       await technical.getSMA('aapl');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', expect.any(Object));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', expect.objectContaining({
+        searchParams: expect.objectContaining({ symbol: 'AAPL' })
+      }));
     });
 
     it('should handle mixed case symbols', async () => {
@@ -857,7 +861,9 @@ describe('TechnicalResource', () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
       await technical.getSMA('AaPl');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', expect.any(Object));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', expect.objectContaining({
+        searchParams: expect.objectContaining({ symbol: 'AAPL' })
+      }));
     });
 
     it('should handle already uppercase symbols', async () => {
@@ -865,7 +871,9 @@ describe('TechnicalResource', () => {
       vi.mocked(mockClient.get).mockResolvedValue(mockData);
 
       await technical.getSMA('AAPL');
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', expect.any(Object));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', expect.objectContaining({
+        searchParams: expect.objectContaining({ symbol: 'AAPL' })
+      }));
     });
   });
 
@@ -876,7 +884,7 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 5);
       expect(mockClient.get).toHaveBeenLastCalledWith(
-        'v3/technical_indicator/1day/AAPL',
+        'technical-indicator/1day',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 5 })
         })
@@ -884,7 +892,7 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 50);
       expect(mockClient.get).toHaveBeenLastCalledWith(
-        'v3/technical_indicator/1day/AAPL',
+        'technical-indicator/1day',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 50 })
         })
@@ -892,7 +900,7 @@ describe('TechnicalResource', () => {
 
       await technical.getSMA('AAPL', 200);
       expect(mockClient.get).toHaveBeenLastCalledWith(
-        'v3/technical_indicator/1day/AAPL',
+        'technical-indicator/1day',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 200 })
         })
@@ -905,7 +913,7 @@ describe('TechnicalResource', () => {
 
       await technical.getRSI('AAPL', 9);
       expect(mockClient.get).toHaveBeenLastCalledWith(
-        'v3/technical_indicator/1day/AAPL',
+        'technical-indicator/1day',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 9 })
         })
@@ -913,7 +921,7 @@ describe('TechnicalResource', () => {
 
       await technical.getRSI('AAPL', 14);
       expect(mockClient.get).toHaveBeenLastCalledWith(
-        'v3/technical_indicator/1day/AAPL',
+        'technical-indicator/1day',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 14 })
         })
@@ -921,7 +929,7 @@ describe('TechnicalResource', () => {
 
       await technical.getRSI('AAPL', 25);
       expect(mockClient.get).toHaveBeenLastCalledWith(
-        'v3/technical_indicator/1day/AAPL',
+        'technical-indicator/1day',
         expect.objectContaining({
           searchParams: expect.objectContaining({ period: 25 })
         })
@@ -939,55 +947,55 @@ describe('TechnicalResource', () => {
 
         await technical.getSMA('AAPL', 10, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
 
         await technical.getEMA('AAPL', 10, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
 
         await technical.getRSI('AAPL', 14, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
 
         await technical.getADX('AAPL', 14, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
 
         await technical.getWilliams('AAPL', 14, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
 
         await technical.getStandardDeviation('AAPL', 10, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
 
         await technical.getWMA('AAPL', 10, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
 
         await technical.getDEMA('AAPL', 10, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
 
         await technical.getTEMA('AAPL', 10, timeframe);
         expect(mockClient.get).toHaveBeenLastCalledWith(
-          `v3/technical_indicator/${timeframe}/AAPL`,
+          `technical-indicator/${timeframe}`,
           expect.any(Object)
         );
       });
@@ -1127,9 +1135,15 @@ describe('TechnicalResource', () => {
         technical.getSMA('GoOgL'),
       ]);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', expect.any(Object));
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/MSFT', expect.any(Object));
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/GOOGL', expect.any(Object));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', expect.objectContaining({
+        searchParams: expect.objectContaining({ symbol: 'AAPL' })
+      }));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', expect.objectContaining({
+        searchParams: expect.objectContaining({ symbol: 'MSFT' })
+      }));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', expect.objectContaining({
+        searchParams: expect.objectContaining({ symbol: 'GOOGL' })
+      }));
     });
 
     it('should handle different timeframes for same symbol', async () => {
@@ -1142,9 +1156,9 @@ describe('TechnicalResource', () => {
         technical.getSMA('AAPL', 10, '1day'),
       ]);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1min/AAPL', expect.any(Object));
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1hour/AAPL', expect.any(Object));
-      expect(mockClient.get).toHaveBeenCalledWith('v3/technical_indicator/1day/AAPL', expect.any(Object));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1min', expect.any(Object));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1hour', expect.any(Object));
+      expect(mockClient.get).toHaveBeenCalledWith('technical-indicator/1day', expect.any(Object));
     });
   });
 });

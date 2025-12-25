@@ -47,7 +47,7 @@ describe('SECResource', () => {
 
       const result = await secResource.getFilings('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: 'AAPL' } });
       expect(result).toEqual(mockFilings);
     });
 
@@ -56,7 +56,7 @@ describe('SECResource', () => {
 
       await secResource.getFilings('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: 'AAPL' } });
     });
 
     it('should get filings with type filter', async () => {
@@ -64,12 +64,12 @@ describe('SECResource', () => {
 
       const result = await secResource.getFilings('AAPL', '10-K');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
+          symbol: 'AAPL',
           type: '10-K',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual([mockFilings[0]]);
     });
 
@@ -78,12 +78,12 @@ describe('SECResource', () => {
 
       const result = await secResource.getFilings('AAPL', undefined, 1);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
+          symbol: 'AAPL',
           limit: 1,
-      },
-      }
-);
+        },
+      });
       expect(result).toHaveLength(1);
     });
 
@@ -92,13 +92,13 @@ describe('SECResource', () => {
 
       await secResource.getFilings('AAPL', '10-K', 5);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
+          symbol: 'AAPL',
           type: '10-K',
-        limit: 5,
-      },
-      }
-);
+          limit: 5,
+        },
+      });
     });
 
     it('should handle various filing types', async () => {
@@ -108,12 +108,12 @@ describe('SECResource', () => {
         vi.mocked(mockClient.get).mockResolvedValue([]);
         await secResource.getFilings('AAPL', type);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', {
+        expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
           searchParams: {
+            symbol: 'AAPL',
             type,
-        },
-        }
-);
+          },
+        });
       }
     });
 
@@ -150,7 +150,7 @@ describe('SECResource', () => {
 
       const result = await secResource.getRSSFeed();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', { searchParams: {} });
       expect(result).toEqual(mockRSSFeed);
     });
 
@@ -159,12 +159,11 @@ describe('SECResource', () => {
 
       await secResource.getRSSFeed('8-K');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '8-K',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should get RSS feed with date range', async () => {
@@ -172,13 +171,12 @@ describe('SECResource', () => {
 
       await secResource.getRSSFeed(undefined, '2024-01-01', '2024-01-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-01-31',
-      },
-      }
-);
+          to: '2024-01-31',
+        },
+      });
     });
 
     it('should get RSS feed with all parameters', async () => {
@@ -186,15 +184,14 @@ describe('SECResource', () => {
 
       await secResource.getRSSFeed('10-K', '2024-01-01', '2024-12-31', 100);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '10-K',
-        from: '2024-01-01',
-        to: '2024-12-31',
-        limit: 100,
-      },
-      }
-);
+          from: '2024-01-01',
+          to: '2024-12-31',
+          limit: 100,
+        },
+      });
     });
 
     it('should handle date range with only from date', async () => {
@@ -202,12 +199,11 @@ describe('SECResource', () => {
 
       await secResource.getRSSFeed(undefined, '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           from: '2024-01-01',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle date range with only to date', async () => {
@@ -215,12 +211,11 @@ describe('SECResource', () => {
 
       await secResource.getRSSFeed(undefined, undefined, '2024-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           to: '2024-12-31',
-      },
-      }
-);
+        },
+      });
     });
   });
 
@@ -248,12 +243,11 @@ describe('SECResource', () => {
 
       const result = await secResource.searchByFormType('10-K');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '10-K',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockRSSFeed);
     });
 
@@ -262,14 +256,13 @@ describe('SECResource', () => {
 
       await secResource.searchByFormType('10-Q', '2024-01-01', '2024-03-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '10-Q',
-        from: '2024-01-01',
-        to: '2024-03-31',
-      },
-      }
-);
+          from: '2024-01-01',
+          to: '2024-03-31',
+        },
+      });
     });
 
     it('should search by form type with limit', async () => {
@@ -277,13 +270,12 @@ describe('SECResource', () => {
 
       await secResource.searchByFormType('8-K', undefined, undefined, 50);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '8-K',
-        limit: 50,
-      },
-      }
-);
+          limit: 50,
+        },
+      });
     });
 
     it('should handle various form types', async () => {
@@ -293,12 +285,11 @@ describe('SECResource', () => {
         vi.mocked(mockClient.get).mockResolvedValue(mockRSSFeed);
         await secResource.searchByFormType(formType);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+        expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
           searchParams: {
             type: formType,
-        },
-        }
-);
+          },
+        });
       }
     });
   });
@@ -327,12 +318,11 @@ describe('SECResource', () => {
 
       const result = await secResource.get8KFilings();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '8-K',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mock8KFilings);
     });
 
@@ -341,14 +331,13 @@ describe('SECResource', () => {
 
       await secResource.get8KFilings('2024-01-01', '2024-01-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '8-K',
-        from: '2024-01-01',
-        to: '2024-01-31',
-      },
-      }
-);
+          from: '2024-01-01',
+          to: '2024-01-31',
+        },
+      });
     });
 
     it('should get 8-K filings with limit', async () => {
@@ -356,13 +345,12 @@ describe('SECResource', () => {
 
       await secResource.get8KFilings(undefined, undefined, 25);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '8-K',
-        limit: 25,
-      },
-      }
-);
+          limit: 25,
+        },
+      });
     });
 
     it('should get 8-K filings with all parameters', async () => {
@@ -370,15 +358,14 @@ describe('SECResource', () => {
 
       await secResource.get8KFilings('2024-01-01', '2024-12-31', 100);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '8-K',
-        from: '2024-01-01',
-        to: '2024-12-31',
-        limit: 100,
-      },
-      }
-);
+          from: '2024-01-01',
+          to: '2024-12-31',
+          limit: 100,
+        },
+      });
     });
   });
 
@@ -400,7 +387,7 @@ describe('SECResource', () => {
 
       const result = await secResource.getFilingsByCIK('0000320193');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/0000320193', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { cik: '0000320193' } });
       expect(result).toEqual(mockFilings);
     });
 
@@ -409,12 +396,12 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByCIK('0000320193', '10-K');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/0000320193', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
+          cik: '0000320193',
           type: '10-K',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should get filings by CIK with limit', async () => {
@@ -422,12 +409,12 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByCIK('0000320193', undefined, 10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/0000320193', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
+          cik: '0000320193',
           limit: 10,
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle CIK without leading zeros', async () => {
@@ -435,7 +422,7 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByCIK('320193');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/320193', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { cik: '320193' } });
     });
 
     it('should handle CIK with all parameters', async () => {
@@ -443,13 +430,13 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByCIK('0000320193', '8-K', 50);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/0000320193', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
+          cik: '0000320193',
           type: '8-K',
-        limit: 50,
-      },
-      }
-);
+          limit: 50,
+        },
+      });
     });
   });
 
@@ -471,12 +458,11 @@ describe('SECResource', () => {
 
       const result = await secResource.getFilingsByName('Apple Inc.');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
           name: 'Apple Inc.',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockFilings);
     });
 
@@ -485,13 +471,12 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByName('Apple Inc.', '10-Q');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
           name: 'Apple Inc.',
-        type: '10-Q',
-      },
-      }
-);
+          type: '10-Q',
+        },
+      });
     });
 
     it('should get filings by name with limit', async () => {
@@ -499,13 +484,12 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByName('Apple Inc.', undefined, 20);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
           name: 'Apple Inc.',
-        limit: 20,
-      },
-      }
-);
+          limit: 20,
+        },
+      });
     });
 
     it('should handle company names with special characters', async () => {
@@ -513,12 +497,11 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByName('AT&T Inc.');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
           name: 'AT&T Inc.',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should get filings by name with all parameters', async () => {
@@ -526,14 +509,13 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByName('Microsoft Corporation', '8-K', 30);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
           name: 'Microsoft Corporation',
-        type: '8-K',
-        limit: 30,
-      },
-      }
-);
+          type: '8-K',
+          limit: 30,
+        },
+      });
     });
   });
 
@@ -550,7 +532,7 @@ describe('SECResource', () => {
 
       const result = await secResource.searchCompanyBySymbol('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik-search/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('cik-search', { searchParams: { symbol: 'AAPL' } });
       expect(result).toEqual(mockCIKSearch);
     });
 
@@ -559,7 +541,7 @@ describe('SECResource', () => {
 
       await secResource.searchCompanyBySymbol('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik-search/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('cik-search', { searchParams: { symbol: 'AAPL' } });
     });
 
     it('should handle mixed case symbols', async () => {
@@ -567,7 +549,7 @@ describe('SECResource', () => {
 
       await secResource.searchCompanyBySymbol('MsFt');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik-search/MSFT');
+      expect(mockClient.get).toHaveBeenCalledWith('cik-search', { searchParams: { symbol: 'MSFT' } });
     });
 
     it('should return empty array for invalid symbol', async () => {
@@ -592,7 +574,7 @@ describe('SECResource', () => {
 
       const result = await secResource.searchCompanyByCIK('0000320193');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik/0000320193');
+      expect(mockClient.get).toHaveBeenCalledWith('cik', { searchParams: { cik: '0000320193' } });
       expect(result).toEqual(mockCIKSearch);
     });
 
@@ -601,7 +583,7 @@ describe('SECResource', () => {
 
       await secResource.searchCompanyByCIK('320193');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik/320193');
+      expect(mockClient.get).toHaveBeenCalledWith('cik', { searchParams: { cik: '320193' } });
     });
 
     it('should handle long CIK numbers', async () => {
@@ -609,7 +591,7 @@ describe('SECResource', () => {
 
       await secResource.searchCompanyByCIK('0001234567890');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik/0001234567890');
+      expect(mockClient.get).toHaveBeenCalledWith('cik', { searchParams: { cik: '0001234567890' } });
     });
 
     it('should return empty array for invalid CIK', async () => {
@@ -645,7 +627,7 @@ describe('SECResource', () => {
 
       const result = await secResource.getLatestFilings();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed_8k', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed-8k', { searchParams: {} });
       expect(result).toEqual(mockLatestFilings);
     });
 
@@ -654,12 +636,11 @@ describe('SECResource', () => {
 
       await secResource.getLatestFilings(10);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed_8k', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed-8k', {
         searchParams: {
           limit: 10,
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle various limit values', async () => {
@@ -669,12 +650,11 @@ describe('SECResource', () => {
         vi.mocked(mockClient.get).mockResolvedValue(mockLatestFilings);
         await secResource.getLatestFilings(limit);
 
-        expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed_8k', {
+        expect(mockClient.get).toHaveBeenCalledWith('rss-feed-8k', {
           searchParams: {
             limit,
-        },
-        }
-);
+          },
+        });
       }
     });
   });
@@ -703,9 +683,7 @@ describe('SECResource', () => {
 
       const result = await secResource.getAllSICCodes();
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification/all'
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification-all');
       expect(result).toEqual(mockSICCodes);
       expect(result).toHaveLength(3);
     });
@@ -733,11 +711,9 @@ describe('SECResource', () => {
 
       const result = await secResource.getSICByCode('7370');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification',
-        { searchParams: {   sicCode: '7370' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification', {
+        searchParams: { sicCode: '7370' },
+      });
       expect(result).toEqual(mockSICCode);
     });
 
@@ -746,11 +722,9 @@ describe('SECResource', () => {
 
       await secResource.getSICByCode('2834');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification',
-        { searchParams: {   sicCode: '2834' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification', {
+        searchParams: { sicCode: '2834' },
+      });
     });
 
     it('should handle 3-digit SIC codes', async () => {
@@ -758,11 +732,9 @@ describe('SECResource', () => {
 
       await secResource.getSICByCode('367');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification',
-        { searchParams: {   sicCode: '367' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification', {
+        searchParams: { sicCode: '367' },
+      });
     });
 
     it('should return empty array for invalid SIC code', async () => {
@@ -814,11 +786,9 @@ describe('SECResource', () => {
 
       const result = await secResource.searchSIC('Computer');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification',
-        { searchParams: {   industry: 'Computer' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification', {
+        searchParams: { industry: 'Computer' },
+      });
       expect(result).toEqual(mockSICResults);
     });
 
@@ -827,11 +797,9 @@ describe('SECResource', () => {
 
       await secResource.searchSIC('computer');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification',
-        { searchParams: {   industry: 'computer' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification', {
+        searchParams: { industry: 'computer' },
+      });
     });
 
     it('should search with partial industry names', async () => {
@@ -839,11 +807,9 @@ describe('SECResource', () => {
 
       await secResource.searchSIC('Programming');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification',
-        { searchParams: {   industry: 'Programming' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification', {
+        searchParams: { industry: 'Programming' },
+      });
     });
 
     it('should return empty array when no matches found', async () => {
@@ -859,11 +825,9 @@ describe('SECResource', () => {
 
       await secResource.searchSIC('Services-Computer');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification',
-        { searchParams: {   industry: 'Services-Computer' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification', {
+        searchParams: { industry: 'Services-Computer' },
+      });
     });
 
     it('should handle industry names with spaces', async () => {
@@ -877,11 +841,9 @@ describe('SECResource', () => {
 
       await secResource.searchSIC('Pharmaceutical Preparations');
 
-      expect(mockClient.get).toHaveBeenCalledWith(
-        'v4/standard_industrial_classification',
-        { searchParams: {   industry: 'Pharmaceutical Preparations' }, }
-
-      );
+      expect(mockClient.get).toHaveBeenCalledWith('standard-industrial-classification', {
+        searchParams: { industry: 'Pharmaceutical Preparations' },
+      });
     });
   });
 
@@ -1092,12 +1054,11 @@ describe('SECResource', () => {
 
       const result = await secResource.getFullProfile('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/company-outlook', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-outlook', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
       expect(result).toEqual(mockFullProfile);
     });
 
@@ -1106,12 +1067,11 @@ describe('SECResource', () => {
 
       await secResource.getFullProfile('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/company-outlook', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-outlook', {
         searchParams: {
           symbol: 'AAPL',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle mixed case symbols', async () => {
@@ -1119,12 +1079,11 @@ describe('SECResource', () => {
 
       await secResource.getFullProfile('MsFt');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/company-outlook', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-outlook', {
         searchParams: {
           symbol: 'MSFT',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should return comprehensive profile data', async () => {
@@ -1195,7 +1154,7 @@ describe('SECResource', () => {
 
       await secResource.getFilings('');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: '' } });
     });
 
     it('should handle symbols with special characters', async () => {
@@ -1203,7 +1162,7 @@ describe('SECResource', () => {
 
       await secResource.getFilings('BRK.B');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/BRK.B', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: 'BRK.B' } });
     });
 
     it('should handle very large limit values', async () => {
@@ -1211,12 +1170,12 @@ describe('SECResource', () => {
 
       await secResource.getFilings('AAPL', undefined, 10000);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
+          symbol: 'AAPL',
           limit: 10000,
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle limit value of 0', async () => {
@@ -1225,7 +1184,7 @@ describe('SECResource', () => {
       await secResource.getFilings('AAPL', undefined, 0);
 
       // Limit of 0 should not be included in params
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: 'AAPL' } });
     });
 
     it('should handle empty type string', async () => {
@@ -1234,7 +1193,7 @@ describe('SECResource', () => {
       await secResource.getFilings('AAPL', '');
 
       // Empty string is falsy, should not be included
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: 'AAPL' } });
     });
 
     it('should handle date ranges in wrong order', async () => {
@@ -1243,13 +1202,12 @@ describe('SECResource', () => {
       // API should handle validation, we just pass the params
       await secResource.getRSSFeed(undefined, '2024-12-31', '2024-01-01');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           from: '2024-12-31',
-        to: '2024-01-01',
-      },
-      }
-);
+          to: '2024-01-01',
+        },
+      });
     });
 
     it('should handle various date formats', async () => {
@@ -1257,13 +1215,12 @@ describe('SECResource', () => {
 
       await secResource.getRSSFeed(undefined, '2024-01-01', '2024-01-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           from: '2024-01-01',
-        to: '2024-01-31',
-      },
-      }
-);
+          to: '2024-01-31',
+        },
+      });
     });
   });
 
@@ -1273,7 +1230,7 @@ describe('SECResource', () => {
 
       await secResource.getFilings('AAPL', undefined, undefined);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/AAPL', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: 'AAPL' } });
     });
 
     it('should handle mixed defined and undefined parameters', async () => {
@@ -1281,13 +1238,12 @@ describe('SECResource', () => {
 
       await secResource.getRSSFeed('10-K', undefined, '2024-12-31', undefined);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/rss_feed', {
+      expect(mockClient.get).toHaveBeenCalledWith('rss-feed', {
         searchParams: {
           type: '10-K',
-        to: '2024-12-31',
-      },
-      }
-);
+          to: '2024-12-31',
+        },
+      });
     });
 
     it('should properly construct params with all options', async () => {
@@ -1295,14 +1251,13 @@ describe('SECResource', () => {
 
       await secResource.getFilingsByName('Apple Inc.', '10-K', 50);
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings', {
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', {
         searchParams: {
           name: 'Apple Inc.',
-        type: '10-K',
-        limit: 50,
-      },
-      }
-);
+          type: '10-K',
+          limit: 50,
+        },
+      });
     });
   });
 
@@ -1312,7 +1267,7 @@ describe('SECResource', () => {
 
       await secResource.getFilings('tsla');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/TSLA', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: 'TSLA' } });
     });
 
     it('should preserve already uppercase symbols', async () => {
@@ -1320,7 +1275,7 @@ describe('SECResource', () => {
 
       await secResource.searchCompanyBySymbol('GOOGL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/cik-search/GOOGL');
+      expect(mockClient.get).toHaveBeenCalledWith('cik-search', { searchParams: { symbol: 'GOOGL' } });
     });
 
     it('should normalize mixed case symbols', async () => {
@@ -1328,12 +1283,11 @@ describe('SECResource', () => {
 
       await secResource.getFullProfile('AmZn');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/company-outlook', {
+      expect(mockClient.get).toHaveBeenCalledWith('company-outlook', {
         searchParams: {
           symbol: 'AMZN',
-      },
-      }
-);
+        },
+      });
     });
 
     it('should handle symbols with numbers', async () => {
@@ -1341,7 +1295,7 @@ describe('SECResource', () => {
 
       await secResource.getFilings('BRK.B');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/sec_filings/BRK.B', { searchParams: {} });
+      expect(mockClient.get).toHaveBeenCalledWith('sec-filings', { searchParams: { symbol: 'BRK.B' } });
     });
   });
 });

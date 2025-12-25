@@ -51,7 +51,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getHoldings('SPY');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-holder/SPY');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/holdings', { searchParams: { symbol: 'SPY' } });
       expect(result).toEqual(mockHoldings);
     });
 
@@ -60,7 +60,7 @@ describe('ETFResource', () => {
 
       await etfResource.getHoldings('spy');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-holder/SPY');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/holdings', { searchParams: { symbol: 'SPY' } });
     });
 
     it('should handle lowercase ETF symbols', async () => {
@@ -68,7 +68,7 @@ describe('ETFResource', () => {
 
       await etfResource.getHoldings('voo');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-holder/VOO');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/holdings', { searchParams: { symbol: 'VOO' } });
     });
 
     it('should handle mixed case symbols', async () => {
@@ -76,7 +76,7 @@ describe('ETFResource', () => {
 
       await etfResource.getHoldings('QqQ');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-holder/QQQ');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/holdings', { searchParams: { symbol: 'QQQ' } });
     });
 
     it('should handle empty response', async () => {
@@ -138,7 +138,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getInfo('SPY');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/etf-info', {
+      expect(mockClient.get).toHaveBeenCalledWith('etf/info', {
         searchParams: {
           symbol: 'SPY',
       },
@@ -152,7 +152,7 @@ describe('ETFResource', () => {
 
       await etfResource.getInfo('spy');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/etf-info', {
+      expect(mockClient.get).toHaveBeenCalledWith('etf/info', {
         searchParams: {
           symbol: 'SPY',
       },
@@ -165,7 +165,7 @@ describe('ETFResource', () => {
 
       await etfResource.getInfo('VOO');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/etf-info', {
+      expect(mockClient.get).toHaveBeenCalledWith('etf/info', {
         searchParams: {
           symbol: 'VOO',
       },
@@ -210,7 +210,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getSectorWeightings('SPY');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-sector-weightings/SPY');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/sector-weightings', { searchParams: { symbol: 'SPY' } });
       expect(result).toEqual(mockSectorWeightings);
     });
 
@@ -219,7 +219,7 @@ describe('ETFResource', () => {
 
       await etfResource.getSectorWeightings('vti');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-sector-weightings/VTI');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/sector-weightings', { searchParams: { symbol: 'VTI' } });
     });
 
     it('should handle sector-specific ETFs', async () => {
@@ -275,7 +275,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getCountryWeightings('VT');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-country-weightings/VT');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/country-weightings', { searchParams: { symbol: 'VT' } });
       expect(result).toEqual(mockCountryWeightings);
     });
 
@@ -284,7 +284,7 @@ describe('ETFResource', () => {
 
       await etfResource.getCountryWeightings('vt');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-country-weightings/VT');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/country-weightings', { searchParams: { symbol: 'VT' } });
     });
 
     it('should handle international ETFs', async () => {
@@ -360,7 +360,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getStockExposure('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-stock-exposure/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/asset-exposure', { searchParams: { symbol: 'AAPL' } });
       expect(result).toEqual(mockStockExposure);
     });
 
@@ -369,7 +369,7 @@ describe('ETFResource', () => {
 
       await etfResource.getStockExposure('aapl');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-stock-exposure/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/asset-exposure', { searchParams: { symbol: 'AAPL' } });
     });
 
     it('should handle stocks with limited ETF exposure', async () => {
@@ -402,7 +402,7 @@ describe('ETFResource', () => {
 
       await etfResource.getStockExposure('TsLa');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-stock-exposure/TSLA');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/asset-exposure', { searchParams: { symbol: 'TSLA' } });
     });
 
     it('should throw error on API failure', async () => {
@@ -447,7 +447,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getMutualFundHolders('AAPL');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/mutual-fund-holder/AAPL');
+      expect(mockClient.get).toHaveBeenCalledWith('funds/disclosure-holders-latest', { searchParams: { symbol: 'AAPL' } });
       expect(result).toEqual(mockMutualFundHolders);
     });
 
@@ -456,7 +456,7 @@ describe('ETFResource', () => {
 
       await etfResource.getMutualFundHolders('msft');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/mutual-fund-holder/MSFT');
+      expect(mockClient.get).toHaveBeenCalledWith('funds/disclosure-holders-latest', { searchParams: { symbol: 'MSFT' } });
     });
 
     it('should handle stocks with no mutual fund holders', async () => {
@@ -513,7 +513,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getETFList();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf/list');
+      expect(mockClient.get).toHaveBeenCalledWith('etf-list');
       expect(result).toEqual(mockETFList);
     });
 
@@ -544,7 +544,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getAvailableMutualFunds();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/symbol/available-mutual-funds');
+      expect(mockClient.get).toHaveBeenCalledWith('mutual-fund-list');
       expect(result).toEqual(mockMutualFunds);
     });
 
@@ -578,7 +578,7 @@ describe('ETFResource', () => {
 
       const result = await etfResource.getLatestDisclosures();
 
-      expect(mockClient.get).toHaveBeenCalledWith('v4/etf-holdings/portfolio-date');
+      expect(mockClient.get).toHaveBeenCalledWith('funds/disclosure-dates');
       expect(result).toEqual(mockDisclosures);
     });
 
@@ -629,10 +629,10 @@ describe('ETFResource', () => {
       await etfResource.getHoldings('Spy');
       await etfResource.getHoldings('SpY');
 
-      expect(mockClient.get).toHaveBeenNthCalledWith(1, 'v3/etf-holder/SPY');
-      expect(mockClient.get).toHaveBeenNthCalledWith(2, 'v3/etf-holder/SPY');
-      expect(mockClient.get).toHaveBeenNthCalledWith(3, 'v3/etf-holder/SPY');
-      expect(mockClient.get).toHaveBeenNthCalledWith(4, 'v3/etf-holder/SPY');
+      expect(mockClient.get).toHaveBeenNthCalledWith(1, 'etf/holdings', { searchParams: { symbol: 'SPY' } });
+      expect(mockClient.get).toHaveBeenNthCalledWith(2, 'etf/holdings', { searchParams: { symbol: 'SPY' } });
+      expect(mockClient.get).toHaveBeenNthCalledWith(3, 'etf/holdings', { searchParams: { symbol: 'SPY' } });
+      expect(mockClient.get).toHaveBeenNthCalledWith(4, 'etf/holdings', { searchParams: { symbol: 'SPY' } });
     });
 
     it('should normalize symbols with numbers', async () => {
@@ -641,9 +641,8 @@ describe('ETFResource', () => {
       await etfResource.getStockExposure('tsla');
       await etfResource.getInfo('voo');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-stock-exposure/TSLA');
-      expect(mockClient.get).toHaveBeenCalledWith('v4/etf-info', { searchParams: {   symbol: 'VOO' }, }
-);
+      expect(mockClient.get).toHaveBeenCalledWith('etf/asset-exposure', { searchParams: { symbol: 'TSLA' } });
+      expect(mockClient.get).toHaveBeenCalledWith('etf/info', { searchParams: { symbol: 'VOO' } });
     });
 
     it('should handle symbols with special characters', async () => {
@@ -653,7 +652,7 @@ describe('ETFResource', () => {
       // the normalization should still work
       await etfResource.getHoldings('brk.b');
 
-      expect(mockClient.get).toHaveBeenCalledWith('v3/etf-holder/BRK.B');
+      expect(mockClient.get).toHaveBeenCalledWith('etf/holdings', { searchParams: { symbol: 'BRK.B' } });
     });
   });
 

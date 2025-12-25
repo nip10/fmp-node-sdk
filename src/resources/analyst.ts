@@ -28,10 +28,15 @@ export class AnalystResource {
     period: Period = Period.Annual,
     limit?: number
   ): Promise<AnalystEstimate[]> {
-    const params: Record<string, string | number> = { symbol: symbol.toUpperCase(), period };
+    const params: Record<string, string | number> = {
+      symbol: symbol.toUpperCase(),
+      period,
+    };
     if (limit) params.limit = limit;
 
-    return this.client.get<AnalystEstimate[]>('v3/analyst-estimates', { searchParams: params });
+    return this.client.get<AnalystEstimate[]>('analyst-estimates', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -39,7 +44,7 @@ export class AnalystResource {
    * @param symbol - Stock symbol
    */
   async getPriceTargets(symbol: string): Promise<PriceTarget[]> {
-    return this.client.get<PriceTarget[]>(`v4/price-target`, {
+    return this.client.get<PriceTarget[]>('price-target', {
       searchParams: { symbol: symbol.toUpperCase() },
     });
   }
@@ -49,10 +54,9 @@ export class AnalystResource {
    * @param symbol - Stock symbol
    */
   async getPriceTargetSummary(symbol: string): Promise<PriceTargetSummary> {
-    const result = await this.client.get<PriceTargetSummary[]>(
-      `v4/price-target-summary`,
-      { searchParams: { symbol: symbol.toUpperCase() } }
-    );
+    const result = await this.client.get<PriceTargetSummary[]>('price-target-summary', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
     return result[0]!;
   }
 
@@ -61,10 +65,9 @@ export class AnalystResource {
    * @param symbol - Stock symbol
    */
   async getPriceTargetConsensus(symbol: string): Promise<PriceTargetConsensus> {
-    const result = await this.client.get<PriceTargetConsensus[]>(
-      `v4/price-target-consensus`,
-      { searchParams: { symbol: symbol.toUpperCase() } }
-    );
+    const result = await this.client.get<PriceTargetConsensus[]>('price-target-consensus', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
     return result[0]!;
   }
 
@@ -73,7 +76,9 @@ export class AnalystResource {
    * @param symbol - Stock symbol
    */
   async getRecommendations(symbol: string): Promise<AnalystRecommendation[]> {
-    return this.client.get<AnalystRecommendation[]>(`v3/analyst-stock-recommendations/${symbol.toUpperCase()}`);
+    return this.client.get<AnalystRecommendation[]>('analyst-stock-recommendations', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
   }
 
   /**
@@ -85,7 +90,9 @@ export class AnalystResource {
     const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (limit) params.limit = limit;
 
-    return this.client.get<StockGrade[]>('v3/grade', { searchParams: params });
+    return this.client.get<StockGrade[]>('grades', {
+      searchParams: params,
+    });
   }
 
   /**
@@ -93,10 +100,9 @@ export class AnalystResource {
    * @param symbol - Stock symbol
    */
   async getUpgradesDowngradesConsensus(symbol: string): Promise<UpgradesDowngradesConsensus> {
-    const result = await this.client.get<UpgradesDowngradesConsensus[]>(
-      `v4/upgrades-downgrades-consensus`,
-      { searchParams: { symbol: symbol.toUpperCase() } }
-    );
+    const result = await this.client.get<UpgradesDowngradesConsensus[]>('grades-consensus', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
     return result[0]!;
   }
 
@@ -105,9 +111,9 @@ export class AnalystResource {
    * @param symbol - Stock symbol
    */
   async getRatingsSnapshot(symbol: string): Promise<AnalystRecommendation> {
-    const result = await this.client.get<AnalystRecommendation[]>(
-      `v3/rating/${symbol.toUpperCase()}`
-    );
+    const result = await this.client.get<AnalystRecommendation[]>('rating', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
     return result[0]!;
   }
 
@@ -117,8 +123,21 @@ export class AnalystResource {
    * @param limit - Number of results
    */
   async getHistoricalGrades(symbol: string, limit?: number): Promise<StockGrade[]> {
-    const params: Record<string, string | number> = {};
+    const params: Record<string, string | number> = { symbol: symbol.toUpperCase() };
     if (limit) params.limit = limit;
-    return this.client.get<StockGrade[]>(`v3/historical-rating/${symbol.toUpperCase()}`, { searchParams: params });
+    return this.client.get<StockGrade[]>('grades-historical', {
+      searchParams: params,
+    });
+  }
+
+  /**
+   * Get stock grades summary
+   * @param symbol - Stock symbol
+   */
+  async getGradesSummary(symbol: string): Promise<UpgradesDowngradesConsensus> {
+    const result = await this.client.get<UpgradesDowngradesConsensus[]>('grades-summary', {
+      searchParams: { symbol: symbol.toUpperCase() },
+    });
+    return result[0]!;
   }
 }
