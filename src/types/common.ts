@@ -2,6 +2,8 @@
  * Common types used across the SDK
  */
 
+import type { CacheConfig } from '../cache/index.js';
+
 /**
  * Request/response interceptor hooks for debugging and monitoring
  */
@@ -59,6 +61,54 @@ export interface FMPConfig {
    * Optional request/response interceptors for logging and debugging
    */
   interceptors?: RequestInterceptor;
+
+  /**
+   * Cache configuration for response caching
+   * Caching is disabled by default - opt-in by setting enabled: true
+   *
+   * Different endpoints have different default TTLs based on data freshness:
+   * - Real-time data (quotes, forex, crypto): NO CACHE
+   * - Market movers (gainers, losers): 1 minute
+   * - News, analyst data: 1 hour
+   * - Company profiles, financial statements: 24 hours
+   *
+   * @example Enable caching with defaults
+   * ```typescript
+   * const fmp = new FMP({
+   *   apiKey: 'your-api-key',
+   *   cache: { enabled: true }
+   * });
+   * ```
+   *
+   * @example Custom per-endpoint TTLs
+   * ```typescript
+   * import { CacheTTL } from 'fmp-node-sdk';
+   *
+   * const fmp = new FMP({
+   *   apiKey: 'your-api-key',
+   *   cache: {
+   *     enabled: true,
+   *     endpointTTL: {
+   *       'profile': CacheTTL.DAY,      // 24 hours for profiles
+   *       'quote': CacheTTL.NONE,       // Never cache quotes
+   *       'news': CacheTTL.LONG,        // 1 hour for news
+   *     }
+   *   }
+   * });
+   * ```
+   *
+   * @example Custom cache provider (e.g., Redis)
+   * ```typescript
+   * const fmp = new FMP({
+   *   apiKey: 'your-api-key',
+   *   cache: {
+   *     enabled: true,
+   *     provider: new RedisCacheProvider(redisClient)
+   *   }
+   * });
+   * ```
+   */
+  cache?: CacheConfig;
 }
 
 /**

@@ -6,6 +6,15 @@
 export { FMP } from './fmp.js';
 export type { FMPConfig, RequestInterceptor } from './types/index.js';
 
+// Cache exports
+export { MemoryCache, CacheTTL, DEFAULT_ENDPOINT_TTLS } from './cache/index.js';
+export type {
+  CacheProvider,
+  CacheConfig,
+  CacheEntry,
+  EndpointTTLConfig,
+} from './cache/index.js';
+
 // Export enums (values, not just types)
 export { Period, Exchange } from './types/index.js';
 export { IntradayInterval } from './resources/market.js';
