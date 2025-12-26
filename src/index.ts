@@ -7,12 +7,19 @@ export { FMP } from './fmp.js';
 export type { FMPConfig, RequestInterceptor } from './types/index.js';
 
 // Cache exports
-export { MemoryCache, CacheTTL, DEFAULT_ENDPOINT_TTLS } from './cache/index.js';
+export {
+  MemoryCache,
+  RedisCacheProvider,
+  CacheTTL,
+  DEFAULT_ENDPOINT_TTLS,
+} from './cache/index.js';
 export type {
   CacheProvider,
   CacheConfig,
   CacheEntry,
   EndpointTTLConfig,
+  RedisClientLike,
+  RedisCacheProviderOptions,
 } from './cache/index.js';
 
 // Export enums (values, not just types)

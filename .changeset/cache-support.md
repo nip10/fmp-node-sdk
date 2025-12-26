@@ -7,7 +7,13 @@ Add response caching support with flexible configuration
 ## Features
 
 - **In-memory LRU cache** (default) with configurable max size
-- **Custom cache providers** - implement `CacheProvider` interface for Redis, Memcached, etc.
+- **Built-in Redis provider** - works with any Redis-compatible client:
+  - `redis` (node-redis)
+  - `ioredis`
+  - `@upstash/redis`
+  - `@vercel/kv`
+  - AWS ElastiCache, Azure Cache, KeyDB, DragonflyDB, etc.
+- **Custom cache providers** - implement `CacheProvider` interface
 - **Per-endpoint TTL configuration** with sensible defaults:
   - Real-time data (quotes, forex, crypto): No cache
   - Market movers (gainers, losers): 1 minute
@@ -24,12 +30,25 @@ Add response caching support with flexible configuration
 ## Usage
 
 ```typescript
-import { FMP, CacheTTL } from 'fmp-node-sdk';
+import { FMP, RedisCacheProvider, CacheTTL } from 'fmp-node-sdk';
 
-// Enable caching with sensible defaults
+// In-memory cache (default)
 const fmp = new FMP({
   apiKey: 'your-api-key',
   cache: { enabled: true }
+});
+
+// Redis cache (works with any Redis-compatible client)
+import { createClient } from 'redis';
+const redisClient = createClient({ url: 'redis://localhost:6379' });
+await redisClient.connect();
+
+const fmp = new FMP({
+  apiKey: 'your-api-key',
+  cache: {
+    enabled: true,
+    provider: new RedisCacheProvider({ client: redisClient }),
+  }
 });
 
 // Custom per-endpoint TTLs
@@ -42,15 +61,6 @@ const fmp = new FMP({
       'quote': CacheTTL.NONE,       // Never cache
       'news': CacheTTL.LONG,        // 1 hour
     }
-  }
-});
-
-// Custom cache provider (e.g., Redis)
-const fmp = new FMP({
-  apiKey: 'your-api-key',
-  cache: {
-    enabled: true,
-    provider: new RedisCacheProvider(redisClient)
   }
 });
 
