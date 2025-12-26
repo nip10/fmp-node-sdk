@@ -1,5 +1,6 @@
 import { FMPClient } from './client.js';
 import type { FMPConfig } from './types/index.js';
+import type { CacheProvider } from './cache/index.js';
 import { CompanyResource } from './resources/company.js';
 import { MarketResource } from './resources/market.js';
 import { FinancialsResource } from './resources/financials.js';
@@ -170,5 +171,34 @@ export class FMP {
     this.fundraisers = new FundraisersResource(this.client);
     this.search = new SearchResource(this.client);
     this.bulk = new BulkResource(this.client);
+  }
+
+  /**
+   * Clear all cached responses
+   *
+   * @example
+   * ```typescript
+   * await fmp.clearCache();
+   * ```
+   */
+  async clearCache(): Promise<void> {
+    return this.client.clearCache();
+  }
+
+  /**
+   * Get the cache provider instance (if caching is enabled)
+   * Useful for advanced cache operations or custom cache management
+   *
+   * @example
+   * ```typescript
+   * const cache = fmp.getCacheProvider();
+   * if (cache) {
+   *   // Access cache directly for advanced operations
+   *   const hasEntry = await cache.has('some-key');
+   * }
+   * ```
+   */
+  getCacheProvider(): CacheProvider | undefined {
+    return this.client.getCacheProvider();
   }
 }

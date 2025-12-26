@@ -1,5 +1,11 @@
 import ky, { type KyInstance, type Options } from 'ky';
 import type { FMPConfig } from './types/common.js';
+import type { CacheProvider, EndpointTTLConfig } from './cache/index.js';
+import {
+  MemoryCache,
+  CacheTTL,
+  DEFAULT_ENDPOINT_TTLS,
+} from './cache/index.js';
 import { FMPAPIError } from './errors/index.js';
 
 /**
@@ -9,7 +15,31 @@ const DEFAULT_CONFIG = {
   baseUrl: 'https://financialmodelingprep.com/stable',
   timeout: 30000,
   retries: 3,
+  cache: {
+    enabled: false, // Disabled by default - opt-in
+    defaultTTL: CacheTTL.MEDIUM, // 5 minutes
+    maxSize: 1000,
+    useDefaultTTLs: true,
+  },
 } as const;
+
+/**
+ * Generate a cache key from endpoint and parameters
+ */
+function defaultKeyGenerator(
+  endpoint: string,
+  params?: Record<string, unknown>
+): string {
+  if (!params || Object.keys(params).length === 0) {
+    return endpoint;
+  }
+  // Sort keys for consistent cache keys
+  const sortedParams = Object.keys(params)
+    .sort()
+    .map((key) => `${key}=${String(params[key])}`)
+    .join('&');
+  return `${endpoint}?${sortedParams}`;
+}
 
 /**
  * Core HTTP client for FMP API requests
@@ -18,6 +48,14 @@ export class FMPClient {
   private readonly apiKey: string;
   private readonly client: KyInstance;
   private readonly interceptors?: FMPConfig['interceptors'];
+  private readonly cache?: CacheProvider;
+  private readonly cacheEnabled: boolean;
+  private readonly defaultTTL: number;
+  private readonly endpointTTLs: EndpointTTLConfig;
+  private readonly cacheKeyGenerator: (
+    endpoint: string,
+    params?: Record<string, unknown>
+  ) => string;
 
   constructor(config: FMPConfig) {
     if (!config.apiKey || config.apiKey.trim() === '') {
@@ -26,6 +64,28 @@ export class FMPClient {
 
     this.apiKey = config.apiKey;
     this.interceptors = config.interceptors;
+
+    // Initialize cache
+    const cacheConfig = config.cache;
+    this.cacheEnabled = cacheConfig?.enabled ?? DEFAULT_CONFIG.cache.enabled;
+    this.defaultTTL = cacheConfig?.defaultTTL ?? DEFAULT_CONFIG.cache.defaultTTL;
+    this.cacheKeyGenerator = cacheConfig?.keyGenerator ?? defaultKeyGenerator;
+
+    // Build endpoint TTL configuration
+    const useDefaultTTLs =
+      cacheConfig?.useDefaultTTLs ?? DEFAULT_CONFIG.cache.useDefaultTTLs;
+    this.endpointTTLs = {
+      ...(useDefaultTTLs ? DEFAULT_ENDPOINT_TTLS : {}),
+      ...(cacheConfig?.endpointTTL ?? {}),
+    };
+
+    if (this.cacheEnabled) {
+      this.cache =
+        cacheConfig?.provider ??
+        new MemoryCache({
+          maxSize: cacheConfig?.maxSize ?? DEFAULT_CONFIG.cache.maxSize,
+        });
+    }
 
     const baseUrl = config.baseUrl ?? DEFAULT_CONFIG.baseUrl;
     const timeout = config.timeout ?? DEFAULT_CONFIG.timeout;
@@ -76,12 +136,50 @@ export class FMPClient {
   }
 
   /**
+   * Get the TTL for a specific endpoint
+   * Checks for exact match first, then falls back to default TTL
+   */
+  private getTTLForEndpoint(endpoint: string): number {
+    // Check for exact match
+    const ttl = this.endpointTTLs[endpoint];
+    if (ttl !== undefined) {
+      return ttl;
+    }
+    // Return default TTL
+    return this.defaultTTL;
+  }
+
+  /**
    * Make a GET request to the FMP API
    */
   async get<T>(endpoint: string, options?: Options): Promise<T> {
+    // Get TTL for this endpoint
+    const ttl = this.getTTLForEndpoint(endpoint);
+
+    // Generate cache key
+    const searchParams = options?.searchParams as
+      | Record<string, unknown>
+      | undefined;
+    const cacheKey = this.cacheKeyGenerator(endpoint, searchParams);
+
+    // Check cache first (only if TTL > 0 and caching is enabled)
+    if (this.cache && this.cacheEnabled && ttl > 0) {
+      const cached = await this.cache.get<T>(cacheKey);
+      if (cached !== undefined) {
+        return cached;
+      }
+    }
+
     try {
       const response = await this.client.get(endpoint, options);
-      return await response.json<T>();
+      const data = await response.json<T>();
+
+      // Store in cache (only if TTL > 0 and caching is enabled)
+      if (this.cache && this.cacheEnabled && ttl > 0) {
+        await this.cache.set(cacheKey, data, ttl);
+      }
+
+      return data;
     } catch (error) {
       // Re-throw FMP errors as-is
       if (error instanceof FMPAPIError) {
@@ -90,10 +188,40 @@ export class FMPClient {
 
       // Wrap unknown errors and call interceptor
       const wrappedError = new FMPAPIError(
-        error instanceof Error ? error.message : 'Unknown error occurred',
+        error instanceof Error ? error.message : 'Unknown error occurred'
       );
       this.interceptors?.onError?.(endpoint, wrappedError);
       throw wrappedError;
     }
+  }
+
+  /**
+   * Clear the cache
+   */
+  async clearCache(): Promise<void> {
+    if (this.cache) {
+      await this.cache.clear();
+    }
+  }
+
+  /**
+   * Delete a specific cache entry by endpoint and params
+   */
+  async invalidateCache(
+    endpoint: string,
+    params?: Record<string, unknown>
+  ): Promise<boolean> {
+    if (!this.cache) {
+      return false;
+    }
+    const cacheKey = this.cacheKeyGenerator(endpoint, params);
+    return await this.cache.delete(cacheKey);
+  }
+
+  /**
+   * Get the cache provider instance (if caching is enabled)
+   */
+  getCacheProvider(): CacheProvider | undefined {
+    return this.cache;
   }
 }
