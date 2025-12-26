@@ -16,6 +16,7 @@ TypeScript/JavaScript SDK for the [Financial Modeling Prep API](https://site.fin
 - 📦 **ESM & CJS** - Dual package support for maximum compatibility
 - ⚡ **Lightweight** - Uses `ky` for efficient HTTP requests
 - 🔄 **Auto Retry** - Built-in retry logic for failed requests
+- 💾 **Built-in Caching** - In-memory LRU cache with Redis support
 - 🛡️ **Error Handling** - Comprehensive error classes
 - 🧪 **Well Tested** - High test coverage with Vitest
 - 📖 **Excellent DX** - Intuitive API design with full IntelliSense support
@@ -79,6 +80,101 @@ const fmp = new FMP({
     onError: (url, error) => {
       console.error('Error:', url, error.message);
     },
+  },
+});
+```
+
+## Caching
+
+The SDK includes built-in caching with sensible defaults per endpoint. Caching is disabled by default.
+
+### Basic Usage (In-Memory Cache)
+
+```typescript
+const fmp = new FMP({
+  apiKey: 'your-api-key',
+  cache: { enabled: true }
+});
+
+// Responses are automatically cached based on endpoint type
+const profile = await fmp.company.getProfile('AAPL'); // Cached for 24 hours
+const quote = await fmp.company.getQuote('AAPL');     // Never cached (real-time)
+
+// Clear cache when needed
+await fmp.clearCache();
+```
+
+### Redis Cache
+
+The SDK includes a `RedisCacheProvider` compatible with any Redis client:
+
+```typescript
+import { FMP, RedisCacheProvider } from 'fmp-node-sdk';
+import { createClient } from 'redis';
+
+const redisClient = createClient({ url: 'redis://localhost:6379' });
+await redisClient.connect();
+
+const fmp = new FMP({
+  apiKey: 'your-api-key',
+  cache: {
+    enabled: true,
+    provider: new RedisCacheProvider({ client: redisClient }),
+  },
+});
+```
+
+Works with: `redis`, `ioredis`, `@upstash/redis`, `@vercel/kv`, AWS ElastiCache, Azure Cache, KeyDB, DragonflyDB, etc.
+
+### Custom TTLs
+
+```typescript
+import { FMP, CacheTTL } from 'fmp-node-sdk';
+
+const fmp = new FMP({
+  apiKey: 'your-api-key',
+  cache: {
+    enabled: true,
+    endpointTTL: {
+      'profile': CacheTTL.DAY,      // 24 hours
+      'quote': CacheTTL.NONE,       // Never cache
+      'news': CacheTTL.LONG,        // 1 hour
+      'income-statement': CacheTTL.DAY,
+    },
+  },
+});
+```
+
+### TTL Presets
+
+| Preset | Duration | Use Case |
+|--------|----------|----------|
+| `CacheTTL.NONE` | 0 | Real-time data (quotes, forex, crypto) |
+| `CacheTTL.SHORT` | 1 min | Market movers, active stocks |
+| `CacheTTL.MEDIUM` | 5 min | General data |
+| `CacheTTL.LONG` | 1 hour | News, analyst data |
+| `CacheTTL.DAY` | 24 hours | Profiles, financial statements |
+
+### Custom Cache Provider
+
+Implement the `CacheProvider` interface for custom storage:
+
+```typescript
+import type { CacheProvider } from 'fmp-node-sdk';
+
+class MyCustomCache implements CacheProvider {
+  async get<T>(key: string): Promise<T | undefined> { /* ... */ }
+  async set<T>(key: string, value: T, ttl: number): Promise<void> { /* ... */ }
+  async delete(key: string): Promise<boolean> { /* ... */ }
+  async clear(): Promise<void> { /* ... */ }
+  async has(key: string): Promise<boolean> { /* ... */ }
+}
+
+const fmp = new FMP({
+  apiKey: 'your-api-key',
+  cache: {
+    enabled: true,
+    provider: new MyCustomCache(),
   },
 });
 ```
@@ -681,7 +777,7 @@ try {
 
 1. **Always handle rate limits**: FMP has rate limits based on your subscription tier
 2. **Use batch operations when possible**: Reduce API calls by using bulk endpoints
-3. **Cache responses**: Store frequently accessed data to minimize API usage
+3. **Enable caching**: Use `cache: { enabled: true }` to automatically cache responses
 4. **Validate inputs**: Check symbol formats and date ranges before making requests
 5. **Use TypeScript**: Leverage full type safety for better development experience
 
