@@ -14,7 +14,7 @@
  * - KeyDB, DragonflyDB, etc.
  */
 
-import { FMP, RedisCacheProvider, CacheTTL } from 'fmp-node-sdk';
+// Examples show imports inline - see each section below
 
 // =============================================================================
 // Example 1: Using node-redis
@@ -22,6 +22,7 @@ import { FMP, RedisCacheProvider, CacheTTL } from 'fmp-node-sdk';
 
 /*
 import { createClient } from 'redis';
+import { FMP, RedisCacheProvider } from 'fmp-node-sdk';
 
 const redisClient = createClient({
   url: process.env.REDIS_URL || 'redis://localhost:6379',
@@ -47,6 +48,7 @@ const fmp = new FMP({
 
 /*
 import Redis from 'ioredis';
+import { FMP, RedisCacheProvider } from 'fmp-node-sdk';
 
 const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
@@ -65,6 +67,7 @@ const fmp = new FMP({
 
 /*
 import { Redis } from '@upstash/redis';
+import { FMP, RedisCacheProvider } from 'fmp-node-sdk';
 
 const redisClient = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -86,6 +89,7 @@ const fmp = new FMP({
 
 /*
 import { kv } from '@vercel/kv';
+import { FMP, RedisCacheProvider } from 'fmp-node-sdk';
 
 const fmp = new FMP({
   apiKey: process.env.FMP_API_KEY!,
@@ -101,6 +105,8 @@ const fmp = new FMP({
 // =============================================================================
 
 /*
+import { FMP, RedisCacheProvider, CacheTTL } from 'fmp-node-sdk';
+
 const fmp = new FMP({
   apiKey: process.env.FMP_API_KEY!,
   cache: {
@@ -142,6 +148,7 @@ await fmp.clearCache();
 
 /*
 import { createClient } from 'redis';
+import { FMP, RedisCacheProvider } from 'fmp-node-sdk';
 
 async function createFMPClient() {
   const redisClient = createClient({
