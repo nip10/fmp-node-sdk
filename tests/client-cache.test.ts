@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FMPClient } from '../src/client.js';
 import { MemoryCache, CacheTTL } from '../src/cache/index.js';
 import type { CacheProvider } from '../src/cache/index.js';
@@ -30,8 +30,12 @@ describe('FMPClient Cache Integration', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     const kyMock = await import('ky');
-    mockKyInstance = (kyMock as unknown as { __mockInstance: typeof mockKyInstance }).__mockInstance;
-    mockResponse = (kyMock as unknown as { __mockResponse: typeof mockResponse }).__mockResponse;
+    mockKyInstance = (
+      kyMock as unknown as { __mockInstance: typeof mockKyInstance }
+    ).__mockInstance;
+    mockResponse = (
+      kyMock as unknown as { __mockResponse: typeof mockResponse }
+    ).__mockResponse;
   });
 
   describe('cache disabled by default', () => {
@@ -189,7 +193,7 @@ describe('FMPClient Cache Integration', () => {
         cache: {
           enabled: true,
           endpointTTL: {
-            'quote': CacheTTL.LONG, // Override quote to have 1hr cache
+            quote: CacheTTL.LONG, // Override quote to have 1hr cache
           },
         },
       });
@@ -261,7 +265,9 @@ describe('FMPClient Cache Integration', () => {
         cache: { enabled: true, provider: customCache },
       });
 
-      const result = await client.get('profile', { searchParams: { symbol: 'AAPL' } });
+      const result = await client.get('profile', {
+        searchParams: { symbol: 'AAPL' },
+      });
 
       expect(result).toEqual(cachedData);
       // API should not be called when cache hits
@@ -313,7 +319,9 @@ describe('FMPClient Cache Integration', () => {
       });
 
       await client.get('profile', { searchParams: { symbol: 'AAPL' } });
-      const invalidated = await client.invalidateCache('profile', { symbol: 'AAPL' });
+      const invalidated = await client.invalidateCache('profile', {
+        symbol: 'AAPL',
+      });
       await client.get('profile', { searchParams: { symbol: 'AAPL' } });
 
       expect(invalidated).toBe(true);
@@ -351,8 +359,12 @@ describe('FMPClient Cache Integration', () => {
         cache: { enabled: true },
       });
 
-      await client.get('profile', { searchParams: { symbol: 'AAPL', limit: 10 } });
-      await client.get('profile', { searchParams: { limit: 10, symbol: 'AAPL' } });
+      await client.get('profile', {
+        searchParams: { symbol: 'AAPL', limit: 10 },
+      });
+      await client.get('profile', {
+        searchParams: { limit: 10, symbol: 'AAPL' },
+      });
 
       // Same params (different order) should result in same cache key
       expect(mockKyInstance.get).toHaveBeenCalledTimes(1);
