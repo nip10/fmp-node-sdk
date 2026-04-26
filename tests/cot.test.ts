@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { COTResource } from '../src/resources/cot.js';
 import type { FMPClient } from '../src/client.js';
 import type { COTReport, COTAnalysis, COTSymbol } from '../src/types/index.js';
-import { FMPAPIError, FMPAPIError, FMPAPIError } from '../src/errors/index.js';
+import { FMPAPIError } from '../src/errors/index.js';
 
 describe('COTResource', () => {
   let mockClient: FMPClient;

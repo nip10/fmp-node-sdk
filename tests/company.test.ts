@@ -1,11 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CompanyResource } from '../src/resources/company.js';
 import type { FMPClient } from '../src/client.js';
-import {
-  FMPAPIError,
-  FMPAPIError,
-  FMPAPIError,
-} from '../src/errors/index.js';
+import { FMPAPIError } from '../src/errors/index.js';
 import type {
   CompanyProfile,
   Quote,

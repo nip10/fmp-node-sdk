@@ -2,11 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ESGResource } from '../src/resources/esg.js';
 import type { FMPClient } from '../src/client.js';
 import type { ESGData, ESGRating, ESGBenchmark } from '../src/types/index.js';
-import {
-  FMPAPIError,
-  FMPAPIError,
-  FMPAPIError,
-} from '../src/errors/index.js';
+import { FMPAPIError } from '../src/errors/index.js';
 
 describe('ESGResource', () => {
   let mockClient: FMPClient;

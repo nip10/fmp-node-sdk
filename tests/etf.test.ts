@@ -1,11 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ETFResource } from '../src/resources/etf.js';
 import { FMPClient } from '../src/client.js';
-import {
-  FMPAPIError,
-  FMPAPIError,
-  FMPAPIError,
-} from '../src/errors/index.js';
+import { FMPAPIError } from '../src/errors/index.js';
 import type {
   ETFHolding,
   ETFInfo,

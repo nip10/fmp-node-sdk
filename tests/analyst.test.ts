@@ -10,11 +10,7 @@ import type {
   StockGrade,
   UpgradesDowngradesConsensus,
 } from '../src/types/index.js';
-import {
-  FMPAPIError,
-  FMPAPIError,
-  FMPAPIError,
-} from '../src/errors/index.js';
+import { FMPAPIError } from '../src/errors/index.js';
 
 describe('AnalystResource', () => {
   let analyst: AnalystResource;

@@ -1,11 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FundraisersResource } from '../src/resources/fundraisers.js';
 import type { FMPClient } from '../src/client.js';
-import {
-  FMPAPIError,
-  FMPAPIError,
-  FMPAPIError,
-} from '../src/errors/index.js';
+import { FMPAPIError } from '../src/errors/index.js';
 import type {
   Crowdfunding,
   EquityOffering,

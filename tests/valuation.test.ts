@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ValuationResource } from '../src/resources/valuation.js';
 import type { FMPClient } from '../src/client.js';
 import type { DCFValuation, LeveredDCF, AdvancedDCF } from '../src/types/index.js';
-import { FMPAPIError, FMPAPIError, FMPAPIError } from '../src/errors/index.js';
+import { FMPAPIError } from '../src/errors/index.js';
 
 describe('ValuationResource', () => {
   let mockClient: FMPClient;

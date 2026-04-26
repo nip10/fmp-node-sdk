@@ -31,6 +31,7 @@ describe('BulkResource', () => {
   beforeEach(() => {
     mockClient = {
       get: vi.fn(),
+      getText: vi.fn(),
     } as unknown as FMPClient;
     bulkResource = new BulkResource(mockClient);
   });
@@ -992,149 +993,79 @@ describe('BulkResource', () => {
 
   describe('getBatchEODPrices', () => {
     it('should fetch batch EOD prices for a specific date', async () => {
-      const mockPrices: EODPrice[] = [
-        {
-          symbol: 'AAPL',
-          date: '2024-01-15',
-          open: 148.5,
-          high: 151.2,
-          low: 147.8,
-          close: 150.5,
-          adjClose: 150.5,
-          volume: 52000000,
-        },
-        {
-          symbol: 'MSFT',
-          date: '2024-01-15',
-          open: 338.0,
-          high: 342.5,
-          low: 337.2,
-          close: 340.2,
-          adjClose: 340.2,
-          volume: 28000000,
-        },
+      const mockCsv = [
+        'symbol,date,open,high,low,close,adjClose,volume',
+        'AAPL,2024-01-15,148.5,151.2,147.8,150.5,150.5,52000000',
+        'MSFT,2024-01-15,338.0,342.5,337.2,340.2,340.2,28000000',
+      ].join('\n');
+      const expectedPrices: EODPrice[] = [
+        { symbol: 'AAPL', date: '2024-01-15', open: 148.5, high: 151.2, low: 147.8, close: 150.5, adjClose: 150.5, volume: 52000000 },
+        { symbol: 'MSFT', date: '2024-01-15', open: 338.0, high: 342.5, low: 337.2, close: 340.2, adjClose: 340.2, volume: 28000000 },
       ];
 
-      vi.mocked(mockClient.get).mockResolvedValue(mockPrices);
+      vi.mocked(mockClient.getText).mockResolvedValue(mockCsv);
 
       const result = await bulkResource.getBatchEODPrices('2024-01-15');
 
-      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
-        searchParams: {
-          date: '2024-01-15',
-      },
-      }
-);
-      expect(result).toEqual(mockPrices);
+      expect(mockClient.getText).toHaveBeenCalledWith('eod-bulk', { searchParams: { date: '2024-01-15' } });
+      expect(result).toEqual(expectedPrices);
       expect(result).toHaveLength(2);
     });
 
     it('should handle different date formats', async () => {
-      const mockPrices: EODPrice[] = [];
+      const mockCsv = 'symbol,date,open,high,low,close,adjClose,volume';
 
-      vi.mocked(mockClient.get).mockResolvedValue(mockPrices);
+      vi.mocked(mockClient.getText).mockResolvedValue(mockCsv);
 
       await bulkResource.getBatchEODPrices('2023-12-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
-        searchParams: {
-          date: '2023-12-31',
-      },
-      }
-);
+      expect(mockClient.getText).toHaveBeenCalledWith('eod-bulk', { searchParams: { date: '2023-12-31' } });
     });
   });
 
   describe('getBatchEODPricesRange', () => {
     it('should fetch batch EOD prices for a date range', async () => {
-      const mockPrices: EODPrice[] = [
-        {
-          symbol: 'AAPL',
-          date: '2024-01-15',
-          open: 148.5,
-          high: 151.2,
-          low: 147.8,
-          close: 150.5,
-          adjClose: 150.5,
-          volume: 52000000,
-        },
-        {
-          symbol: 'AAPL',
-          date: '2024-01-16',
-          open: 150.8,
-          high: 153.0,
-          low: 150.2,
-          close: 152.3,
-          adjClose: 152.3,
-          volume: 48000000,
-        },
-        {
-          symbol: 'MSFT',
-          date: '2024-01-15',
-          open: 338.0,
-          high: 342.5,
-          low: 337.2,
-          close: 340.2,
-          adjClose: 340.2,
-          volume: 28000000,
-        },
-        {
-          symbol: 'MSFT',
-          date: '2024-01-16',
-          open: 340.5,
-          high: 344.0,
-          low: 339.8,
-          close: 342.8,
-          adjClose: 342.8,
-          volume: 25000000,
-        },
+      const mockCsv = [
+        'symbol,date,open,high,low,close,adjClose,volume',
+        'AAPL,2024-01-15,148.5,151.2,147.8,150.5,150.5,52000000',
+        'AAPL,2024-01-16,150.8,153.0,150.2,152.3,152.3,48000000',
+        'MSFT,2024-01-15,338.0,342.5,337.2,340.2,340.2,28000000',
+        'MSFT,2024-01-16,340.5,344.0,339.8,342.8,342.8,25000000',
+      ].join('\n');
+      const expectedPrices: EODPrice[] = [
+        { symbol: 'AAPL', date: '2024-01-15', open: 148.5, high: 151.2, low: 147.8, close: 150.5, adjClose: 150.5, volume: 52000000 },
+        { symbol: 'AAPL', date: '2024-01-16', open: 150.8, high: 153.0, low: 150.2, close: 152.3, adjClose: 152.3, volume: 48000000 },
+        { symbol: 'MSFT', date: '2024-01-15', open: 338.0, high: 342.5, low: 337.2, close: 340.2, adjClose: 340.2, volume: 28000000 },
+        { symbol: 'MSFT', date: '2024-01-16', open: 340.5, high: 344.0, low: 339.8, close: 342.8, adjClose: 342.8, volume: 25000000 },
       ];
 
-      vi.mocked(mockClient.get).mockResolvedValue(mockPrices);
+      vi.mocked(mockClient.getText).mockResolvedValue(mockCsv);
 
       const result = await bulkResource.getBatchEODPricesRange('2024-01-15', '2024-01-16');
 
-      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
-        searchParams: {
-          from: '2024-01-15',
-        to: '2024-01-16',
-      },
-      }
-);
-      expect(result).toEqual(mockPrices);
+      expect(mockClient.getText).toHaveBeenCalledWith('eod-bulk', { searchParams: { from: '2024-01-15', to: '2024-01-16' } });
+      expect(result).toEqual(expectedPrices);
       expect(result).toHaveLength(4);
     });
 
     it('should handle single day range', async () => {
-      const mockPrices: EODPrice[] = [];
+      const mockCsv = 'symbol,date,open,high,low,close,adjClose,volume';
 
-      vi.mocked(mockClient.get).mockResolvedValue(mockPrices);
+      vi.mocked(mockClient.getText).mockResolvedValue(mockCsv);
 
       await bulkResource.getBatchEODPricesRange('2024-01-15', '2024-01-15');
 
-      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
-        searchParams: {
-          from: '2024-01-15',
-        to: '2024-01-15',
-      },
-      }
-);
+      expect(mockClient.getText).toHaveBeenCalledWith('eod-bulk', { searchParams: { from: '2024-01-15', to: '2024-01-15' } });
     });
 
     it('should handle multi-month range', async () => {
-      const mockPrices: EODPrice[] = [];
+      const mockCsv = 'symbol,date,open,high,low,close,adjClose,volume';
 
-      vi.mocked(mockClient.get).mockResolvedValue(mockPrices);
+      vi.mocked(mockClient.getText).mockResolvedValue(mockCsv);
 
       await bulkResource.getBatchEODPricesRange('2024-01-01', '2024-03-31');
 
-      expect(mockClient.get).toHaveBeenCalledWith('eod-bulk', {
-        searchParams: {
-          from: '2024-01-01',
-        to: '2024-03-31',
-      },
-      }
-);
+      expect(mockClient.getText).toHaveBeenCalledWith('eod-bulk', { searchParams: { from: '2024-01-01', to: '2024-03-31' } });
     });
   });
 
@@ -1148,7 +1079,7 @@ describe('BulkResource', () => {
 
     it('should propagate errors from client for getBatchEODPrices', async () => {
       const error = new Error('Invalid date format');
-      vi.mocked(mockClient.get).mockRejectedValue(error);
+      vi.mocked(mockClient.getText).mockRejectedValue(error);
 
       await expect(bulkResource.getBatchEODPrices('invalid-date')).rejects.toThrow(
         'Invalid date format'
