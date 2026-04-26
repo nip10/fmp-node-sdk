@@ -1,5 +1,23 @@
 # fmp-node-sdk
 
+## 4.0.0
+
+### Major Changes
+
+- fc33923: Fix `getBatchEODPrices` and `getBatchEODPricesRange` CSV response parsing
+
+  The `eod-bulk` FMP endpoint returns CSV, not JSON. Previously both methods always threw a JSON parse error. They now correctly parse the CSV response into typed `EODPrice[]` objects.
+
+  A new `getText()` method has been added to `FMPClient` for fetching raw text responses from endpoints that do not return JSON.
+
+### Patch Changes
+
+- 773fefa: Improve endpoint health check script
+  - Classify HTTP 402 responses as `payment_required` instead of generic `error`, giving an accurate picture of subscription-gated endpoints
+  - Add distinct console icons per status (`💳` payment required, `🔍` not found)
+  - List not-found endpoints in the summary output
+  - Exit code no longer triggers on `payment_required` — only genuine unexpected errors cause a non-zero exit
+
 ## 3.0.0
 
 ### Major Changes
