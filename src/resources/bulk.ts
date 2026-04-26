@@ -43,6 +43,27 @@ export interface EODPrice {
   volume: number;
 }
 
+function parseCsvToEODPrices(csv: string): EODPrice[] {
+  const lines = csv.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = lines[0]!.split(',');
+  return lines.slice(1).map((line) => {
+    const values = line.split(',');
+    const row: Record<string, string> = {};
+    headers.forEach((h, i) => { row[h.trim()] = (values[i] ?? '').trim(); });
+    return {
+      symbol: row['symbol'] ?? '',
+      date: row['date'] ?? '',
+      open: parseFloat(row['open'] ?? '0'),
+      high: parseFloat(row['high'] ?? '0'),
+      low: parseFloat(row['low'] ?? '0'),
+      close: parseFloat(row['close'] ?? '0'),
+      adjClose: parseFloat(row['adjClose'] ?? row['adj_close'] ?? '0'),
+      volume: parseInt(row['volume'] ?? '0', 10),
+    };
+  });
+}
+
 /**
  * Bulk API endpoints resource
  * Provides access to bulk data endpoints for retrieving data for multiple symbols at once
@@ -227,20 +248,24 @@ export class BulkResource {
 
   /**
    * Get batch end of day prices (bulk)
-   * Returns end of day prices for all symbols for a specific date
+   * Returns end of day prices for all symbols for a specific date.
+   * The eod-bulk endpoint returns CSV — this method parses it into typed objects.
    * @param date - Date in YYYY-MM-DD format
    */
   async getBatchEODPrices(date: string): Promise<EODPrice[]> {
-    return this.client.get<EODPrice[]>('eod-bulk', { searchParams: { date } });
+    const csv = await this.client.getText('eod-bulk', { searchParams: { date } });
+    return parseCsvToEODPrices(csv);
   }
 
   /**
    * Get batch end of day prices for multiple dates
-   * Returns end of day prices for all symbols across a date range
+   * Returns end of day prices for all symbols across a date range.
+   * The eod-bulk endpoint returns CSV — this method parses it into typed objects.
    * @param from - Start date in YYYY-MM-DD format
    * @param to - End date in YYYY-MM-DD format
    */
   async getBatchEODPricesRange(from: string, to: string): Promise<EODPrice[]> {
-    return this.client.get<EODPrice[]>('eod-bulk', { searchParams: { from, to } });
+    const csv = await this.client.getText('eod-bulk', { searchParams: { from, to } });
+    return parseCsvToEODPrices(csv);
   }
 }

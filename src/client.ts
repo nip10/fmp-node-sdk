@@ -196,6 +196,25 @@ export class FMPClient {
   }
 
   /**
+   * Make a GET request and return raw text (for non-JSON endpoints like CSV)
+   */
+  async getText(endpoint: string, options?: Options): Promise<string> {
+    try {
+      const response = await this.client.get(endpoint, options);
+      return await response.text();
+    } catch (error) {
+      if (error instanceof FMPAPIError) {
+        throw error;
+      }
+      const wrappedError = new FMPAPIError(
+        error instanceof Error ? error.message : 'Unknown error occurred'
+      );
+      this.interceptors?.onError?.(endpoint, wrappedError);
+      throw wrappedError;
+    }
+  }
+
+  /**
    * Clear the cache
    */
   async clearCache(): Promise<void> {
