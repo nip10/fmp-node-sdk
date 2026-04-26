@@ -38,3 +38,7 @@ Thumbs.db
 
 # Package manager
 .pnpm-store
+
+# FMP health check reports
+fmp-health-*.json
+fmp-health-report.json
