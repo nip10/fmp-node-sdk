@@ -45,7 +45,8 @@
     "test:ui": "vitest --ui",
     "check-exports": "attw --pack .",
     "typecheck": "tsc --noEmit",
-    "release": "pnpm run build && changeset publish"
+    "release": "pnpm run build && changeset publish",
+    "check-endpoints": "tsx scripts/check-endpoints.ts"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
@@ -64,6 +65,7 @@
     "jiti": "^2.6.1",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.3",
     "vitest": "^4.0.8",
